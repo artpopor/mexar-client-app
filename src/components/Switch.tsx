@@ -1,5 +1,7 @@
 import React from "react"
 import { Switch } from "antd"
+import "./components.css"
+
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     containerClassName?: string
     placeholder?: any
@@ -8,20 +10,13 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     onClear?: () => void
     onChange?: () => void
 }
-import { useState } from "react"
 const myswitch = ({ ...props }) => {
-    const [checked, setChecked] = useState(true);
-    const switchStyle = checked ? {
-        backgroundColor: '#FFEB80',  // Color when checked
-      } : {backgroundColor : '#597DE1'};
     
     return (
-        <Switch
-        {...props}
-            checked={checked}
-            // onChange={() => setChecked(!checked)}
-            style={switchStyle}
-        />
+            <Switch defaultChecked 
+            {...props}
+        /> 
+       
     )
 }
 const CustomSwitch = React.forwardRef<HTMLInputElement, Props>(myswitch)

@@ -582,6 +582,10 @@ video {
   align-content: center;
 }
 
+.content-end {
+  align-content: flex-end;
+}
+
 .content-around {
   align-content: space-around;
 }
@@ -612,6 +616,10 @@ video {
 
 .gap-9 {
   gap: 2.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 .rounded-2xl {
@@ -662,9 +670,18 @@ video {
   text-align: right;
 }
 
+.text-end {
+  text-align: end;
+}
+
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 .font-semibold {
@@ -684,6 +701,11 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.text-gray-50 {
+  --tw-text-opacity: 1;
+  color: rgb(249 250 251 / var(--tw-text-opacity));
 }
 
 .outline-none {
