@@ -2,7 +2,7 @@
 import { useEffect } from 'react'
 function App() {
   useEffect(()=>{
-    window.open('/login',"_self")
+    window.open('/home',"_self")
   },[])
   return (
     <>

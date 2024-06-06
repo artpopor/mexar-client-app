@@ -9,7 +9,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 const button = ({ ...props }) => {
 
     return(
-        <button {...props} className="bg-[#FFEB80] text-[#556CBB] p-3 px-4  rounded-xl w-full outline-none focus:outline-4"/>
+        <button {...props} className="bg-[#FFEB80] text-[#556CBB] font-medium text-xl p-3 px-4  rounded-xl w-full outline-none focus:outline-4"/>
     )
 }
 const Button = React.forwardRef<HTMLInputElement, Props>(button)
