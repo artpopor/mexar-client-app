@@ -13,7 +13,9 @@ html, body, #root, .wrapper {
   height:100%;
 }
 
-
+.ant-switch-checked {
+  background-color: red;
+}
 
 
 
