@@ -35,7 +35,7 @@ const Login = () => {
               <Input placeholder='password' type="password" onChange={(e) => console.log(e.target.value)} maxLength={20} />
               <div className="text-sm  text-gray-600">Forgot Password?</div>
             </div>
-            <Button onClick={handleSendOtp}>SEND OTP</Button></>
+            <Button className="w-full" onClick={handleSendOtp}>SEND OTP</Button></>
         }
         {step == 'getOtp' && (
           <>
@@ -44,7 +44,7 @@ const Login = () => {
               <b className="text-white text-2xl">Type your 6 digits security code</b>
               <OTPInput length={6} onComplete={()=>console.log("completeOTP")}/>
               <p className="text-white self-end">Didn't get code? <span className="text-slate-700 underline">Resent</span>  </p>
-              <Button onClick={handleLogin}>Login</Button>
+              <Button className="w-full" onClick={handleLogin}>Login</Button>
             </div>
           </>
         )}
