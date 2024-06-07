@@ -26,7 +26,7 @@ const Remmittance = () => {
     "https://images.unsplash.com/photo-1542596594-649edbc13630?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFwcHklMjBnaXJsfGVufDB8fDB8fHww";
 
   return (
-    <div className="flex flex-col  justify-start  content-around h-full items-center drop-shadow-md">
+    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md">
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
         <div
           onClick={() => navigate("/home")}
