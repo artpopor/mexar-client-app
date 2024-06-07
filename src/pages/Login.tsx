@@ -2,48 +2,72 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Logo from "../assets/Logo_MEXAR.png";
 import { useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler,Controller } from "react-hook-form";
 import CustomSwitch from "../components/Switch";
 import { useEffect, useState } from "react";
 import * as yub from "yup";
 import OTPInput from "../components/OtpInput";
 import { loginSchema } from "../Validations/loginValidation";
 import { Alert } from "antd";
-import { useSelector } from "react-redux";
-import { unwrapResult } from '@reduxjs/toolkit';
-import { useLoginMutation } from "../services/jsonServerApi";
+import { notification, Space } from "antd";
+import {
+  useLoginMutation,
+  useVerifyOtpMutation,
+} from "../services/jsonServerApi";
+import { MdMoodBad } from "react-icons/md";
+
 const Login = () => {
   const [step, setStep] = useState<String>("getBasicInfomation");
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm({ mode: "onChange" });
+  const { register, handleSubmit,control } = useForm({ mode: "onChange" });
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
+  const [verifyOtp] = useVerifyOtpMutation();
+  const [userLoginData, setUserLoginData] = useState({});
+  const [loginByPhone, setLoginByPhone] = useState(true);
+  
 
+  const openNotification = () => {
+    notification.open({
+      message: "Warning!",
+      description: alertMessage,
+      icon: <MdMoodBad style={{ color: "red" }} />,
+    });
+  };
   const handleSendOtp = async (formData: any) => {
     console.log("formData :>> ", formData);
     const isValid = await loginSchema.isValid(formData);
     if (isValid) {
-      const res = await login(formData)
-      console.log('res :>> ', res.data);
-      if(res?.data?.meta?.code == 200){
-        setStep('getOtp')
-      }else{
-        setShowAlert(true);
-        setAlertMessage("Wrong username or password");
+      const res = await login(formData);
+      console.log("res :>> ", res.data);
+      if (res?.data?.meta?.code == 200) {
+        setUserLoginData(formData);
+        setStep("getOtp");
+      } else {
+        setAlertMessage("Wrong username or password!");
+        openNotification();
       }
-      
     } else {
-      setShowAlert(true);
-      setAlertMessage("Invalid username or password");
+      setAlertMessage("username or password is not valid!");
+      openNotification();
     }
   };
 
-  const handleLogin = () => {
-    navigate("/home");
-  };
-  const [loginByPhone, setLoginByPhone] = useState(true);
+  const handleLogin =async (formData: any) => {
+    console.log("formData :>> ", formData);
+    const res = await verifyOtp(formData)
+    console.log('response',res);
+    if (res?.data?.meta?.code == 200) {
+      setUserLoginData(formData);
+      setStep("getOtp");
+      navigate("/home");
 
+    } else {
+      setAlertMessage("Wrong username or password!");
+      openNotification();
+    }
+  };
 
   return (
     <>
@@ -121,15 +145,27 @@ const Login = () => {
                 <b className="text-white text-2xl">
                   Type your 6 digits security code
                 </b>
-                <OTPInput
-                  length={6}
-                  onComplete={() => console.log("completeOTP")}
-                />
+                <Controller
+        name="otp"
+        control={control}
+        defaultValue=""
+        render={({ field }) => (
+          <OTPInput
+            length={6}
+            value={field.value}
+            onChange={field.onChange}
+            onComplete={(pin) => {
+              field.onChange(pin);
+              // You can add additional onComplete logic here
+            }}
+          />
+        )}
+      />
                 <p className="text-white self-end">
                   Didn't get code?{" "}
                   <span className="text-slate-700 underline">Resent</span>{" "}
                 </p>
-                <Button className="w-full" onClick={handleLogin}>
+                <Button className="w-full" onClick={handleSubmit(handleLogin)}>
                   Login
                 </Button>
               </div>
