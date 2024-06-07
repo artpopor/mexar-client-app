@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const jsonServerApi = createApi({
   reducerPath: "jsonServerApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://dev.sundev.ovh/api/v1/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
