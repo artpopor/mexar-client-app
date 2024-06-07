@@ -4,14 +4,15 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     placeholder?: any
     label?: string
     allowClear?: boolean
+    className? : string
     onClear?: () => void
   }
-const CustomInput = ({ ...props }) => {
-    console.log(props.type);
+const Input = ({ className, ...props }: Props) => {
+    const baseClassName = 'bg-white text-gray-600 p-3 px-4  rounded-xl w-full outline-none'
     return(
-        <input {...props} className="bg-white text-gray-600 p-3 px-4  rounded-xl w-full outline-none"/>
+        <input    {...props} className={`${baseClassName} ${className}`}/>
     )
 }
-const Input = React.forwardRef<HTMLInputElement, Props>(CustomInput)
+
 
 export default Input
