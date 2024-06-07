@@ -4,7 +4,6 @@ import Login from "../pages/Login";
 import ErrorPage from "../pages/ErrorPage";
 import HomePage from "../pages/HomePage";
 import Remmittance from "../pages/Remmittance";
-
 export const router = createBrowserRouter([
     {
         path:'/',
