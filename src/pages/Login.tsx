@@ -2,7 +2,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Logo from "../assets/Logo_MEXAR.png";
 import { useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler,Controller } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import CustomSwitch from "../components/Switch";
 import { useEffect, useState } from "react";
 import * as yub from "yup";
@@ -12,21 +12,22 @@ import { Alert } from "antd";
 import { notification, Space } from "antd";
 import {
   useLoginMutation,
-  useVerifyOtpMutation,useGetUserTransactionQuery
+  useVerifyOtpMutation,
+  useGetUserTransactionQuery,
 } from "../services/jsonServerApi";
 import { MdMoodBad } from "react-icons/md";
+import PhoneInput from "../components/PhoneInput";
 
 const Login = () => {
   const [step, setStep] = useState<String>("getBasicInfomation");
   const navigate = useNavigate();
-  const { register, handleSubmit,control } = useForm({ mode: "onChange" });
+  const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [login] = useLoginMutation();
   const [verifyOtp] = useVerifyOtpMutation();
   const [userLoginData, setUserLoginData] = useState({});
-  const [loginByPhone, setLoginByPhone] = useState(true);
-  
+  const [loginByPhone, setLoginByPhone] = useState(false);
 
   const openNotification = () => {
     notification.open({
@@ -36,7 +37,6 @@ const Login = () => {
     });
   };
   const handleSendOtp = async (formData: any) => {
-    console.log("formData :>> ", formData);
     const isValid = await loginSchema.isValid(formData);
     if (isValid) {
       const res = await login(formData);
@@ -54,16 +54,15 @@ const Login = () => {
     }
   };
 
-  const handleLogin =async (formData: any) => {
+  const handleLogin = async (formData: any) => {
     console.log("formData :>> ", formData);
-    const res = await verifyOtp(formData)
-    console.log('response',res);
+    const res = await verifyOtp(formData);
+    console.log("response", res);
     if (res?.data?.meta?.code == 200) {
       setUserLoginData(formData);
-      const access_token = res?.data?.data?.access_token
-      localStorage.setItem('access_token',access_token)
+      const access_token = res?.data?.data?.access_token;
+      localStorage.setItem("access_token", access_token);
       navigate("/home");
-
     } else {
       setAlertMessage("Wrong username or password!");
       openNotification();
@@ -99,7 +98,7 @@ const Login = () => {
             <>
               <div className="text-white text-right flex flex-row gap-3 justify-end">
                 <p>
-                  Login by <b>{loginByPhone ? "Phone" : "Email"}</b>
+                  Login by <b>'Email'</b>
                 </p>
                 <CustomSwitch onChange={() => setLoginByPhone(!loginByPhone)} />
               </div>
@@ -107,16 +106,23 @@ const Login = () => {
               {(loginByPhone && (
                 <Input
                   {...register("username")}
-                  placeholder="username"
+                  placeholder="username/email"
                   type="username"
                   maxLength={20}
                 />
               )) || (
-                <Input
-                  {...register("phone")}
-                  type="phone"
-                  placeholder="Phone Number"
-                />
+                <Controller
+                name="phone"
+                control={control}
+                defaultValue={{ dialCode: "+66", phoneNumber: "" }}
+                
+                render={({ field }) => (
+                  <PhoneInput
+                    {...field}
+                    placeholder="xx-xxx-xxx"
+                  />
+                )}
+              />
               )}
               <div className="flex flex-col justify-end text-end gap-2">
                 <Input
@@ -147,21 +153,21 @@ const Login = () => {
                   Type your 6 digits security code
                 </b>
                 <Controller
-        name="otp"
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <OTPInput
-            length={6}
-            value={field.value}
-            onChange={field.onChange}
-            onComplete={(pin) => {
-              field.onChange(pin);
-              // You can add additional onComplete logic here
-            }}
-          />
-        )}
-      />
+                  name="otp"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <OTPInput
+                      length={6}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onComplete={(pin) => {
+                        field.onChange(pin);
+                        // You can add additional onComplete logic here
+                      }}
+                    />
+                  )}
+                />
                 <p className="text-white self-end">
                   Didn't get code?{" "}
                   <span className="text-slate-700 underline">Resent</span>{" "}

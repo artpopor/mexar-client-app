@@ -9,16 +9,7 @@ import ProfileSection from "./ProfileSection";
 import CustomSelect from "../components/Select";
 // import Input from "../components/Input";
 import {  Input, Select, Space } from 'antd';
-const options = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-  },
-];
+
 const Remmittance = () => {
   const navigate = useNavigate();
   const draftArrayData = [1, 2, 3, 4, 5, 6];
@@ -51,15 +42,14 @@ const Remmittance = () => {
           <Input className="border border-gray-400" placeholder={"amount"} />
           <p className="font-thin text-gray-500">To Currency</p>
           <CustomSelect className="h-12" placeholder="Select Country" />
-          <Space.Compact>
-      <Select defaultValue="Zhejiang" options={options} />
-      <Input defaultValue="Xihu District, Hangzhou" />
-    </Space.Compact>
+          
         </div>
           
           <Button className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]">Next</Button>
       </div>
-
+    <div>
+      
+    </div>
       <MenuBar />
     </div>
   );
