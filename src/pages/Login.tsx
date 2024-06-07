@@ -12,7 +12,7 @@ import { Alert } from "antd";
 import { notification, Space } from "antd";
 import {
   useLoginMutation,
-  useVerifyOtpMutation,
+  useVerifyOtpMutation,useGetUserTransactionQuery
 } from "../services/jsonServerApi";
 import { MdMoodBad } from "react-icons/md";
 
@@ -60,7 +60,8 @@ const Login = () => {
     console.log('response',res);
     if (res?.data?.meta?.code == 200) {
       setUserLoginData(formData);
-      setStep("getOtp");
+      const access_token = res?.data?.data?.access_token
+      localStorage.setItem('access_token',access_token)
       navigate("/home");
 
     } else {

@@ -7,8 +7,18 @@ import MenuBar from "../components/MenuBar";
 import { IoChevronBack } from "react-icons/io5";
 import ProfileSection from "./ProfileSection";
 import CustomSelect from "../components/Select";
-import Input from "../components/Input";
-
+// import Input from "../components/Input";
+import {  Input, Select, Space } from 'antd';
+const options = [
+  {
+    value: 'zhejiang',
+    label: 'Zhejiang',
+  },
+  {
+    value: 'jiangsu',
+    label: 'Jiangsu',
+  },
+];
 const Remmittance = () => {
   const navigate = useNavigate();
   const draftArrayData = [1, 2, 3, 4, 5, 6];
@@ -20,7 +30,7 @@ const Remmittance = () => {
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
         <div
           onClick={() => navigate("/home")}
-          className="text-white text-xl flex flex-cols gap-3 "
+          className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
         >
           <IoChevronBack className="text-xl self-center" />
           <p className="self-center">Back</p>
@@ -32,20 +42,22 @@ const Remmittance = () => {
         01 - Enter order Detail
       </p>
       <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between">
-        <div>
+        <div className='flex flex-col gap-2'>
           <p className="font-thin text-gray-500">Destination Country</p>
-          <CustomSelect className="h-10" placeholder="Select Country" />
+          <CustomSelect className="h-12" placeholder="Select Country" />
           <p className="font-thin text-gray-500">From Currency</p>
-          <Input className="border border-gray-900" placeholder={"amount"} />
+          <Input className="border border-[#a5a5a5]" placeholder={"amount"} />
           <p className="font-thin text-gray-500">Sale rate</p>
-          <Input className="border border-gray-900" placeholder={"amount"} />
-          <p className="font-thin text-gray-500">To Csurrency</p>
-          <CustomSelect className="h-10" placeholder="Select Country" />
+          <Input className="border border-gray-400" placeholder={"amount"} />
+          <p className="font-thin text-gray-500">To Currency</p>
+          <CustomSelect className="h-12" placeholder="Select Country" />
+          <Space.Compact>
+      <Select defaultValue="Zhejiang" options={options} />
+      <Input defaultValue="Xihu District, Hangzhou" />
+    </Space.Compact>
         </div>
-        <div className="w-full h-full bg-red-500 mb-7 content-center">
           
-          <Button className="w-full !bg-slate-950">Next</Button>
-        </div>
+          <Button className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]">Next</Button>
       </div>
 
       <MenuBar />

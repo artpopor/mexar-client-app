@@ -12,18 +12,27 @@ export const jsonServerApi = createApi({
       }),
     }),
     verifyOtp: builder.mutation({
-        query: (data) => ({
-          url: `oauth/token/grant`,
-          method: "POST",
-          body: { 
-            "email": data.username,
-            "password": data.password,
-            "otp_code": data.otp,
-            "token_type": "personal"
-           },
-        }),
+      query: (data) => ({
+        url: `oauth/token/grant`,
+        method: "POST",
+        body: { 
+          email: data.username,
+          password: data.password,
+          otp_code: data.otp,
+          token_type: "personal",
+        },
       }),
+    }),
+    getUserTransaction: builder.query({
+      query: (token) => ({
+        url: 'ewallet/me/transactions?include=user,entity,fees,items&currency_id=2&transaction_type=transfer,deposit',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation,useVerifyOtpMutation } = jsonServerApi;
+export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery } = jsonServerApi;

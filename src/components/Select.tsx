@@ -1,5 +1,7 @@
 import React from "react";
 import { Select } from "antd";
+import './components.css';
+
 interface Props {
   containerClassName?: string;
   placeholder?: string;
@@ -23,10 +25,11 @@ const CustomSelect = React.forwardRef<any, Props>((props, ref) => {
   return (
     <>
       <Select
-      className={`${baseClassName} ${className} outline-none`}
+      className={`custom-select ${baseClassName} ${className} outline-none`}
         ref={ref}
         placeholder={placeholder}
         allowClear={allowClear}
+        style={{borderRadius:100}}
         {...rest}
       >
         <Select.Option value="sample">Sample</Select.Option>
