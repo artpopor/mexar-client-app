@@ -34,7 +34,7 @@
         border-radius: 50%;
       }
       .custom-select .ant-select-selection-placeholder {
-        color: rgb(107 114 128) !important; /* Change this to your desired color */
+        color: rgb(205, 206, 208) !important; /* Change this to your desired color */
         opacity: 1 !important;  /* Ensure the opacity is set for visibility */
       }
       .custom-select-country .ant-select-selector {
@@ -46,4 +46,5 @@
         margin : 0 !important;
         border : 0 !important;
         color : rgb(107 114 128) !important;
+        filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06)) !important;
       }

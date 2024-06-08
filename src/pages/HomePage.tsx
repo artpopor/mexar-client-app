@@ -31,7 +31,7 @@ const HomePage = () => {
     const to_currency = items[0].to_currency.code;
     const to_amount = parseFloat(items[0].to_amount).toFixed(2);
     return (
-      <div className="bg-white mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-between">
+      <div className="bg-white mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-between ">
         <div className="w-full flex flex-cols content-center self-center gap-3">
           <p className="self-center text-gray-500">{formattedDate}</p>
           <img
@@ -53,8 +53,9 @@ const HomePage = () => {
       </div>
     );
   };
+  
   return (
-    <div className="flex flex-col  justify-start  content-around h-full items-center drop-shadow-md min-h-screen">
+    <div className="flex flex-col justify-start  content-around h-full items-center drop-shadow-md">
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
         <div className="text-white text-3xl content-center ">
           <GoGear />
@@ -62,7 +63,7 @@ const HomePage = () => {
         <ProfileSection />
       </div>
       {/* Main Content here */}
-      <div className="bg-[#F6FAFF]  mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3 ">
+      <div className="bg-[#F6FAFF]  mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3 h-full rounded-b-none">
         <p className="font-medium text-gray-500">Services</p>
         <div className="flex self-center lg:self-start flex-cols justify-between w-full max-w-[450px] lg:w-[400px] bg-gradient-to-br from-[#5BBBFF] to-[#5983E4] rounded-3xl p-5">
           <div className="text-white">

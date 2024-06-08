@@ -16,8 +16,7 @@ import {
   useGetUserTransactionQuery,
 } from "../services/jsonServerApi";
 import { MdMoodBad } from "react-icons/md";
-import PhoneInput from "../components/PhoneInput";
-
+import PhoneInput from "../components/phoneInput";
 const Login = () => {
   const [step, setStep] = useState<String>("getBasicInfomation");
   const navigate = useNavigate();
