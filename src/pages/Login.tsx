@@ -28,10 +28,10 @@ const Login = () => {
   const [userLoginData, setUserLoginData] = useState({});
   const [loginByPhone, setLoginByPhone] = useState(false);
 
-  const openNotification = () => {
-    notification.open({
+  const openNotification = async (message:string) => {
+    await notification.open({
       message: "Warning!",
-      description: alertMessage,
+      description: message,
       icon: <MdMoodBad style={{ color: "red" }} />,
     });
   };
@@ -44,12 +44,10 @@ const Login = () => {
         setUserLoginData(formData);
         setStep("getOtp");
       } else {
-        setAlertMessage("Wrong username or password!");
-        openNotification();
+        openNotification("Wrong username or password!");
       }
     } else {
-      setAlertMessage("username or password is not valid!");
-      openNotification();
+      openNotification("username or password is not valid!");
     }
   };
 
@@ -63,8 +61,7 @@ const Login = () => {
       localStorage.setItem("access_token", access_token);
       navigate("/home");
     } else {
-      setAlertMessage("Wrong username or password!");
-      openNotification();
+      openNotification("Wrong username or password!");
     }
   };
 
@@ -99,7 +96,7 @@ const Login = () => {
                 <p>
                   Login by <b>'Email'</b>
                 </p>
-                <CustomSwitch onChange={() => setLoginByPhone(!loginByPhone)} />
+                <CustomSwitch  onChange={() => setLoginByPhone(!loginByPhone)} />
               </div>
 
               {(loginByPhone && (

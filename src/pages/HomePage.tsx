@@ -53,7 +53,15 @@ const HomePage = () => {
       </div>
     );
   };
-  
+  useEffect(()=>{
+    const checkIsAuthen = () => {
+          const isAuthen = localStorage.getItem("access_token")
+          if(!isAuthen){
+            navigate('/login')
+          }
+    }
+    checkIsAuthen()
+  },[])
   return (
     <div className="flex flex-col justify-start  content-around h-full items-center drop-shadow-md">
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">

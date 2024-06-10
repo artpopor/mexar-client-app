@@ -31,11 +31,11 @@ const PhoneInput = forwardRef<HTMLInputElement, Props>(
     };
 
     return (
-      <Space className="h-11 gap-0">
+      <div className="h-11 gap-0 flex flex-cols">
         <Select
           value={value.dialCode}
           onChange={handleDialCodeChange}
-          className="h-12 custom-select-country w-28"
+          className="h-12 custom-select-country w-[30%]"
         >
           {CountryCodeWithFlag.map((country) => (
             <Select.Option key={country.dial_code} value={country.dial_code}>
@@ -44,13 +44,13 @@ const PhoneInput = forwardRef<HTMLInputElement, Props>(
           ))}
         </Select>
         <Input
-          className="border-none h-12 rounded-r-xl text-lg rounded-l-none "
+          className="border-none h-12 rounded-r-xl text-lg rounded-l-none w-full "
           value={value.phoneNumber}
           placeholder={props.placeholder}
           onChange={handlePhoneNumberChange}
           type="tel"
         />
-      </Space>
+      </div>
     );
   }
 );

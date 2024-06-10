@@ -46,5 +46,27 @@
         margin : 0 !important;
         border : 0 !important;
         color : rgb(107 114 128) !important;
+        background-color: white !important;
         filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06)) !important;
+        
+      }
+      .ant-space-item {
+        width: 100% !important;
+      }
+      .ant-btn {
+        height: 40px !important;
+      }
+      .ant-input {
+        height: 40px !important;
+      }
+      .ant-select-selection-item{
+        display: flex;
+        gap: 10px;
+      }
+      .ant-select-item-option-content{
+        display: flex;
+        gap: 10px;
+      }
+      .menu-item:hover {
+        background-color: rgba(0, 0, 0, 0.1); /* Adjust opacity as needed */
       }

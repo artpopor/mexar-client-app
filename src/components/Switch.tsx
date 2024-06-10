@@ -13,7 +13,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 const myswitch = ({ ...props }) => {
     
     return (
-            <Switch defaultChecked 
+            <Switch
             {...props}
         /> 
        

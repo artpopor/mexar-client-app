@@ -1,40 +1,52 @@
-import React from "react";
-import { Select } from "antd";
+import React, { forwardRef } from 'react';
+import { Select } from 'antd';
+import { SelectProps } from 'antd/lib/select';
 import './components.css';
 
-interface Props {
-  containerClassName?: string;
-  placeholder?: string;
-  label?: string;
-  allowClear?: boolean;
-  className?:string;
-  onClear?: () => void;
+interface Option {
+  value: string;
+  label: string;
 }
-import './components.css'
 
-const CustomSelect = React.forwardRef<any, Props>((props, ref) => {
+interface Props extends SelectProps<string> {
+  containerClassName?: string;
+  label?: string;
+  options?: Option[];
+  onChange?: (value: string) => void;
+}
+
+const CustomSelect = forwardRef<any, Props>((props, ref) => {
   const {
     containerClassName,
-    placeholder,
     label,
-    allowClear,
-    onClear,className,
+    options,
+    className,
+    onChange,
+    children, // Accept children prop
     ...rest
   } = props;
-  const baseClassName = 'w-full'
+
+  const baseClassName = 'w-full flex flex-cols';
+
+  const handleSelectChange = (value: string) => {
+    if (onChange) {
+      onChange(value);
+    }
+  };
+
   return (
-    <>
+    <div className={containerClassName}>
+      {label && <label className="custom-select-label">{label}</label>}
       <Select
-      className={`custom-select ${baseClassName} ${className} outline-none`}
+        className={` ${baseClassName} ${className}`}
         ref={ref}
-        placeholder={placeholder}
-        allowClear={allowClear}
-        style={{borderRadius:100}}
+        style={{ borderRadius: 100 }}
+        onChange={handleSelectChange}
         {...rest}
       >
-        <Select.Option value="sample">Sample</Select.Option>
+        {children} {/* Render children if options are not provided */}
       </Select>
-    </>
+    </div>
   );
 });
 

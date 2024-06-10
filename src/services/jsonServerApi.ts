@@ -32,7 +32,25 @@ export const jsonServerApi = createApi({
         },
       }),
     }),
+    getCurrencyList: builder.query({
+      query: (token) => ({
+        url: 'ewallet/rates',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
+    getCountryList: builder.query({
+      query: (token) => ({
+        url: 'data/countries',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery } = jsonServerApi;
+export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery,useGetCurrencyListQuery,useGetCountryListQuery } = jsonServerApi;
