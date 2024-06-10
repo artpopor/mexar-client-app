@@ -44,7 +44,7 @@ const PhoneInput = forwardRef<HTMLInputElement, Props>(
           ))}
         </Select>
         <Input
-          className="border-none h-12 rounded-r-xl text-lg rounded-l-none w-full "
+          className="border-none rounded-r-xl text-lg rounded-l-none w-full "
           value={value.phoneNumber}
           placeholder={props.placeholder}
           onChange={handlePhoneNumberChange}

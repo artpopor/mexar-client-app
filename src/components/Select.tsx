@@ -26,7 +26,7 @@ const CustomSelect = forwardRef<any, Props>((props, ref) => {
     ...rest
   } = props;
 
-  const baseClassName = 'w-full flex flex-cols';
+  const baseClassName = 'w-full flex flex-cols ';
 
   const handleSelectChange = (value: string) => {
     if (onChange) {
