@@ -86,3 +86,6 @@
         border-bottom-left-radius: 12px !important;
 
       }
+      .ant-btn {
+        height: 48px !important;
+      }

@@ -37,7 +37,9 @@ const Remmittance = () => {
   // useEffect(() => {
   //   console.log("data :>> ", FromSellRate,ToSellRate,parseFloat(ToSellRate)/parseFloat(FromSellRate));
   // }, [FromSellRate,ToSellRate]);
-
+  useEffect(()=>{
+    if(error){navigate('/login')}
+  },[error])
   const { Search } = Input;
   const sortedData = CountryListData?.data?.data
     ?.slice()
@@ -50,12 +52,18 @@ const Remmittance = () => {
   };
   const handleStep2 = (formData: any) => {
     formData.sellRate = ToSellRate;
-    formData.toAmount = ToAmount
+    formData.toAmount = ToAmount;
     console.log("formData :>> ", formData);
+    setStep("Step2");
   };
-  useEffect(()=>{
-    setToAmount((parseFloat(FromAmount) *(parseFloat(ToSellRate || "0") / parseFloat(FromSellRate)) || '-').toString())
-  },[FromAmount,FromSellRate,ToSellRate])
+  useEffect(() => {
+    setToAmount(
+      (
+        parseFloat(FromAmount) *
+          (parseFloat(ToSellRate || "0") / parseFloat(FromSellRate)) || "-"
+      ).toString()
+    );
+  }, [FromAmount, FromSellRate, ToSellRate]);
   return (
     <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
       {/* Main Content here */}
@@ -138,43 +146,45 @@ const Remmittance = () => {
               <p className="font-thin text-gray-500">Sell rate</p>
               <input
                 {...register("sellRate")} // Register the input with react-hook-form
-                className="border h-12 rounded-xl px-3 outline-blue-300 outline-1"
-                placeholder={"amount"}
+                className="border h-12 rounded-xl px-3 outline-blue-300 outline-1 text-center"
+                placeholder={"rate"}
                 value={ToSellRate || ""}
-                onChange={(e: any) =>
-                  setToSellRate(e.target.value)
-                }
+                onChange={(e: any) => setToSellRate(e.target.value)}
               />
 
               <p className="font-thin text-gray-500">To Currency</p>
               <div className="w-full">
                 <div className="flex flex-cols w-full">
-                <Controller
-    control={control} // Pass the control prop from useForm() hook
-    name="toCurrency" // Specify the name for the field
-    render={({ field }) => (
-      <Select
-        className="select-currency w-[30%] h-12 !rounded-r-none"
-        onChange={(e) => {
-          field.onChange(e); // Update field value on change
-          const currencySellRate = RateData?.data?.data?.filter(
-            (item:any) => item?.currency?.code === e
-          );
-          setToSellRate(currencySellRate[0]?.public_sell);
-        }}
-        value={field.value} // Set the value of the select field
-      >
-        {data?.data.map((item:any) => (
-          <Select.Option key={item?.code} value={item?.code}>
-            <div className="flex flex-cols gap-2 justify-center content-center self-center">
-              <p>{item.code}</p>
-              <img className="rounded-md w-5 h-5 self-center" src={item.flag} />
-            </div>
-          </Select.Option>
-        ))}
-      </Select>
-    )}
-  />
+                  <Controller
+                    defaultValue={'THB'}
+                    control={control} // Pass the control prop from useForm() hook
+                    name="toCurrency" // Specify the name for the field
+                    render={({ field }) => (
+                      <Select
+                        className="select-currency w-[30%] h-12 !rounded-r-none"
+                        onChange={(e) => {
+                          field.onChange(e); // Update field value on change
+                          const currencySellRate = RateData?.data?.data?.filter(
+                            (item: any) => item?.currency?.code === e
+                          );
+                          setToSellRate(currencySellRate[0]?.public_sell);
+                        }}
+                        value={field.value} // Set the value of the select field
+                      >
+                        {data?.data.map((item: any) => (
+                          <Select.Option key={item?.code} value={item?.code}>
+                            <div className="flex flex-cols gap-2 justify-center content-center self-center">
+                              <p>{item.code}</p>
+                              <img
+                                className="rounded-md w-5 h-5 self-center"
+                                src={item.flag}
+                              />
+                            </div>
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    )}
+                  />
                   <input
                     className="w-full rounded-l-none rounded-r-xl border pl-2 outline-none"
                     value={ToAmount}

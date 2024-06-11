@@ -62,6 +62,10 @@ const HomePage = () => {
     }
     checkIsAuthen()
   },[])
+  useEffect(()=>{
+    console.log('error :>> ', error);
+    if(error){navigate('/login')}
+  },[error])
   return (
     <div className="flex flex-col justify-start  content-around h-full items-center drop-shadow-md">
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
