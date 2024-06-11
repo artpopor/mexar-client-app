@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import ErrorPage from "../pages/ErrorPage";
 import HomePage from "../pages/HomePage";
 import Remmittance from "../pages/Remmittance";
+import Setting from "../pages/SettingPage";
 export const router = createBrowserRouter([
     {
         path:'/',
@@ -22,4 +23,8 @@ export const router = createBrowserRouter([
         path:'/remittance',
         element:<Remmittance/>,
     },
+    {
+        path:'/setting',
+        element:<Setting/>
+    }
 ])

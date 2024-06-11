@@ -8,6 +8,7 @@
   color: rgba(0, 0, 0, 0.87);
   background-image: linear-gradient(to bottom right, #5BBAFF , #597CE0);
   height: 100vh;
+  min-width: 430px;
 }
 html, body, #root, .wrapper {
   height:100%;

@@ -146,8 +146,8 @@ const Remmittance = () => {
               <p className="font-thin text-gray-500">Sell rate</p>
               <input
                 {...register("sellRate")} // Register the input with react-hook-form
-                className="border h-12 rounded-xl px-3 outline-blue-300 outline-1 text-center"
-                placeholder={"rate"}
+                className="border h-12 rounded-xl px-3 outline-blue-300 outline-1 text-center "
+                placeholder={"Rate"}
                 value={ToSellRate || ""}
                 onChange={(e: any) => setToSellRate(e.target.value)}
               />
@@ -157,19 +157,21 @@ const Remmittance = () => {
                 <div className="flex flex-cols w-full">
                   <Controller
                     defaultValue={'THB'}
-                    control={control} // Pass the control prop from useForm() hook
-                    name="toCurrency" // Specify the name for the field
+                    control={control}
+                    name="toCurrency" 
                     render={({ field }) => (
                       <Select
-                        className="select-currency w-[30%] h-12 !rounded-r-none"
+                        className="select-currency h-12 !rounded-r-none w-[20%] min-w-24 !border-r-0"
                         onChange={(e) => {
-                          field.onChange(e); // Update field value on change
+                          console.log("valueChange");
+                          field.onChange(e);
                           const currencySellRate = RateData?.data?.data?.filter(
                             (item: any) => item?.currency?.code === e
                           );
                           setToSellRate(currencySellRate[0]?.public_sell);
                         }}
-                        value={field.value} // Set the value of the select field
+                        
+                        value={field.value}
                       >
                         {data?.data.map((item: any) => (
                           <Select.Option key={item?.code} value={item?.code}>

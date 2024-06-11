@@ -70,7 +70,7 @@ const HomePage = () => {
     <div className="flex flex-col justify-start  content-around h-full items-center drop-shadow-md">
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
         <div className="text-white text-3xl content-center ">
-          <GoGear />
+          <GoGear className="cursor-pointer" onClick={()=>navigate('/setting')} />
         </div>
         <ProfileSection />
       </div>
