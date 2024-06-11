@@ -17,7 +17,7 @@ const MenuBar = () => {
           <p>Home</p>
         </div>
 
-        <div className="flex flex-col items-center menu-item w-full rounded-xl py-3">
+        <div className="flex flex-col items-center menu-item w-full rounded-xl py-3 cursor-pointer" onClick={()=>navigate('/transaction')}>
           <PiListMagnifyingGlassLight className="text-4xl" />
           <p>Transaction</p>
         </div>

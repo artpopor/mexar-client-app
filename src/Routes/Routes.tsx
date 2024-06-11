@@ -5,6 +5,7 @@ import ErrorPage from "../pages/ErrorPage";
 import HomePage from "../pages/HomePage";
 import Remmittance from "../pages/Remmittance";
 import Setting from "../pages/SettingPage";
+import Transaction from "../pages/Transaction";
 export const router = createBrowserRouter([
     {
         path:'/',
@@ -26,5 +27,9 @@ export const router = createBrowserRouter([
     {
         path:'/setting',
         element:<Setting/>
+    },
+    {
+        path:'/transaction',
+        element:<Transaction/>
     }
 ])

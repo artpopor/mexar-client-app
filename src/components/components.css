@@ -78,12 +78,15 @@
       }
       .ant-select-selector {
         border-radius: 12px !important;
+        
       }
       .select-currency .ant-select-selector {
         border-top-right-radius:0  !important;
         border-bottom-right-radius: 0 !important;
         border-top-left-radius: 12px !important;
         border-bottom-left-radius: 12px !important;
+        border-right: none !important;
+
 
       }
       .ant-btn {
