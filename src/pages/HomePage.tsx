@@ -94,7 +94,7 @@ const HomePage = () => {
         </div>
         <div className="flex flex-cols justify-between text-gray-500">
           <p className="font-medium">Last Transaction</p>
-          <p className="font-medium">see all</p>
+          <p className="font-medium cursor-pointer" onClick={()=>navigate('/transaction')}>see all</p>
         </div>
         <hr className="w-full" />
         {/* Transaction List */}

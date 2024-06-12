@@ -8,6 +8,7 @@ import Setting from "../pages/SettingPage";
 import Transaction from "../pages/Transaction/Transaction";
 import TransactionDetail from "../pages/Transaction/TransactionDetail";
 import Profile from "../pages/Profile";
+import Rate from "../pages/Rate";
 
 export const router = createBrowserRouter([
   {
@@ -45,5 +46,11 @@ export const router = createBrowserRouter([
   {
     path:'/profile',
     element:<Profile/>
+  }
+  ,
+
+  {
+    path:'/rate',
+    element:<Rate/>
   }
 ]);

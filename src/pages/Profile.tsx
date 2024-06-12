@@ -6,6 +6,7 @@ import MenuBar from "../components/MenuBar";
 import { useParams } from "react-router-dom";
 import { Checkbox } from "antd";
 import { RiPencilFill } from "react-icons/ri";
+import { FaChevronDown } from "react-icons/fa";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const Profile = () => {
       <>
         <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
           <div
-            onClick={() => navigate("/transaction")}
+            onClick={() => navigate("/home")}
             className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
           >
             <IoChevronBack className="text-xl self-center" />
@@ -63,13 +64,24 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-row gap-2 justify-around w-full mb-4">
- <div className="text-white flex flex-col text-center">Outcome Total<p className="text-4xl font-thin">1000</p></div>
-        <div className="text-white text-center">Outcome Total<p className="text-4xl font-thin">THB</p></div>
+        <div className="flex flex-row  justify-around w-full mb-4">
+          <div className="text-white flex flex-col text-center font-extralight">
+            Outcome Total<p className="text-4xl font-thin">1000</p>
+            <div className="flex"><p className="self-end font-thin mr-1 ">December</p><FaChevronDown className="self-center text-xs"/></div>
+          </div>
+          <div className="text-white bg-white w-[1px] h-full"/>
+          <div className="text-white text-center font-extralight">
+            Outcome Total<p className="text-4xl font-thin">THB</p>
+          </div>
         </div>
-       
 
-        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none"></div>
+        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none">
+            <p className="text-gray-500 mb-4">Basic Infomations</p>
+            <div className="flex content-center gap-2 ">
+                <p className="text-gray-400 font-thin self-center">Birthday:</p>
+                <input className="rounded-xl shadow-md p-3 px-5 w-full" placeholder="birthday"/>
+            </div>
+        </div>
       </>
 
       <MenuBar />

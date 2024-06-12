@@ -22,7 +22,7 @@ const MenuBar = () => {
           <p>Transaction</p>
         </div>
 
-        <div className="flex flex-col items-center menu-item w-full rounded-xl py-3">
+        <div className="flex flex-col items-center menu-item w-full rounded-xl py-3 cursor-pointer"  onClick={()=>navigate('/rate')}>
           <VscGraphLine className="text-4xl" />
           <p>Rate</p>
         </div>
