@@ -1,38 +1,90 @@
-import React from "react";
-import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
-import type { UploadProps } from "antd";
-import { LuUpload } from "react-icons/lu";
+import React, { useState } from 'react';
+import { Upload, message, Progress } from 'antd';
+import { GetProp, UploadFile, UploadProps } from 'antd';
+import axios from 'axios';
+import { FaUpload } from "react-icons/fa";
 
 const { Dragger } = Upload;
 
-const uploadProps: UploadProps = {
-  name: "file",
-  multiple: true,
-  action: "https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload",
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
+interface UploadAreaProps {
+  token: string;
+  onUploadSuccess?: (response: any) => void; // Optional callback function
+}
+
+const UploadArea: React.FC<UploadAreaProps> = ({ token, onUploadSuccess }) => {
+  const [progress, setProgress] = useState(0);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const handleFileUpload = async (options: any) => {
+    const { onSuccess, onError, file, onProgress } = options;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+      onUploadProgress: (event: any) => {
+        const percent = Math.floor((event.loaded / event.total) * 100);
+        setProgress(percent);
+        onProgress({ percent }); // Update Ant Design's progress bar
+      },
+    };
+
+    const url = "https://dev.sundev.ovh/api/v1/ewallet/files";
+
+    try {
+      const response = await axios.post(url, formData, config);
+
+      if (response.status !== 201) {
+        throw new Error(`Upload failed with status ${response.status}`);
+      }
+
+      const data = await response
+
+      setProgress(0); // Reset progress after successful upload
+      setFileList([]); // Clear the file list (optional)
+
+      if (onUploadSuccess) {
+        onUploadSuccess(data); // Call the provided callback function with response data
+      } else {
+        message.success('File uploaded successfully!');
+      }
+
+      return { onSuccess: data };
+    } catch (error) {
+      console.error('Upload error:', error);
+      message.error('Upload failed. Please try again.');
+      onError(error); // Call Ant Design's error handler
     }
-    if (status === "done") {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === "error") {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log("Dropped files", e.dataTransfer.files);
-  },
+  };
+
+  const handleOnChange = ({ file, fileList, event }: any) => {
+    setFileList(fileList);
+  };
+
+  return (
+    <Dragger
+      multiple={false} // Allow only a single file
+      fileList={fileList}
+      onChange={handleOnChange}
+      customRequest={handleFileUpload}
+      accept=".png,.jpeg,.pdf,.docx"
+      className='text-gray-400 '
+    >
+        <FaUpload className='self-center w-full text-3xl my-4'/>
+      {fileList.length > 0 ? (
+        <p className="ant-upload-text">
+          Uploading: {fileList[0].name}
+        </p>
+      ) : (
+        <p className="text-lg">Click or drag file to this area to upload</p>
+      )}
+      <span className="ant-upload-hint">
+        Support for multiple files
+      </span>
+      {progress > 0 ? <Progress percent={progress} /> : null}
+    </Dragger>
+  );
 };
 
-const FileUpload: React.FC = () => (
-  <Dragger {...uploadProps}>
-    <div className="flex content-center justify-center min-h-[80px] ">
-      <LuUpload className="self-center text-[30px] text-gray-500" />
-    </div>
-    <p className="ant-upload-hint">Upload Transaction File</p>
-  </Dragger>
-);
-
-export default FileUpload;
+export default UploadArea;

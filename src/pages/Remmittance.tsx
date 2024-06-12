@@ -37,7 +37,7 @@ const Remmittance = () => {
   const Users = getUsersList?.data?.data
   const [selectedUser, setSelectedUser] = useState<any>()
   const [userOptions, setUserOptions] = useState([])
-
+  const [uploadedDatas, setUploadDatas] = useState<any>([])
   const handleCountrySearch = (value: any) => {
     const filteredOptions = CountryListSorted.filter((item: any) =>
       item.common_name.toUpperCase().startsWith(value.toUpperCase())
@@ -101,7 +101,11 @@ const Remmittance = () => {
     );
     setUserOptions(filteredOptions);
   };
-
+  const handleRemoveData = (index: number) => {
+    const newUploadedDatas = [...uploadedDatas];
+    newUploadedDatas.splice(index, 1); // Remove the element at the specified index
+    setUploadDatas(newUploadedDatas);
+  };
   const onUserSelect = (value: any) => {
     console.log(value);
     const selectedOption = Users?.find(
@@ -109,7 +113,12 @@ const Remmittance = () => {
     );
     selectedOption && setSelectedUser(selectedOption);
   };
+  { }
+  const handleUploadSuccess = (data: any) => {
 
+    setUploadDatas([...uploadedDatas, data?.data?.data])
+    console.log(data.data.data);
+  };
   return (
     <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
       {step == "step1" && (
@@ -235,35 +244,35 @@ const Remmittance = () => {
               <p className="font-thin text-gray-500">Select custormer</p>
               {/*  */}
               {selectedUser &&
-                <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2">
-                  <div className="flex flex-col">
-                    <IoMdClose className="text-right self-end cursor-pointer" onClick={() => setSelectedUser(null)} />
-                    <div className="flex flex-cols justify-start gap-4">
+                <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2 max-w-[430px]">
+                  <div className="flex flex-col relative h-full">
+                    <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => setSelectedUser(null)} />
+                    <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
 
                       <img src={selectedUser?.avatar_url} className="h-14 w-14 rounded-full" />
-                      <div className="flex flex-col">
-                        <p>{selectedUser?.username}</p>
-                        <p>{selectedUser?.email}</p>
+                      <div className="flex flex-col text-gray-500">
+                        <p className="text text-[#2d4da3]">{selectedUser?.username}</p>
+                        <p className="text-sm">{selectedUser?.email}</p>
                       </div>
-
+                      <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div>
                     </div>
                   </div>
                 </div>}
-              <AutoComplete
+              {!selectedUser && <AutoComplete
                 onSelect={onUserSelect}
                 onSearch={handleUserSearch}
                 placeholder="Username or email"
                 className="!w-full h-14"
               >
                 {userOptions.map((item: any) => (
-                  <Option key={item?.id} value={item?.id}>
+                  <Option key={item?.username} value={item?.id}>
                     <div className="flex gap-2">
                       <img src={item.avatar_url} className="w-6 h-6 rounded-full" />
                       <p>{item.username}</p>
                     </div>
                   </Option>
                 ))}
-              </AutoComplete>
+              </AutoComplete>}
               {/*  */}
               <div className="flex flex-cols gap-2 w-full">
                 <Checkbox />
@@ -279,14 +288,28 @@ const Remmittance = () => {
                 className="h-12 mb-3"
                 placeholder="Select Document Type"
               />
-              <UploadArea />
+              <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} />
+              <div className="flex gap-2">
+                {uploadedDatas.map((data: any, index: number) => {
+                  return (
+                    <div className="bg-white p-3 shadow-md w-[50%] relative">
+                      <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
+                        handleRemoveData(index)
+                      }} />
+
+                      <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
+                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
+                    </div>
+                  )
+                })}
+              </div>
             </div>
-            <Button
+            {/* <Button
               className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
               onClick={() => setStep("Step3")}
             >
               Next
-            </Button>
+            </Button> */}
           </div>
         </>
       )}

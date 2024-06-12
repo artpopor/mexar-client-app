@@ -77,9 +77,19 @@ export const jsonServerApi = createApi({
         },
       }),
     }),
+    uploadTransactionFile: builder.mutation({
+      query: ({token,file}) => ({
+        url: `ewallet/files`,
+        method: "POST",
+        body: file,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
 export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery,useGetCurrencyListQuery,useGetCountryListQuery,useGetRateQuery,useGetTransactionDetailQuery,
-  useGetUserListQuery
+  useGetUserListQuery,useUploadTransactionFileMutation
  } = jsonServerApi;
