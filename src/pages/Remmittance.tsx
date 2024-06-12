@@ -101,11 +101,13 @@ const Remmittance = () => {
     );
     setUserOptions(filteredOptions);
   };
+
   const handleRemoveData = (index: number) => {
     const newUploadedDatas = [...uploadedDatas];
     newUploadedDatas.splice(index, 1); // Remove the element at the specified index
     setUploadDatas(newUploadedDatas);
   };
+
   const onUserSelect = (value: any) => {
     console.log(value);
     const selectedOption = Users?.find(
@@ -113,7 +115,7 @@ const Remmittance = () => {
     );
     selectedOption && setSelectedUser(selectedOption);
   };
-  { }
+  
   const handleUploadSuccess = (data: any) => {
 
     setUploadDatas([...uploadedDatas, data?.data?.data])
@@ -306,9 +308,89 @@ const Remmittance = () => {
             </div>
             <Button
               className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
-              onClick={() => setStep("Step3")}
+              onClick={() => setStep("step3")}
             >
               Next
+            </Button>
+          </div>
+        </>
+      )}
+       {step == "step3" && (
+        <>
+          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
+            <div
+              onClick={() => setStep("step2")}
+              className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
+            >
+              <IoChevronBack className="text-xl self-center" />
+              <p className="self-center">Back</p>
+            </div>
+            <ProfileSection />
+          </div>
+          <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
+            03 - Review Infomation
+          </p>
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
+            <div className="flex flex-col gap-2">
+              <p className="font-thin text-gray-500">Select custormer</p>
+              {selectedUser &&
+                <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2 max-w-[430px]">
+                  <div className="flex flex-col relative h-full">
+                    <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
+
+                      <img src={selectedUser?.avatar_url} className="h-14 w-14 rounded-full" />
+                      <div className="flex flex-col text-gray-500">
+                        <p className="text text-[#2d4da3]">{selectedUser?.username}</p>
+                        <p className="text-sm">{selectedUser?.email}</p>
+                      </div>
+                      <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div>
+                    </div>
+                  </div>
+                </div>}              <div className="flex flex-cols gap-2 w-full">
+                <Checkbox disabled defaultChecked={true} />
+                <p className="font-thin text-gray-500">
+                  Select and Recieve account
+                </p>
+              </div>
+              <div className="mt-2">
+                <div className="flex flex-cols justify-between">
+                  <p className="font-thin text-gray-500">
+                    Purpose of Transaction
+                  </p>
+                  <p className="font-normal text-gray-500">Family</p>
+                </div>
+
+                <hr className="m-1 w-full" />
+              </div>
+              <div className="">
+                <div className="flex flex-cols justify-between">
+                  <p className="font-thin text-gray-500">
+                    Purpose of Transaction
+                  </p>
+                  <p className="font-normal text-gray-500">Family</p>
+                </div>
+
+                <hr className="m-1 w-full" />
+              </div>
+              <p className=" text-gray-500 font-medium">Transaction file</p>
+              {uploadedDatas.map((data: any, index: number) => {
+                  return (
+                    <div className="bg-white p-3 shadow-md w-full relative">
+                      <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
+                        handleRemoveData(index)
+                      }} />
+
+                      <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
+                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
+                    </div>
+                  )
+                })}
+            </div>
+
+            <Button
+              className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
+            >
+              Confirm
             </Button>
           </div>
         </>
