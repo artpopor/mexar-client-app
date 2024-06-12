@@ -7,6 +7,7 @@ import Remmittance from "../pages/Remmittance";
 import Setting from "../pages/SettingPage";
 import Transaction from "../pages/Transaction/Transaction";
 import TransactionDetail from "../pages/Transaction/TransactionDetail";
+import Profile from "../pages/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -40,4 +41,9 @@ export const router = createBrowserRouter([
     element: <TransactionDetail />,
   
   },
+
+  {
+    path:'/profile',
+    element:<Profile/>
+  }
 ]);

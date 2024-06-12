@@ -61,7 +61,7 @@ const TransactionDetail = () => {
       <>
         <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
           <div
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/transaction")}
             className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
           >
             <IoChevronBack className="text-xl self-center" />

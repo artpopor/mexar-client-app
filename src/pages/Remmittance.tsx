@@ -177,6 +177,7 @@ const Remmittance = () => {
           </div>
         </>
       )}
+      
 
       <MenuBar />
     </div>
