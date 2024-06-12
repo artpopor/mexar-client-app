@@ -30,7 +30,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ token, onUploadSuccess }) => {
       },
     };
 
-    const url = "https://dev.sundev.ovh/api/v1/ewallet/files";
+    const url = `${import.meta.env.VITE_API_URL}ewallet/files`;
 
     try {
       const response = await axios.post(url, formData, config);

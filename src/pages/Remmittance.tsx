@@ -120,10 +120,10 @@ const Remmittance = () => {
     console.log(data.data.data);
   };
   return (
-    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
+    <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
       {step == "step1" && (
         <>
-          <div className="flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
+          <div className="flex flex-cols content-center text-center justify-between w-full  px-4 mt-7">
             <div
               onClick={() => navigate("/home")}
               className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -139,7 +139,7 @@ const Remmittance = () => {
           >
             01 - Enter order Detail
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl  h-full flex flex-col gap-5 justify-between rounded-b-none">
             <div className="flex flex-col justify-between content-between h-full">
               {/*CONTENT START HERE */}
               <div className="flex flex-col gap-2">
@@ -161,7 +161,7 @@ const Remmittance = () => {
                 </AutoComplete>
                 <p className="font-thin text-gray-500">From Currency</p>
                 <div className="flex">
-                  <Select className="select-currency w-[30%] h-14 self-center" placeholder='Currency' onSelect={handleSelectFromCurrency}>
+                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' onSelect={handleSelectFromCurrency}>
                     {CurrencyListArray?.map((item: any) => (
                       <Select.Option key={item?.currency.code} value={item.currency_id}>
                         <div className="flex flex-cols gap-2 justify-center content-center self-center">
@@ -192,7 +192,7 @@ const Remmittance = () => {
                 />
                 <p className="font-thin text-gray-500">To Currency</p>
                 <div className="flex">
-                  <Select className="select-currency w-[30%] h-14 self-center" placeholder='Currency' onSelect={handleSelectToCurrency}>
+                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' onSelect={handleSelectToCurrency}>
                     {CurrencyListArray?.map((item: any) => (
                       <Select.Option key={item?.currency.code} value={item.currency_id}>
                         <div className="flex flex-cols gap-2 justify-center content-center self-center">
@@ -289,10 +289,10 @@ const Remmittance = () => {
                 placeholder="Select Document Type"
               />
               <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} />
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {uploadedDatas.map((data: any, index: number) => {
                   return (
-                    <div className="bg-white p-3 shadow-md w-[50%] relative">
+                    <div className="bg-white p-3 shadow-md w-full relative">
                       <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
                         handleRemoveData(index)
                       }} />
@@ -304,12 +304,12 @@ const Remmittance = () => {
                 })}
               </div>
             </div>
-            {/* <Button
+            <Button
               className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
               onClick={() => setStep("Step3")}
             >
               Next
-            </Button> */}
+            </Button>
           </div>
         </>
       )}
