@@ -30,7 +30,7 @@ const Rate = () => {
     <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
       {/* Main Content here */}
       <>
-        <div className=" flex flex-cols content-center text-center justify-between w-full px-s4 mt-7">
+      <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
           <div
             onClick={() => navigate("/home")}
             className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -61,7 +61,7 @@ const Rate = () => {
             ></input>
           </div>
           <div className="w-full">
-            <div className="bg-white w-24 h-24 p-2 shadow-lg rounded-xl flex flex-col justify-between">
+            <div className="bg-white w-[100px] h-[100px] p-2 shadow-lg rounded-xl flex flex-col justify-between">
               <p>US</p>
               <div>
                 <p className="text-xs text-gray-400">1 THB</p>

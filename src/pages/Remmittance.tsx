@@ -1,101 +1,118 @@
 import { useNavigate } from "react-router-dom";
-import { GoGear } from "react-icons/go";
 import { useState, useEffect } from "react";
-import Button from "../components/Button";
-import { FaChevronRight } from "react-icons/fa";
 import MenuBar from "../components/MenuBar";
 import { IoChevronBack } from "react-icons/io5";
 import ProfileSection from "./ProfileSection";
-import CurSelectAndInput from "../components/CurSelectAndInput";
-// import Input from "../components/Input";
 import "../components/components.css";
-import { FormProvider } from "react-hook-form";
-import UploadArea from "../components/UploadArea";
-import { Input, Select, Space, Checkbox } from "antd";
-import CurrencyWithAmount from "../components/CurrencyWithAmount";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import React from "react";
+import type { DefaultOptionType } from "antd/es/select";
+import Button from "../components/Button";
 import {
-  useGetRateQuery,
-  useGetCurrencyListQuery,
   useGetCountryListQuery,
+  useGetCurrencyListQuery,
+  useGetUserListQuery,
 } from "../services/jsonServerApi";
 import CustomSelect from "../components/CustomSelect";
-import CustomInput from "../components/CustomInput";
+import { AutoComplete, Input, Select, Upload, Checkbox } from "antd";
+import UploadArea from "../components/UploadArea";
+import { IoMdClose } from "react-icons/io";
+
 const Remmittance = () => {
   const navigate = useNavigate();
-  const [fromCurrency, setFromCurrency] = useState("");
-  // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
-  const [step, setStep] = useState("Step1");
   const access_token = localStorage.getItem("access_token");
-  const { data, error, isLoading } = useGetCurrencyListQuery(access_token);
+  const [step, setStep] = useState<string>("step1");
+  const { Option } = AutoComplete;
+  const [options, setOptions] = useState([]);
   const CountryListData = useGetCountryListQuery(access_token);
-  const [FromSellRate, setFromSellRate] = useState("");
-  const [ToSellRate, setToSellRate] = useState('');
-  const [sellRate,setSellRate] = useState('')
-  const [FromAmount, setFromAmount] = useState("");
-  const [FromCode, setFromCode] = useState("");
-  const [ToCode, setToCode] = useState("");
-  const [ToAmount, setToAmount] = useState("");
-  const RateData = useGetRateQuery(access_token);
+  const [selectedCountry, setSelectedCountry] = useState({});
+  const CountryListSorted = CountryListData?.data?.data?.slice().sort((a: any, b: any) => a.common_name.localeCompare(b.common_name));
+  const CurrencyListData = useGetCurrencyListQuery(access_token);
+  const CurrencyListArray = CurrencyListData?.data?.data;
+  const [selectFromCurrency, setSelectFromCurrency] = useState<any>()
+  const [fromAmount, setFromAmount] = useState<any>()
+  const [toAmount, setToAmount] = useState<any>()
+  const [selectToCurrency, setSelectToCurrency] = useState<any>()
+  const [rate, setRate] = useState<number>()
+  const getUsersList = useGetUserListQuery(access_token)
+  const Users = getUsersList?.data?.data
+  const [selectedUser, setSelectedUser] = useState<any>()
+  const [userOptions, setUserOptions] = useState([])
 
-  useEffect(() => {
-    if (error) {
-      navigate("/login");
-    }
-  }, [error]);
-  const sortedData = CountryListData?.data?.data
-    ?.slice()
-    .sort((a: any, b: any) => a.common_name.localeCompare(b.common_name));
-
-
-  const handleStep2 = (formData: any) => {
-    console.log("formData :>> ", formData);
-  };
-  const methods = useForm();
-
-  const handleFormSubmit = (data: any) => {
-    console.log(data);
+  const handleCountrySearch = (value: any) => {
+    const filteredOptions = CountryListSorted.filter((item: any) =>
+      item.common_name.toUpperCase().startsWith(value.toUpperCase())
+    );
+    setOptions(filteredOptions);
   };
 
-
-  const handleChangeFromCurrency = (value:{code:string,amount:string}) => {
-    setFromAmount(value.amount)
-    setFromCode(value.code)
-    const currencySellRate = RateData?.data?.data?.filter(
-      (item: any) => item?.currency?.code === value?.code
+  const onCountrySelect = (value: any) => {
+    const selectedOption = CountryListSorted.find(
+      (item: any) => item.common_name === value
     );
-    setFromSellRate(currencySellRate[0]?.public_sell)
-    setSellRate(`${parseFloat(ToSellRate)/parseFloat(currencySellRate[0]?.public_sell)}`);
+    selectedOption && setSelectedCountry(selectedOption);
+  };
 
-    const calToAmount = parseFloat(value?.amount)*(parseFloat(ToSellRate)/parseFloat(currencySellRate[0]?.public_sell))
-    setToAmount(calToAmount.toString())
-    console.log('calToAmount',calToAmount,currencySellRate[0]?.public_sell);
+  const handleSelectFromCurrency = (currency_id: string) => {
+    const searchSelectFromCurrency = CurrencyListArray.find((item: any) => item.currency_id === currency_id)
+    searchSelectFromCurrency && setSelectFromCurrency(searchSelectFromCurrency)
+    const public_sell = selectToCurrency?.public_sell
+    const public_buy = searchSelectFromCurrency?.public_buy
+    const calRate = public_sell * public_buy
+    selectToCurrency && setRate(calRate)
   }
 
+  const handleSelectToCurrency = (currency_id: string) => {
+    const searchSelecToCurrency = CurrencyListArray.find((item: any) => item.currency_id === currency_id)
+    searchSelecToCurrency && setSelectToCurrency(searchSelecToCurrency)
+    const public_sell = searchSelecToCurrency.public_sell
+    const public_buy = selectFromCurrency?.public_buy
+    const calRate = public_sell / public_buy
+    selectFromCurrency && setRate(calRate)
+    fromAmount && setToAmount(fromAmount / calRate)
+  }
 
-  const handleChangeToCurrency = (value:{code:string,amount:string}) => {
-    
-    setToAmount(value.amount)
-    setToCode(value.code)
-    const currencySellRate = RateData?.data?.data?.filter(
-      (item: any) => item?.currency?.code === value?.code
+  const handleChangeFromAmount = (amount: any) => {
+    amount = amount.target.value
+    setFromAmount(amount)
+    rate && amount && setToAmount(rate * amount)
+  }
+
+  const handleChangeToAmount = (amount: any) => {
+    amount = amount.target.value
+    setToAmount(amount)
+    rate && amount && setFromAmount(amount / rate)
+
+
+  }
+
+  const handleChangeRate = (value: any) => {
+    const rateValue = value.target.value
+    setRate(rateValue)
+    setToAmount(rateValue * fromAmount)
+  }
+
+  const handleNextStep = (step: string) => {
+    setStep(step)
+  }
+
+  const handleUserSearch = (value: any) => {
+    const filteredOptions = Users?.filter((item: any) =>
+      item.username.toUpperCase().startsWith(value.toUpperCase()) || item.email.toUpperCase().startsWith(value.toUpperCase())
     );
-    setToSellRate(currencySellRate[0]?.public_sell)
-    setSellRate(`${parseFloat(currencySellRate[0]?.public_sell)/parseFloat(FromSellRate)}`);
-    const calFromAmount = parseFloat(value?.amount)/(parseFloat(currencySellRate[0]?.public_sell)/parseFloat(FromSellRate))
-    setFromAmount(calFromAmount.toString())
-  }
-  const handleChangeSellRate = (value:string) => {
-    setSellRate(value)
-    const calToAmount = (parseFloat(FromAmount)*parseFloat(value)).toString()
-    setToAmount(calToAmount)
-  }
+    setUserOptions(filteredOptions);
+  };
 
+  const onUserSelect = (value: any) => {
+    console.log(value);
+    const selectedOption = Users?.find(
+      (item: any) => item.id == value
+    );
+    selectedOption && setSelectedUser(selectedOption);
+  };
 
   return (
     <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
-      {/* Main Content here */}
-      {step == "Step1" && (
+      {step == "step1" && (
         <>
           <div className="flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
             <div
@@ -107,78 +124,172 @@ const Remmittance = () => {
             </div>
             <ProfileSection />
           </div>
-          <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]" aria-placeholder="hello">
+          <p
+            className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]"
+            aria-placeholder="hello"
+          >
             01 - Enter order Detail
           </p>
           <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
-            <FormProvider {...methods}>
-              <form onSubmit={methods.handleSubmit(handleFormSubmit)}>
-                <div className="flex flex-col justify-between content-between h-full">
-                  {/*CONTENT START HERE */}
-                  <div className="flex flex-col gap-2">
-                    <CustomSelect
-                      name="customselect"
-                      label="Select Country"
-                      onChange={(value) => console.log("value", value)}
-                      placeholder="select target country"
-                    >
-                      {sortedData?.map((country: any) => (
-                        <div
-                          key={country.common_name}
-                          className="w-full flex flex-rows"
-                        >
+            <div className="flex flex-col justify-between content-between h-full">
+              {/*CONTENT START HERE */}
+              <div className="flex flex-col gap-2">
+                <p className="font-thin text-gray-500">Destination Country</p>
+                <AutoComplete
+                  onSelect={onCountrySelect}
+                  onSearch={handleCountrySearch}
+                  placeholder="Search countries"
+                  className="!w-full h-14"
+                >
+                  {options.map((item: any) => (
+                    <Option key={item.id} value={item?.common_name}>
+                      <div className="flex gap-2">
+                        <img src={item.flag} className="w-6 h-6 rounded-full" />
+                        <p>{item.common_name}</p>
+                      </div>
+                    </Option>
+                  ))}
+                </AutoComplete>
+                <p className="font-thin text-gray-500">From Currency</p>
+                <div className="flex">
+                  <Select className="select-currency w-[30%] h-14 self-center" placeholder='Currency' onSelect={handleSelectFromCurrency}>
+                    {CurrencyListArray?.map((item: any) => (
+                      <Select.Option key={item?.currency.code} value={item.currency_id}>
+                        <div className="flex flex-cols gap-2 justify-center content-center self-center">
+                          <p>{item.currency.code}</p>
                           <img
                             className="rounded-md w-5 h-5 self-center"
-                            src={country.flag}
-                            alt={country.common_name}
+                            src={item.currency.flag}
                           />
-                          <p>{country.common_name}</p>
                         </div>
-                      ))}
-                    </CustomSelect>
-                    <CurSelectAndInput
-                      name="fromCurrency"
-                      label="From Currency"
-                      onChange={(value) => handleChangeFromCurrency(value)}
-                      placeholder="amount"
-                      countries={data?.data}
-                      defaultValue={{amount:FromAmount ,code:FromCode}}
-                      value={{amount:ToAmount,code:ToCode}}
-                    />
-                    <CustomInput
-                      label="Sell rate"
-                      name="rate"
-                      placeholder="rate"
-                      value={sellRate}
-                      type="text"
-                      onChange={(value)=>handleChangeSellRate(value)}
-                    />
-                    <CurSelectAndInput
-                      name="toCurrency"
-                      label="To Currency"
-                      onChange={(value) => {handleChangeToCurrency(value)}}
-                      placeholder="amount"
-                      countries={data?.data}
-                      defaultValue={{amount:ToAmount,code:ToCode}}
-                      value={{amount:ToAmount,code:ToCode}}
-                    />
-
-                  </div>
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <input
+                    className="w-full border rounded-xl rounded-l-none p-4 h-14"
+                    placeholder="From amount"
+                    type="number"
+                    value={fromAmount}
+                    onChange={handleChangeFromAmount}
+                  />
                 </div>
-
-                <Button
-                  className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
-                  type="submit"
-                >
-                  Next
-                </Button>
-              </form>
-            </FormProvider>
+                <p className="font-thin text-gray-500">Rate</p>
+                <input
+                  className="w-full border rounded-xl p-4 h-14 text-center"
+                  placeholder="Enter rate"
+                  type="number"
+                  onChange={handleChangeRate}
+                  value={rate}
+                />
+                <p className="font-thin text-gray-500">To Currency</p>
+                <div className="flex">
+                  <Select className="select-currency w-[30%] h-14 self-center" placeholder='Currency' onSelect={handleSelectToCurrency}>
+                    {CurrencyListArray?.map((item: any) => (
+                      <Select.Option key={item?.currency.code} value={item.currency_id}>
+                        <div className="flex flex-cols gap-2 justify-center content-center self-center">
+                          <p>{item.currency.code}</p>
+                          <img
+                            className="rounded-md w-5 h-5 self-center"
+                            src={item.currency.flag}
+                          />
+                        </div>
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <input
+                    className="w-full border rounded-xl rounded-l-none p-4 h-14"
+                    placeholder="To amount"
+                    type="number"
+                    value={toAmount}
+                    onChange={handleChangeToAmount}
+                  />
+                </div>
+              </div>
+            </div>
+            <Button
+              className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
+              onClick={() => handleNextStep('step2')}
+            >
+              Next
+            </Button>
           </div>
         </>
       )}
-      
+      {step == "step2" && (
+        <>
+          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
+            <div
+              onClick={() => setStep("step1")}
+              className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
+            >
+              <IoChevronBack className="text-xl self-center" />
+              <p className="self-center">Back</p>
+            </div>
+            <ProfileSection />
+          </div>
+          <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
+            02 - Customer Infomation
+          </p>
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
+            <div className="flex flex-col gap-3">
+              <p className="font-thin text-gray-500">Select custormer</p>
+              {/*  */}
+              {selectedUser &&
+                <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2">
+                  <div className="flex flex-col">
+                    <IoMdClose className="text-right self-end cursor-pointer" onClick={() => setSelectedUser(null)} />
+                    <div className="flex flex-cols justify-start gap-4">
 
+                      <img src={selectedUser?.avatar_url} className="h-14 w-14 rounded-full" />
+                      <div className="flex flex-col">
+                        <p>{selectedUser?.username}</p>
+                        <p>{selectedUser?.email}</p>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>}
+              <AutoComplete
+                onSelect={onUserSelect}
+                onSearch={handleUserSearch}
+                placeholder="Username or email"
+                className="!w-full h-14"
+              >
+                {userOptions.map((item: any) => (
+                  <Option key={item?.id} value={item?.id}>
+                    <div className="flex gap-2">
+                      <img src={item.avatar_url} className="w-6 h-6 rounded-full" />
+                      <p>{item.username}</p>
+                    </div>
+                  </Option>
+                ))}
+              </AutoComplete>
+              {/*  */}
+              <div className="flex flex-cols gap-2 w-full">
+                <Checkbox />
+                <p className="font-thin text-gray-500 text-sm">
+                  Select and Recieve account
+                </p>
+              </div>
+              <p className="font-thin text-gray-500">Transaciton Purpose</p>
+              <Select className="h-12" placeholder="Select Purpose" />
+
+              <p className="font-thin text-gray-500">Document Type</p>
+              <Select
+                className="h-12 mb-3"
+                placeholder="Select Document Type"
+              />
+              <UploadArea />
+            </div>
+            <Button
+              className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
+              onClick={() => setStep("Step3")}
+            >
+              Next
+            </Button>
+          </div>
+        </>
+      )}
       <MenuBar />
     </div>
   );
