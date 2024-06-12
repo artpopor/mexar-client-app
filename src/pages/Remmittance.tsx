@@ -84,9 +84,11 @@ const Remmittance = () => {
     setSellRate(`${parseFloat(currencySellRate[0]?.public_sell)/parseFloat(FromSellRate)}`);
     const calFromAmount = parseFloat(value?.amount)/(parseFloat(currencySellRate[0]?.public_sell)/parseFloat(FromSellRate))
     setFromAmount(calFromAmount.toString())
-
-
-
+  }
+  const handleChangeSellRate = (value:string) => {
+    setSellRate(value)
+    const calToAmount = (parseFloat(FromAmount)*parseFloat(value)).toString()
+    setToAmount(calToAmount)
   }
 
 
@@ -95,7 +97,7 @@ const Remmittance = () => {
       {/* Main Content here */}
       {step == "Step1" && (
         <>
-          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
+          <div className="flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
             <div
               onClick={() => navigate("/home")}
               className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -105,7 +107,7 @@ const Remmittance = () => {
             </div>
             <ProfileSection />
           </div>
-          <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
+          <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]" aria-placeholder="hello">
             01 - Enter order Detail
           </p>
           <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
@@ -149,7 +151,7 @@ const Remmittance = () => {
                       placeholder="rate"
                       value={sellRate}
                       type="text"
-                      onChange={(value)=>setSellRate(value)}
+                      onChange={(value)=>handleChangeSellRate(value)}
                     />
                     <CurSelectAndInput
                       name="toCurrency"

@@ -64,7 +64,7 @@ const CurSelectAndInput: React.FC<InputProps> = ({
   // }, [register, name, required, value]);
 
   const selectClassName =
-    "select-currency w-full flex flex-cols h-12 self-center !w-[30%] ";
+    "select-currency w-full flex flex-cols h-12 self-center !w-[35%] ";
   const inputClassName =
     "border h-12 rounded-r-xl rounded-l-none self-center !w-full p-2";
   return (

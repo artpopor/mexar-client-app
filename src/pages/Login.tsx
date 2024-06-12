@@ -65,6 +65,7 @@ const Login = () => {
     }
   };
 
+
   return (
     <>
       {showAlert && (
@@ -133,6 +134,7 @@ const Login = () => {
                 type="submit"
                 className="w-full"
                 onClick={handleSubmit(handleSendOtp)}
+                
               >
                 SEND OTP
               </Button>
