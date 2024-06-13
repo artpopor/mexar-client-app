@@ -22,7 +22,7 @@ type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 const Remmittance = () => {
   const navigate = useNavigate();
-  const [api, contextHolder] = notification.useNotification();
+    const [api, contextHolder] = notification.useNotification();
 
   const access_token = localStorage.getItem("access_token");
   const [step, setStep] = useState<string>("step1");
@@ -31,7 +31,7 @@ const Remmittance = () => {
   const CountryListData = useGetCountryListQuery(access_token);
   const getUserInfo = useGetUserInfoQuery(access_token)
   const userInfo = getUserInfo?.data?.data
-  const [selectedCountry, setSelectedCountry] = useState<any>({});
+  const [selectedCountry, setSelectedCountry] = useState<any>();
   const CountryListSorted = CountryListData?.data?.data?.slice().sort((a: any, b: any) => a.common_name.localeCompare(b.common_name));
   const CurrencyListData = useGetCurrencyListQuery(access_token);
   const CurrencyListArray = CurrencyListData?.data?.data;
@@ -53,12 +53,25 @@ const Remmittance = () => {
   const [alertMessage, setAlertMessage] = useState<string>('')
   const [createRemittance] = useCreateRemittanceMutation();
   const [selectAndRecvAccCheck,setSelectAndRecvAccCheck] = useState(false)
-
-  
+  const [transactionPurpose,setTransactionPurpose] = useState<string>('')
+  const [documentType,setDocumentType] = useState<string>('')
+  const documentTypeArray: { value: string; label: string }[] = [
+    { value: 'bank-statements', label: 'Bank Statements' },
+    { value: 'pay-slips', label: 'Pay Slips' },
+    { value: 'tax-documents', label: 'Tax Documents' },
+    { value: 'property-sale-documents', label: 'Property Sale Documents' },
+    { value: 'investment-income-proof', label: 'Investment Income Proof' },
+    { value: 'inheritance-documents', label: 'Inheritance Documents' },
+    { value: 'business-transaction-documents', label: 'Business Transaction Documents' },
+    { value: 'loan-agreements-repayment-proof', label: 'Loan Agreements and Repayment Proof' },
+    { value: 'bank-deposit-certificates',label:  'Bank Deposit Certificates' },
+    { value: 'identity-address-proof', label: 'Identity and Address Proof' },
+    { value: 'other-documents', label: 'Other Special Documents' },
+  ];
   const summaryList = [
     {
       title: 'Purpose of transaction',
-      value: <p className="font-normal text-gray-500">Family</p>
+      value: <p className="font-normal text-gray-500">{transactionPurpose}</p>
     },
     {
       title: 'Public Buy',
@@ -82,13 +95,16 @@ const Remmittance = () => {
     }
   ]
 
-  const openNotificationWithIcon = (type:NotificationType,message:string) => {
-    notification[type]({
-      message: 'Notification',
-      description: message,
-      duration:2
-    });
-  };
+  
+  const purpose: { value: string; label: string }[]  = [
+    { value: 'family-support', label: 'Family Support' },
+    { value: 'education-expenses', label: 'Educational Expenses' },
+    { value: 'medical-expenses', label: 'Medical Expenses' },
+    { value: 'investment-savings', label: 'Investment and Savings' },
+    { value: 'social-cultural', label: 'Social and Cultural Obligations' },
+    { value: 'debt-repayment', label: 'Debt Repayment' },
+    { value: 'charity', label: 'Charitable Donations' },
+  ];
 
   const handleCountrySearch = (value: any) => {
     const filteredOptions = CountryListSorted.filter((item: any) =>
@@ -144,11 +160,17 @@ const Remmittance = () => {
     setRate(rateValue)
     setToAmount(rateValue * fromAmount)
   }
-
+  const openNotificationWithIcon = (type: NotificationType,text:string) => {
+    notification[type]({
+      message: 'Notification',
+      description: text
+    });
+  };
+  
   const handleNextStep = (step: string) => {
     switch (step) {
       case 'step2':
-        if (!toAmount || !fromAmount || !selectedCountry) {
+        if (!toAmount || !fromAmount || !selectedCountry || !selectToCurrency || !selectFromCurrency) {
           openNotificationWithIcon('warning',"Please fill the data")
         } else {
           setStep(step)
@@ -218,15 +240,17 @@ const Remmittance = () => {
   }
   console.log("prepareData",prepareData);
   const res = await createRemittance({data:prepareData,token:access_token})
-  console.log('res :>> ', res);
-  res.data && openNotificationWithIcon('success',"create remittance done")
+  res.data && openNotificationWithIcon('success',"create remittance done!") || openNotificationWithIcon('error',"something wrong!")
+
   }
 
 
 
   return (
     <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
-  
+      {showModal && <Modal width={'80vw'} footer={null} open={showModal} onClose={() => setShowModal(!showModal)} closable onCancel={() => setShowModal(!showModal)}>
+        <img src={modalImgUrl} />
+      </Modal>}
       {showAlert && (
         <div className="m-5 absolute top-3">
           <Alert
@@ -399,12 +423,14 @@ const Remmittance = () => {
                 </p>
               </div>
               <p className="font-thin text-gray-500">Transaciton Purpose</p>
-              <Select className="h-12" placeholder="Select Purpose" />
+              <Select className="h-12" placeholder="Select Purpose" options={purpose} onChange={(value)=>setTransactionPurpose(value)}/>
 
               <p className="font-thin text-gray-500">Document Type</p>
               <Select
                 className="h-12 mb-3"
                 placeholder="Select Document Type"
+                options={documentTypeArray}
+                onChange={(value)=>setDocumentType(value)}
               />
               <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} />
               <div className="grid grid-cols-2 gap-2">

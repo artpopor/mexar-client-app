@@ -45,9 +45,9 @@ const Profile = () => {
             <p className="self-center">Back</p>
           </div>
         </div>
-        <div className="text-white mb-7 text-start w-full mt-2 px-4 text-2xl md:w-[80vw] flex flex-col self-center content-center justify-center ">
+        <div className="text-white mb-7 text-start w-full mt-2 px-4 text-2xl md:w-[80vw] flex flex-col self-center content-center justify-center">
           <div className="self-center flex-col content-center justify-center">
-            <div className="self-center text-center content-center flex justify-center bg-white h-[120px] w-[120px] rounded-full m-3 ">
+            <div className="self-center text-center content-center flex justify-center bg-white h-[120px] w-[120px] rounded-full m-3  ">
               <img src={userInfo.avatar_url} className="self-center  w-[100px] h-[100px] rounded-full object-cover"/>
             </div>
             <div className="flex flex-cols gap-2 text-center content-center justify-center">

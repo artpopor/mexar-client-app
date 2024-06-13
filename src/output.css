@@ -670,6 +670,10 @@ video {
   margin-top: 1.75rem;
 }
 
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
 .block {
   display: block;
 }
@@ -768,6 +772,18 @@ video {
 
 .h-\[20px\] {
   height: 20px;
+}
+
+.h-\[70vh\] {
+  height: 70vh;
+}
+
+.h-\[65vh\] {
+  height: 65vh;
+}
+
+.h-\[70\%\] {
+  height: 70%;
 }
 
 .min-h-\[80vh\] {

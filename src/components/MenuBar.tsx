@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import './components.css';
 
 const MenuBar = () => {
-  const [active, setActive] = useState<string>('home');
+  const [active, setActive] = useState<string>('');
   const navigate = useNavigate();
 
   const handleMenuItemClick = (path: string) => {

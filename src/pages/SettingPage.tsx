@@ -40,7 +40,7 @@ const Setting = () => {
         </div>
       </div>
       <div className="text-white pt-4 pl-4 pb-2">PREFERENCE</div>
-      <div className="bg-white h-[60vh] pb-8 w-full pt-8 flex flex-col justify-between content-between ">
+      <div className="bg-white h-[70%] pb-8 w-full pt-8 flex flex-col justify-between content-between ">
       <div >
               <div className="px-8 py-6 text-xl text-gray-600 font-extralight flex justify-between content-center hover:bg-slate-200 cursor-pointer">
             <p>Contact us</p>
@@ -55,7 +55,7 @@ const Setting = () => {
             <FaBookOpen className="self-center"/>
         </div>
       </div>
-      <div onClick={onLogout} className="px-8 py-6 text-xl text-red-600 font-extralight flex justify-between content-center hover:bg-slate-200 cursor-pointer">
+      <div onClick={onLogout} className="px-8 py-6 mb-10 text-xl text-red-600 font-extralight flex justify-between content-center hover:bg-slate-200 cursor-pointer">
             <p>Logout</p>
             <IoIosLogOut className="self-center"/>
         </div>
