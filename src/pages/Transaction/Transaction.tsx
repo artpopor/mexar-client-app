@@ -7,7 +7,7 @@ import ProfileSection from "../ProfileSection";
 import "../../components/components.css";
 import { FaList } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa";
-import { useGetUserTransactionQuery } from "../../services/jsonServerApi";
+import { useGetUserTransactionQuery } from "../../services/apiStore";
 
 const Transaction = () => {
   const navigate = useNavigate();

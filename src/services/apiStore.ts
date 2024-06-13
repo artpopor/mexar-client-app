@@ -32,24 +32,8 @@ export const jsonServerApi = createApi({
         },
       }),
     }),
-    getCurrencyList: builder.query({
-      query: (token) => ({
-        url: '/departments/1/currencies/rates?include=currency',
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
-    getCountryList: builder.query({
-      query: (token) => ({
-        url: 'data/countries',
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
+    
+  
     getRate: builder.query({
       query: (token) => ({
         url: 'ewallet/rates',
@@ -68,15 +52,7 @@ export const jsonServerApi = createApi({
         },
       }),
     }),
-    getUserList: builder.query({
-      query: ({token}) => ({
-        url: `users`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
+   
     getUserInfo: builder.query({
       query: (token) => ({
         url: `me`,
@@ -100,8 +76,8 @@ export const jsonBackOfficeServerApi = createApi({
           Authorization: `Bearer ${token}`,
         },
       }),
-      
     }),
+
     createRemittance: builder.mutation({
       query: ({data,token}) => ({
         url: `remittance/create`,
@@ -111,13 +87,60 @@ export const jsonBackOfficeServerApi = createApi({
           Authorization: `Bearer ${token}`,
         },
       }),
-    })
+    }),
+
+    getCountryList: builder.query({
+      query: (token) => ({
+        url: 'data/countries',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
+
+    getCurrencyList: builder.query({
+      query: (token) => ({
+        url: '/departments/1/currencies/rates?include=currency',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
+
+    getUserList: builder.query({
+      query: ({token}) => ({
+        url: `users`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
+
+    fileUpload: builder.mutation({
+      query: ({data,token}) => ({
+        url: `files`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
+
     
   }),
 });
 
-export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery,useGetCurrencyListQuery,useGetCountryListQuery,useGetRateQuery,useGetTransactionDetailQuery,
-  useGetUserListQuery
- } = jsonServerApi;
+export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery,useGetRateQuery,useGetTransactionDetailQuery} = jsonServerApi;
 
- export const {useGetUserInfoQuery,useCreateRemittanceMutation} = jsonBackOfficeServerApi
+ export const {
+  useGetUserInfoQuery,
+  useCreateRemittanceMutation,
+  useGetCountryListQuery,
+  useGetCurrencyListQuery,
+  useGetUserListQuery,
+  useFileUploadMutation
+ } = jsonBackOfficeServerApi

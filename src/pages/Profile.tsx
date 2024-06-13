@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import { Checkbox } from "antd";
 import { RiPencilFill } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa";
-import { useGetUserInfoQuery } from "../services/jsonServerApi";
+import { useGetUserInfoQuery } from "../services/apiStore";
 
 const Profile = () => {
   const navigate = useNavigate();

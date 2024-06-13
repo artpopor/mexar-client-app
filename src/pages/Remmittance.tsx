@@ -12,8 +12,9 @@ import {
   useGetCurrencyListQuery,
   useGetUserInfoQuery,
   useGetUserListQuery,
-  useCreateRemittanceMutation
-} from "../services/jsonServerApi";
+  useCreateRemittanceMutation,
+  useFileUploadMutation
+} from "../services/apiStore";
 import CustomSelect from "../components/CustomSelect";
 import { AutoComplete, Input, Select, Upload, Checkbox, Modal, Alert,notification,Space } from "antd";
 import UploadArea from "../components/UploadArea";
@@ -49,12 +50,12 @@ const Remmittance = () => {
   const [publicSell, setPublicSell] = useState()
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalImgUrl, setModalImgUrl] = useState<string>('')
-  const [showAlert, setShowAlert] = useState<boolean>(false)
-  const [alertMessage, setAlertMessage] = useState<string>('')
   const [createRemittance] = useCreateRemittanceMutation();
+  const [uploadFile] = useFileUploadMutation();
   const [selectAndRecvAccCheck,setSelectAndRecvAccCheck] = useState(false)
   const [transactionPurpose,setTransactionPurpose] = useState<string>('')
   const [documentType,setDocumentType] = useState<string>('')
+
   const documentTypeArray: { value: string; label: string }[] = [
     { value: 'bank-statements', label: 'Bank Statements' },
     { value: 'pay-slips', label: 'Pay Slips' },
@@ -94,8 +95,6 @@ const Remmittance = () => {
       value: <p className="font-normal text-orange-300">{toAmount}</p>
     }
   ]
-
-  
   const purpose: { value: string; label: string }[]  = [
     { value: 'family-support', label: 'Family Support' },
     { value: 'education-expenses', label: 'Educational Expenses' },
@@ -160,6 +159,7 @@ const Remmittance = () => {
     setRate(rateValue)
     setToAmount(rateValue * fromAmount)
   }
+
   const openNotificationWithIcon = (type: NotificationType,text:string) => {
     notification[type]({
       message: 'Notification',
@@ -240,7 +240,12 @@ const Remmittance = () => {
   }
   console.log("prepareData",prepareData);
   const res = await createRemittance({data:prepareData,token:access_token})
-  res.data && openNotificationWithIcon('success',"create remittance done!") || openNotificationWithIcon('error',"something wrong!")
+  console.log("res",res);
+  if(res.data){
+    openNotificationWithIcon('success',"create remittance done!")
+  }else{
+    openNotificationWithIcon('error',"something wrong!")
+  }
 
   }
 
@@ -251,17 +256,7 @@ const Remmittance = () => {
       {showModal && <Modal width={'80vw'} footer={null} open={showModal} onClose={() => setShowModal(!showModal)} closable onCancel={() => setShowModal(!showModal)}>
         <img src={modalImgUrl} />
       </Modal>}
-      {showAlert && (
-        <div className="m-5 absolute top-3">
-          <Alert
-            message={alertMessage}
-            type="warning"
-            showIcon
-            closable
-            afterClose={() => setShowAlert(false)}
-          />
-        </div>
-      )}
+
       {step == "step1" && (
         <>
           <div className="flex flex-cols content-center text-center justify-between w-full  px-4 mt-7">
@@ -432,7 +427,7 @@ const Remmittance = () => {
                 options={documentTypeArray}
                 onChange={(value)=>setDocumentType(value)}
               />
-              <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} />
+              <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} department_id={userInfo?.entity?.department_id}/>
               <div className="grid grid-cols-2 gap-2">
                 {uploadedDatas?.map((data: any, index: number) => {
                   return (

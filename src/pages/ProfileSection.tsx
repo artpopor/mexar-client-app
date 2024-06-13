@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { useGetUserInfoQuery } from "../services/jsonServerApi";
+import { useGetUserInfoQuery } from "../services/apiStore";
 
 const ProfileSection = () => {
    const navigate = useNavigate()

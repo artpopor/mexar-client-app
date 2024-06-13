@@ -14,7 +14,7 @@ import {
   useLoginMutation,
   useVerifyOtpMutation,
   useGetUserTransactionQuery,
-} from "../services/jsonServerApi";
+} from "../services/apiStore";
 import { MdMoodBad } from "react-icons/md";
 import PhoneInput from "../components/phoneInput";
 const Login = () => {

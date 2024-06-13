@@ -3,23 +3,27 @@ import { Upload, message, Progress } from 'antd';
 import { GetProp, UploadFile, UploadProps } from 'antd';
 import axios from 'axios';
 import { FaUpload } from "react-icons/fa";
+import { useFileUploadMutation } from '../services/apiStore';
 
 const { Dragger } = Upload;
 
 interface UploadAreaProps {
+  department_id: string;
   token: string;
   onUploadSuccess?: (response: any) => void; // Optional callback function
 }
 
-const UploadArea: React.FC<UploadAreaProps> = ({ token, onUploadSuccess }) => {
+const UploadArea: React.FC<UploadAreaProps> = ({ token, department_id, onUploadSuccess }) => {
   const [progress, setProgress] = useState(0);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [uploadFile] = useFileUploadMutation();
 
   const handleFileUpload = async (options: any) => {
     const { onSuccess, onError, file, onProgress } = options;
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('department_id', department_id)
 
     const config = {
       headers: { Authorization: `Bearer ${token}` },
@@ -33,11 +37,12 @@ const UploadArea: React.FC<UploadAreaProps> = ({ token, onUploadSuccess }) => {
     const url = `${import.meta.env.VITE_API_URL}ewallet/files`;
 
     try {
-      const response = await axios.post(url, formData, config);
-
-      if (response.status !== 201) {
-        throw new Error(`Upload failed with status ${response.status}`);
-      }
+      // const response = await axios.post(url, formData, config);
+      const response = await uploadFile({ token: token, data: formData })
+      console.log('response new upload api :>> ', response);
+      // if (response.status !== 201) {
+      //   throw new Error(`Upload failed with status ${response.status}`);
+      // }
 
       const data = await response
 
@@ -71,7 +76,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ token, onUploadSuccess }) => {
       accept=".png,.jpeg,.pdf,.docx"
       className='text-gray-400 '
     >
-        <FaUpload className='self-center w-full text-3xl my-4'/>
+      <FaUpload className='self-center w-full text-3xl my-4' />
       {fileList.length > 0 ? (
         <p className="ant-upload-text">
           Uploading: {fileList[0].name}

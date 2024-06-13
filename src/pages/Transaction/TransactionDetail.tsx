@@ -7,7 +7,7 @@ import ProfileSection from "../ProfileSection";
 import "../../components/components.css";
 import { FaList } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa";
-import { useGetTransactionDetailQuery } from "../../services/jsonServerApi";
+import { useGetTransactionDetailQuery } from "../../services/apiStore";
 import { useParams } from "react-router-dom";
 import { Checkbox } from "antd";
 

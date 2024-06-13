@@ -5,7 +5,7 @@ import Button from "../components/Button";
 import { FaChevronRight } from "react-icons/fa";
 import MenuBar from "../components/MenuBar";
 import ProfileSection from "./ProfileSection";
-import { useGetUserTransactionQuery } from "../services/jsonServerApi";
+import { useGetUserTransactionQuery } from "../services/apiStore";
 
 const HomePage = () => {
   const navigate = useNavigate();
