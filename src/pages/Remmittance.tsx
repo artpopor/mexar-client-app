@@ -16,14 +16,14 @@ import {
   useFileUploadMutation
 } from "../services/apiStore";
 import CustomSelect from "../components/CustomSelect";
-import { AutoComplete, Input, Select, Upload, Checkbox, Modal, Alert,notification,Space } from "antd";
+import { AutoComplete, Input, Select, Upload, Checkbox, Modal, Alert, notification, Space } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 const Remmittance = () => {
   const navigate = useNavigate();
-    const [api, contextHolder] = notification.useNotification();
+  const [api, contextHolder] = notification.useNotification();
 
   const access_token = localStorage.getItem("access_token");
   const [step, setStep] = useState<string>("step1");
@@ -52,9 +52,10 @@ const Remmittance = () => {
   const [modalImgUrl, setModalImgUrl] = useState<string>('')
   const [createRemittance] = useCreateRemittanceMutation();
   const [uploadFile] = useFileUploadMutation();
-  const [selectAndRecvAccCheck,setSelectAndRecvAccCheck] = useState(false)
-  const [transactionPurpose,setTransactionPurpose] = useState<string>('')
-  const [documentType,setDocumentType] = useState<string>('')
+  const [selectAndRecvAccCheck, setSelectAndRecvAccCheck] = useState(false)
+  const [transactionPurpose, setTransactionPurpose] = useState<string>('')
+  const [documentType, setDocumentType] = useState<string>('')
+
 
   const documentTypeArray: { value: string; label: string }[] = [
     { value: 'bank-statements', label: 'Bank Statements' },
@@ -65,7 +66,7 @@ const Remmittance = () => {
     { value: 'inheritance-documents', label: 'Inheritance Documents' },
     { value: 'business-transaction-documents', label: 'Business Transaction Documents' },
     { value: 'loan-agreements-repayment-proof', label: 'Loan Agreements and Repayment Proof' },
-    { value: 'bank-deposit-certificates',label:  'Bank Deposit Certificates' },
+    { value: 'bank-deposit-certificates', label: 'Bank Deposit Certificates' },
     { value: 'identity-address-proof', label: 'Identity and Address Proof' },
     { value: 'other-documents', label: 'Other Special Documents' },
   ];
@@ -95,7 +96,7 @@ const Remmittance = () => {
       value: <p className="font-normal text-orange-300">{toAmount}</p>
     }
   ]
-  const purpose: { value: string; label: string }[]  = [
+  const purpose: { value: string; label: string }[] = [
     { value: 'family-support', label: 'Family Support' },
     { value: 'education-expenses', label: 'Educational Expenses' },
     { value: 'medical-expenses', label: 'Medical Expenses' },
@@ -119,8 +120,8 @@ const Remmittance = () => {
     selectedOption && setSelectedCountry(selectedOption);
   };
 
-  const handleSelectFromCurrency = (currency_id: string) => {
-    const searchSelectFromCurrency = CurrencyListArray.find((item: any) => item.currency_id === currency_id)
+  const handleSelectFromCurrency = (id: string) => {
+    const searchSelectFromCurrency = CurrencyListArray.find((item: any) => item.id === id)
     searchSelectFromCurrency && setSelectFromCurrency(searchSelectFromCurrency)
     const public_sell = selectToCurrency?.public_sell
     const public_buy = searchSelectFromCurrency?.public_buy
@@ -129,8 +130,8 @@ const Remmittance = () => {
     setPublicBuy(public_buy)
   }
 
-  const handleSelectToCurrency = (currency_id: string) => {
-    const searchSelecToCurrency = CurrencyListArray.find((item: any) => item.currency_id === currency_id)
+  const handleSelectToCurrency = (id: string) => {
+    const searchSelecToCurrency = CurrencyListArray.find((item: any) => item.id === id)
     searchSelecToCurrency && setSelectToCurrency(searchSelecToCurrency)
     const public_sell = searchSelecToCurrency.public_sell
     const public_buy = selectFromCurrency?.public_buy
@@ -160,25 +161,25 @@ const Remmittance = () => {
     setToAmount(rateValue * fromAmount)
   }
 
-  const openNotificationWithIcon = (type: NotificationType,text:string) => {
+  const openNotificationWithIcon = (type: NotificationType, text: string) => {
     notification[type]({
       message: 'Notification',
       description: text
     });
   };
-  
+
   const handleNextStep = (step: string) => {
     switch (step) {
       case 'step2':
         if (!toAmount || !fromAmount || !selectedCountry || !selectToCurrency || !selectFromCurrency) {
-          openNotificationWithIcon('warning',"Please fill the data")
+          openNotificationWithIcon('warning', "Please fill the data")
         } else {
           setStep(step)
         }
         break
       case 'step3':
         if (!selectedUser) {
-          openNotificationWithIcon('warning',"Please fill the data")
+          openNotificationWithIcon('warning', "Please fill the data")
         } else {
           setStep(step)
         }
@@ -214,7 +215,7 @@ const Remmittance = () => {
     console.log(data.data.data);
   };
 
-  const handleCreateRemittance = async() => {
+  const handleCreateRemittance = async () => {
     let prepareData = {
       "destination_country_id": selectedCountry?.id,
       "department_id": userInfo?.departments?.[0]?.id,
@@ -224,28 +225,28 @@ const Remmittance = () => {
       "kyc_screen": 0,
       "purpose_of_transfer": "Developer testing",
       "process_fee": {
-          "enable": 0,
-          "fees": []
+        "enable": 0,
+        "fees": []
       },
       "items": [
-          {
-              "source_currency_id": selectFromCurrency?.currency_id,
-              "target_currency_id": selectToCurrency?.currency_id,
-              "amount": parseFloat(fromAmount),
-              "exchange_rate": rate,
-              "calculation_amount": toAmount
-          }
+        {
+          "source_currency_id": selectFromCurrency?.currency_id,
+          "target_currency_id": selectToCurrency?.currency_id,
+          "amount": parseFloat(fromAmount),
+          "exchange_rate": rate,
+          "calculation_amount": toAmount
+        }
       ]
-   
-  }
-  console.log("prepareData",prepareData);
-  const res = await createRemittance({data:prepareData,token:access_token})
-  console.log("res",res);
-  if(res.data){
-    openNotificationWithIcon('success',"create remittance done!")
-  }else{
-    openNotificationWithIcon('error',"something wrong!")
-  }
+
+    }
+    console.log("prepareData", prepareData);
+    const res = await createRemittance({ data: prepareData, token: access_token })
+    console.log("res", res);
+    if (res.data) {
+      openNotificationWithIcon('success', "create remittance done!")
+    } else {
+      openNotificationWithIcon('error', "something wrong!")
+    }
 
   }
 
@@ -280,27 +281,44 @@ const Remmittance = () => {
               {/*CONTENT START HERE */}
               <div className="flex flex-col gap-2">
                 <p className="font-thin text-gray-500">Destination Country</p>
-                <AutoComplete
-                  onSelect={onCountrySelect}
-                  onSearch={handleCountrySearch}
-                  placeholder="Search countries"
-                  className="!w-full h-14"
-                  defaultOpen
-                >
-                  {options.map((item: any) => (
-                    <Option key={item.id} value={item?.common_name}>
-                      <div className="flex gap-2">
-                        <img src={item.flag} className="w-6 h-6 rounded-full" />
-                        <p>{item.common_name}</p>
+                {selectedCountry &&
+                  <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2 max-w-[430px]">
+                    <div className="flex flex-col relative h-full">
+                      <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => setSelectedCountry(null)} />
+                      <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
+
+                        <img src={selectedCountry?.flag} className="h-14 w-14 rounded-full" />
+                        <div className="flex flex-col text-gray-500">
+                          <p className="text text-[#2d4da3]">{selectedCountry?.common_name}</p>
+                          <p className="text-sm">{selectedCountry?.region}</p>
+                        </div>
+                        <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400"></p>{selectedCountry?.currency_code}</div>
                       </div>
-                    </Option>
-                  ))}
-                </AutoComplete>
+                    </div>
+                  </div> ||
+                  <AutoComplete
+                    onSelect={onCountrySelect}
+                    onSearch={handleCountrySearch}
+                    placeholder="Search countries"
+                    className="!w-full h-14"
+                    defaultOpen
+                  >
+                    {options.map((item: any) => (
+                      <Option key={item.id} value={item?.common_name}>
+                        <div className="flex gap-2">
+                          <img src={item.flag} className="w-6 h-6 rounded-full" />
+                          <p>{item.common_name}</p>
+                        </div>
+                      </Option>
+                    ))}
+                  </AutoComplete>
+                }
+
                 <p className="font-thin text-gray-500">From Currency</p>
                 <div className="flex">
                   <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' onSelect={handleSelectFromCurrency}>
                     {CurrencyListArray?.map((item: any) => (
-                      <Select.Option key={item?.currency.code} value={item.currency_id}>
+                      <Select.Option key={item?.id} value={item?.id}>
                         <div className="flex flex-cols gap-2 justify-center content-center self-center">
                           <p>{item.currency.code}</p>
                           <img
@@ -331,7 +349,7 @@ const Remmittance = () => {
                 <div className="flex">
                   <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' onSelect={handleSelectToCurrency}>
                     {CurrencyListArray?.map((item: any) => (
-                      <Select.Option key={item?.currency.code} value={item.currency_id}>
+                      <Select.Option key={item?.id} value={item?.id}>
                         <div className="flex flex-cols gap-2 justify-center content-center self-center">
                           <p>{item.currency.code}</p>
                           <img
@@ -412,22 +430,22 @@ const Remmittance = () => {
               </AutoComplete>}
               {/*  */}
               <div className="flex flex-cols gap-2 w-full">
-                <Checkbox defaultChecked={selectAndRecvAccCheck} onClick={()=>setSelectAndRecvAccCheck(!selectAndRecvAccCheck)}/>
+                <Checkbox defaultChecked={selectAndRecvAccCheck} onClick={() => setSelectAndRecvAccCheck(!selectAndRecvAccCheck)} />
                 <p className="font-thin text-gray-500 text-sm">
                   Select and Recieve account
                 </p>
               </div>
               <p className="font-thin text-gray-500">Transaciton Purpose</p>
-              <Select className="h-12" placeholder="Select Purpose" options={purpose} onChange={(value)=>setTransactionPurpose(value)}/>
+              <Select className="h-12" placeholder="Select Purpose" options={purpose} onChange={(value) => setTransactionPurpose(value)} />
 
               <p className="font-thin text-gray-500">Document Type</p>
               <Select
                 className="h-12 mb-3"
                 placeholder="Select Document Type"
                 options={documentTypeArray}
-                onChange={(value)=>setDocumentType(value)}
+                onChange={(value) => setDocumentType(value)}
               />
-              <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} department_id={userInfo?.entity?.department_id}/>
+              <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} department_id={userInfo?.entity?.department_id} />
               <div className="grid grid-cols-2 gap-2">
                 {uploadedDatas?.map((data: any, index: number) => {
                   return (
@@ -524,7 +542,7 @@ const Remmittance = () => {
             </div>
 
             <Button
-            onClick={()=>handleCreateRemittance()}
+              onClick={() => handleCreateRemittance()}
               className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
             >
               Confirm
@@ -532,7 +550,7 @@ const Remmittance = () => {
           </div>
         </>
       )}
-      <MenuBar/>
+      <MenuBar />
     </div>
   );
 };
