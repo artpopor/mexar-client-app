@@ -682,6 +682,10 @@ video {
   display: grid;
 }
 
+.contents {
+  display: contents;
+}
+
 .\!h-12 {
   height: 3rem !important;
 }
@@ -752,6 +756,10 @@ video {
 
 .h-full {
   height: 100%;
+}
+
+.h-\[\] {
+  height: ;
 }
 
 .min-h-\[80vh\] {
@@ -1361,6 +1369,16 @@ html, body, #root, .wrapper {
 .hover\:bg-slate-200:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-slate-300:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-slate-100:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(241 245 249 / var(--tw-bg-opacity));
 }
 
 .hover\:text-red-500:hover {

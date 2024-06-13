@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, HTMLProps } from "react";
 import MenuBar from "../components/MenuBar";
 import { IoChevronBack } from "react-icons/io5";
 import ProfileSection from "./ProfileSection";
@@ -13,7 +13,7 @@ import {
   useGetUserListQuery,
 } from "../services/jsonServerApi";
 import CustomSelect from "../components/CustomSelect";
-import { AutoComplete, Input, Select, Upload, Checkbox } from "antd";
+import { AutoComplete, Input, Select, Upload, Checkbox,Modal } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
 
@@ -38,6 +38,36 @@ const Remmittance = () => {
   const [selectedUser, setSelectedUser] = useState<any>()
   const [userOptions, setUserOptions] = useState([])
   const [uploadedDatas, setUploadDatas] = useState<any>([])
+  const [publicBuy, setPublicBuy] = useState()
+  const [publicSell, setPublicSell] = useState()
+  const [showModal,setShowModal]= useState<boolean>(false)
+  const [modalImgUrl,setModalImgUrl] = useState<string>('')
+  const summaryList = [
+    {
+      title: 'Purpose of transaction',
+      value: <p className="font-normal text-gray-500">Family</p>
+    },
+    {
+      title: 'Public Buy',
+      value: <p>{publicBuy}</p>
+    },
+    {
+      title: 'Public Sell',
+      value: <p>{publicSell}</p>
+    },
+    {
+      title: 'Exchange Rate',
+      value: <p>{rate}</p>
+    },
+    {
+      title: 'You send',
+      value: <p>{fromAmount}</p>
+    },
+    {
+      title: 'Total to Recieve',
+      value: <p className="font-normal text-orange-300">{toAmount}</p>
+    }
+  ]
   const handleCountrySearch = (value: any) => {
     const filteredOptions = CountryListSorted.filter((item: any) =>
       item.common_name.toUpperCase().startsWith(value.toUpperCase())
@@ -59,6 +89,7 @@ const Remmittance = () => {
     const public_buy = searchSelectFromCurrency?.public_buy
     const calRate = public_sell * public_buy
     selectToCurrency && setRate(calRate)
+    setPublicBuy(public_buy)
   }
 
   const handleSelectToCurrency = (currency_id: string) => {
@@ -68,7 +99,8 @@ const Remmittance = () => {
     const public_buy = selectFromCurrency?.public_buy
     const calRate = public_sell / public_buy
     selectFromCurrency && setRate(calRate)
-    fromAmount && setToAmount(fromAmount / calRate)
+    fromAmount && setToAmount(fromAmount * calRate)
+    setPublicSell(public_sell)
   }
 
   const handleChangeFromAmount = (amount: any) => {
@@ -115,14 +147,21 @@ const Remmittance = () => {
     );
     selectedOption && setSelectedUser(selectedOption);
   };
-  
+
   const handleUploadSuccess = (data: any) => {
 
     setUploadDatas([...uploadedDatas, data?.data?.data])
     console.log(data.data.data);
   };
+
+ 
+
   return (
     <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
+    <Modal width={'80vw'}  footer={null}  open={showModal} onClose={()=>setShowModal(!showModal)} closable onCancel={()=>setShowModal(!showModal)}>
+       <img src={modalImgUrl}/>
+      </Modal>
+
       {step == "step1" && (
         <>
           <div className="flex flex-cols content-center text-center justify-between w-full  px-4 mt-7">
@@ -294,7 +333,7 @@ const Remmittance = () => {
               <div className="grid grid-cols-2 gap-2">
                 {uploadedDatas.map((data: any, index: number) => {
                   return (
-                    <div className="bg-white p-3 shadow-md w-full relative">
+                    <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" onClick={()=>{setModalImgUrl(data.url);setShowModal(true)}}>
                       <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
                         handleRemoveData(index)
                       }} />
@@ -315,9 +354,9 @@ const Remmittance = () => {
           </div>
         </>
       )}
-       {step == "step3" && (
+      {step == "step3" && (
         <>
-          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
+          <div className=" flex flex-cols content-center text-center justify-between h-full w-full px-4 mt-7">
             <div
               onClick={() => setStep("step2")}
               className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -330,9 +369,9 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
             03 - Review Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-5 justify-between rounded-b-none">
             <div className="flex flex-col gap-2">
-              <p className="font-thin text-gray-500">Select custormer</p>
+              <p className="font-thin text-gray-500">Selected custormer</p>
               {selectedUser &&
                 <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2 max-w-[430px]">
                   <div className="flex flex-col relative h-full">
@@ -352,39 +391,38 @@ const Remmittance = () => {
                   Select and Recieve account
                 </p>
               </div>
-              <div className="mt-2">
-                <div className="flex flex-cols justify-between">
-                  <p className="font-thin text-gray-500">
-                    Purpose of Transaction
-                  </p>
-                  <p className="font-normal text-gray-500">Family</p>
-                </div>
 
-                <hr className="m-1 w-full" />
-              </div>
-              <div className="">
-                <div className="flex flex-cols justify-between">
-                  <p className="font-thin text-gray-500">
-                    Purpose of Transaction
-                  </p>
-                  <p className="font-normal text-gray-500">Family</p>
-                </div>
+              {summaryList.map((list: any) => {
+                return (
+                  <div className="">
+                    <div className="flex flex-cols justify-between">
+                      <p className="font-thin text-gray-500">
+                        {list?.title}
+                      </p>
+                      {list?.value}
+                    </div>
 
-                <hr className="m-1 w-full" />
-              </div>
+                    <hr className="m-1 w-full" />
+
+                  </div>
+                )
+              })}
               <p className=" text-gray-500 font-medium">Transaction file</p>
               {uploadedDatas.map((data: any, index: number) => {
-                  return (
-                    <div className="bg-white p-3 shadow-md w-full relative">
-                      <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
-                        handleRemoveData(index)
-                      }} />
+                return (
+                  <>
+                  <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" onClick={()=>{setModalImgUrl(data.url);setShowModal(true)}}>
+                    <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
+                      handleRemoveData(index)
+                    }} />
 
-                      <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
-                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
-                    </div>
-                  )
-                })}
+                    <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
+                    {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
+                  </div>
+                  </>
+                  
+                )
+              })}
             </div>
 
             <Button
