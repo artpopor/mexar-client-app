@@ -89,7 +89,7 @@ export const jsonServerApi = createApi({
   }),
 });
 export const jsonBackOfficeServerApi = createApi({
-  reducerPath: "jsonServerApi",
+  reducerPath: "jsonBackOfficeServerApi",
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_BACKOFFICE }),
   endpoints: (builder) => ({
     getUserInfo: builder.query({

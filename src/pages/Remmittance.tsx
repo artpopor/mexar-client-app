@@ -15,12 +15,15 @@ import {
   useCreateRemittanceMutation
 } from "../services/jsonServerApi";
 import CustomSelect from "../components/CustomSelect";
-import { AutoComplete, Input, Select, Upload, Checkbox, Modal, Alert } from "antd";
+import { AutoComplete, Input, Select, Upload, Checkbox, Modal, Alert,notification,Space } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 const Remmittance = () => {
   const navigate = useNavigate();
+  const [api, contextHolder] = notification.useNotification();
+
   const access_token = localStorage.getItem("access_token");
   const [step, setStep] = useState<string>("step1");
   const { Option } = AutoComplete;
@@ -49,6 +52,7 @@ const Remmittance = () => {
   const [showAlert, setShowAlert] = useState<boolean>(false)
   const [alertMessage, setAlertMessage] = useState<string>('')
   const [createRemittance] = useCreateRemittanceMutation();
+  const [selectAndRecvAccCheck,setSelectAndRecvAccCheck] = useState(false)
 
   
   const summaryList = [
@@ -77,6 +81,14 @@ const Remmittance = () => {
       value: <p className="font-normal text-orange-300">{toAmount}</p>
     }
   ]
+
+  const openNotificationWithIcon = (type:NotificationType,message:string) => {
+    notification[type]({
+      message: 'Notification',
+      description: message,
+      duration:2
+    });
+  };
 
   const handleCountrySearch = (value: any) => {
     const filteredOptions = CountryListSorted.filter((item: any) =>
@@ -137,16 +149,14 @@ const Remmittance = () => {
     switch (step) {
       case 'step2':
         if (!toAmount || !fromAmount || !selectedCountry) {
-          setShowAlert(true)
-          setAlertMessage('Please fill data')
+          openNotificationWithIcon('warning',"Please fill the data")
         } else {
           setStep(step)
         }
         break
       case 'step3':
         if (!selectedUser) {
-          setShowAlert(true)
-          setAlertMessage('Please fill data')
+          openNotificationWithIcon('warning',"Please fill the data")
         } else {
           setStep(step)
         }
@@ -197,8 +207,8 @@ const Remmittance = () => {
       },
       "items": [
           {
-              "source_currency_id": selectFromCurrency?.id,
-              "target_currency_id": selectToCurrency?.id,
+              "source_currency_id": selectFromCurrency?.currency_id,
+              "target_currency_id": selectToCurrency?.currency_id,
               "amount": parseFloat(fromAmount),
               "exchange_rate": rate,
               "calculation_amount": toAmount
@@ -209,17 +219,14 @@ const Remmittance = () => {
   console.log("prepareData",prepareData);
   const res = await createRemittance({data:prepareData,token:access_token})
   console.log('res :>> ', res);
+  res.data && openNotificationWithIcon('success',"create remittance done")
   }
 
-useEffect(()=>{
-  console.log('getUserInfo :>> ', userInfo);
-},[getUserInfo])
+
 
   return (
     <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
-      {showModal && <Modal width={'80vw'} footer={null} open={showModal} onClose={() => setShowModal(!showModal)} closable onCancel={() => setShowModal(!showModal)}>
-        <img src={modalImgUrl} />
-      </Modal>}
+  
       {showAlert && (
         <div className="m-5 absolute top-3">
           <Alert
@@ -386,7 +393,7 @@ useEffect(()=>{
               </AutoComplete>}
               {/*  */}
               <div className="flex flex-cols gap-2 w-full">
-                <Checkbox />
+                <Checkbox defaultChecked={selectAndRecvAccCheck} onClick={()=>setSelectAndRecvAccCheck(!selectAndRecvAccCheck)}/>
                 <p className="font-thin text-gray-500 text-sm">
                   Select and Recieve account
                 </p>
@@ -456,7 +463,7 @@ useEffect(()=>{
                     </div>
                   </div>
                 </div>}              <div className="flex flex-cols gap-2 w-full">
-                <Checkbox disabled defaultChecked={true} />
+                <Checkbox disabled defaultChecked={selectAndRecvAccCheck} />
                 <p className="font-thin text-gray-500">
                   Select and Recieve account
                 </p>

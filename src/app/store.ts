@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { jsonServerApi } from '../services/jsonServerApi';
+import { jsonServerApi, jsonBackOfficeServerApi } from '../services/jsonServerApi';
+
 export const store = configureStore({
   reducer: {
     [jsonServerApi.reducerPath]: jsonServerApi.reducer,
+    [jsonBackOfficeServerApi.reducerPath]: jsonBackOfficeServerApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(jsonServerApi.middleware),
+    getDefaultMiddleware().concat(jsonServerApi.middleware, jsonBackOfficeServerApi.middleware),
 });
 
 setupListeners(store.dispatch);
