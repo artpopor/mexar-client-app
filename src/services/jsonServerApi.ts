@@ -77,11 +77,10 @@ export const jsonServerApi = createApi({
         },
       }),
     }),
-    uploadTransactionFile: builder.mutation({
-      query: ({token,file}) => ({
-        url: `ewallet/files`,
-        method: "POST",
-        body: file,
+    getUserInfo: builder.query({
+      query: (token) => ({
+        url: `me`,
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -89,7 +88,36 @@ export const jsonServerApi = createApi({
     }),
   }),
 });
+export const jsonBackOfficeServerApi = createApi({
+  reducerPath: "jsonServerApi",
+  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_BACKOFFICE }),
+  endpoints: (builder) => ({
+    getUserInfo: builder.query({
+      query: (token) => ({
+        url: `me`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+      
+    }),
+    createRemittance: builder.mutation({
+      query: ({data,token}) => ({
+        url: `remittance/create`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    })
+    
+  }),
+});
 
 export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery,useGetCurrencyListQuery,useGetCountryListQuery,useGetRateQuery,useGetTransactionDetailQuery,
-  useGetUserListQuery,useUploadTransactionFileMutation
+  useGetUserListQuery
  } = jsonServerApi;
+
+ export const {useGetUserInfoQuery,useCreateRemittanceMutation} = jsonBackOfficeServerApi

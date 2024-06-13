@@ -10,10 +10,12 @@ import Button from "../components/Button";
 import {
   useGetCountryListQuery,
   useGetCurrencyListQuery,
+  useGetUserInfoQuery,
   useGetUserListQuery,
+  useCreateRemittanceMutation
 } from "../services/jsonServerApi";
 import CustomSelect from "../components/CustomSelect";
-import { AutoComplete, Input, Select, Upload, Checkbox,Modal } from "antd";
+import { AutoComplete, Input, Select, Upload, Checkbox, Modal, Alert } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
 
@@ -24,7 +26,9 @@ const Remmittance = () => {
   const { Option } = AutoComplete;
   const [options, setOptions] = useState([]);
   const CountryListData = useGetCountryListQuery(access_token);
-  const [selectedCountry, setSelectedCountry] = useState({});
+  const getUserInfo = useGetUserInfoQuery(access_token)
+  const userInfo = getUserInfo?.data?.data
+  const [selectedCountry, setSelectedCountry] = useState<any>({});
   const CountryListSorted = CountryListData?.data?.data?.slice().sort((a: any, b: any) => a.common_name.localeCompare(b.common_name));
   const CurrencyListData = useGetCurrencyListQuery(access_token);
   const CurrencyListArray = CurrencyListData?.data?.data;
@@ -40,8 +44,13 @@ const Remmittance = () => {
   const [uploadedDatas, setUploadDatas] = useState<any>([])
   const [publicBuy, setPublicBuy] = useState()
   const [publicSell, setPublicSell] = useState()
-  const [showModal,setShowModal]= useState<boolean>(false)
-  const [modalImgUrl,setModalImgUrl] = useState<string>('')
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [modalImgUrl, setModalImgUrl] = useState<string>('')
+  const [showAlert, setShowAlert] = useState<boolean>(false)
+  const [alertMessage, setAlertMessage] = useState<string>('')
+  const [createRemittance] = useCreateRemittanceMutation();
+
+  
   const summaryList = [
     {
       title: 'Purpose of transaction',
@@ -68,6 +77,7 @@ const Remmittance = () => {
       value: <p className="font-normal text-orange-300">{toAmount}</p>
     }
   ]
+
   const handleCountrySearch = (value: any) => {
     const filteredOptions = CountryListSorted.filter((item: any) =>
       item.common_name.toUpperCase().startsWith(value.toUpperCase())
@@ -124,7 +134,25 @@ const Remmittance = () => {
   }
 
   const handleNextStep = (step: string) => {
-    setStep(step)
+    switch (step) {
+      case 'step2':
+        if (!toAmount || !fromAmount || !selectedCountry) {
+          setShowAlert(true)
+          setAlertMessage('Please fill data')
+        } else {
+          setStep(step)
+        }
+        break
+      case 'step3':
+        if (!selectedUser) {
+          setShowAlert(true)
+          setAlertMessage('Please fill data')
+        } else {
+          setStep(step)
+        }
+        break
+
+    }
   }
 
   const handleUserSearch = (value: any) => {
@@ -154,14 +182,55 @@ const Remmittance = () => {
     console.log(data.data.data);
   };
 
- 
+  const handleCreateRemittance = async() => {
+    let prepareData = {
+      "destination_country_id": selectedCountry?.id,
+      "department_id": userInfo?.departments?.[0]?.id,
+      "entity_id": selectedUser?.id,
+      "entity_address_id": 484,
+      "sale_user_id": userInfo?.id,
+      "kyc_screen": 0,
+      "purpose_of_transfer": "Developer testing",
+      "process_fee": {
+          "enable": 0,
+          "fees": []
+      },
+      "items": [
+          {
+              "source_currency_id": selectFromCurrency?.id,
+              "target_currency_id": selectToCurrency?.id,
+              "amount": parseFloat(fromAmount),
+              "exchange_rate": rate,
+              "calculation_amount": toAmount
+          }
+      ]
+   
+  }
+  console.log("prepareData",prepareData);
+  const res = await createRemittance({data:prepareData,token:access_token})
+  console.log('res :>> ', res);
+  }
+
+useEffect(()=>{
+  console.log('getUserInfo :>> ', userInfo);
+},[getUserInfo])
 
   return (
     <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
-    <Modal width={'80vw'}  footer={null}  open={showModal} onClose={()=>setShowModal(!showModal)} closable onCancel={()=>setShowModal(!showModal)}>
-       <img src={modalImgUrl}/>
-      </Modal>
-
+      {showModal && <Modal width={'80vw'} footer={null} open={showModal} onClose={() => setShowModal(!showModal)} closable onCancel={() => setShowModal(!showModal)}>
+        <img src={modalImgUrl} />
+      </Modal>}
+      {showAlert && (
+        <div className="m-5 absolute top-3">
+          <Alert
+            message={alertMessage}
+            type="warning"
+            showIcon
+            closable
+            afterClose={() => setShowAlert(false)}
+          />
+        </div>
+      )}
       {step == "step1" && (
         <>
           <div className="flex flex-cols content-center text-center justify-between w-full  px-4 mt-7">
@@ -190,6 +259,7 @@ const Remmittance = () => {
                   onSearch={handleCountrySearch}
                   placeholder="Search countries"
                   className="!w-full h-14"
+                  defaultOpen
                 >
                   {options.map((item: any) => (
                     <Option key={item.id} value={item?.common_name}>
@@ -331,15 +401,15 @@ const Remmittance = () => {
               />
               <UploadArea token={access_token || ''} onUploadSuccess={handleUploadSuccess} />
               <div className="grid grid-cols-2 gap-2">
-                {uploadedDatas.map((data: any, index: number) => {
+                {uploadedDatas?.map((data: any, index: number) => {
                   return (
-                    <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" onClick={()=>{setModalImgUrl(data.url);setShowModal(true)}}>
+                    <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" >
                       <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
                         handleRemoveData(index)
                       }} />
 
                       <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
-                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
+                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} onClick={() => { setModalImgUrl(data.url); setShowModal(true) }} />}
                     </div>
                   )
                 })}
@@ -347,7 +417,7 @@ const Remmittance = () => {
             </div>
             <Button
               className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
-              onClick={() => setStep("step3")}
+              onClick={() => handleNextStep("step3")}
             >
               Next
             </Button>
@@ -356,7 +426,7 @@ const Remmittance = () => {
       )}
       {step == "step3" && (
         <>
-          <div className=" flex flex-cols content-center text-center justify-between h-full w-full px-4 mt-7">
+          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
             <div
               onClick={() => setStep("step2")}
               className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -369,7 +439,7 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
             03 - Review Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-5 justify-between rounded-b-none">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
             <div className="flex flex-col gap-2">
               <p className="font-thin text-gray-500">Selected custormer</p>
               {selectedUser &&
@@ -408,24 +478,25 @@ const Remmittance = () => {
                 )
               })}
               <p className=" text-gray-500 font-medium">Transaction file</p>
-              {uploadedDatas.map((data: any, index: number) => {
+              {uploadedDatas?.map((data: any, index: number) => {
                 return (
                   <>
-                  <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" onClick={()=>{setModalImgUrl(data.url);setShowModal(true)}}>
-                    <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
-                      handleRemoveData(index)
-                    }} />
+                    <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" onClick={() => { setModalImgUrl(data.url); setShowModal(true) }}>
+                      <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
+                        handleRemoveData(index)
+                      }} />
 
-                    <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
-                    {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
-                  </div>
+                      <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
+                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
+                    </div>
                   </>
-                  
+
                 )
               })}
             </div>
 
             <Button
+            onClick={()=>handleCreateRemittance()}
               className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
             >
               Confirm
@@ -433,7 +504,7 @@ const Remmittance = () => {
           </div>
         </>
       )}
-      <MenuBar />
+      <MenuBar/>
     </div>
   );
 };

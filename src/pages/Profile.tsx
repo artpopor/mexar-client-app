@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { Checkbox } from "antd";
 import { RiPencilFill } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa";
+import { useGetUserInfoQuery } from "../services/jsonServerApi";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -14,19 +15,11 @@ const Profile = () => {
   const access_token = localStorage.getItem("access_token");
   const { transactionId } = useParams();
   console.log("transactionId :>> ", transactionId);
-  //   const { data, error, isLoading } = useGetTransactionDetailQuery({
-  //     token: access_token,
-  //     transactionId: transactionId,
-  //   });
-  //   useEffect(() => {
-  //     console.log("data :>> ", data?.data?.items?.[0].to_amount);
-  //   }, [data]);
-  //   useEffect(() => {
-  //     if (error) {
-  //       navigate("/login");
-  //     }
-  //   }, [error]);
-
+  const getUserInfo = useGetUserInfoQuery(access_token)
+  const userInfo = getUserInfo?.data?.data
+  useEffect(()=>{
+    console.log('User :>> ', userInfo);
+  },[userInfo])
   const List = ({ title, data }: any) => {
     return (
       <>
@@ -54,11 +47,13 @@ const Profile = () => {
         </div>
         <div className="text-white mb-7 text-start w-full mt-2 px-4 text-2xl md:w-[80vw] flex flex-col self-center content-center justify-center ">
           <div className="self-center flex-col content-center justify-center">
-            <div className="self-center bg-white h-[120px] w-[120px] rounded-full m-3 "></div>
+            <div className="self-center text-center content-center flex justify-center bg-white h-[120px] w-[120px] rounded-full m-3 ">
+              <img src={userInfo.avatar_url} className="self-center  w-[100px] h-[100px] rounded-full object-cover"/>
+            </div>
             <div className="flex flex-cols gap-2 text-center content-center justify-center">
               <div className="text-center">
-                <p className="self-center ">Jenny Kim</p>
-                <p className="self-center font-thin text-base">@Jenny2024</p>
+                <p className="self-center ">{userInfo.name}</p>
+                <p className="self-center font-thin text-base">{`@${userInfo.username}`}</p>
               </div>
               <RiPencilFill className="self-center" />
             </div>
