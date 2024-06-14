@@ -76,7 +76,7 @@ const HomePage = () => {
         <ProfileSection />
       </div>
       {/* Main Content here */}
-      <div className="bg-[#F6FAFF]  mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3 h-full rounded-b-none">
+      <div className="bg-[#F6FAFF]  mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3 h-auto  rounded-b-none">
         <p className="font-medium text-gray-500">Services</p>
         <div className="flex self-center lg:self-start flex-cols justify-between w-full max-w-[450px] lg:w-[400px] bg-gradient-to-br from-[#5BBBFF] to-[#5983E4] rounded-3xl p-5">
           <div className="text-white">

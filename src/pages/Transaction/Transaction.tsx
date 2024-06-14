@@ -39,8 +39,8 @@ const Transaction = () => {
     const to_currency = items[0].to_currency.code;
     const to_amount = parseFloat(items[0].to_amount).toFixed(2);
     return (
-      <div className="bg-white mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
-        <div onClick={()=>navigate(`${items?.[0]?.id}`)} className="cursor-pointer w-full flex flex-cols content-center self-center gap-3">
+      <div onClick={()=>navigate(`${items?.[0]?.id}`)} className="bg-white cursor-pointer hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
+        <div  className=" w-full flex flex-cols content-center self-center gap-3">
           <img
             width={30}
             height={30}
@@ -85,7 +85,7 @@ const Transaction = () => {
   };
 
   return (
-    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
+    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-auto">
       {/* Main Content here */}
       <>
         <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">

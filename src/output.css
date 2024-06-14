@@ -754,8 +754,16 @@ video {
   height: 90%;
 }
 
+.h-auto {
+  height: auto;
+}
+
 .h-full {
   height: 100%;
+}
+
+.min-h-\[100vh\] {
+  min-height: 100vh;
 }
 
 .\!w-\[35\%\] {
@@ -1324,18 +1332,32 @@ video {
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: rgba(80, 80, 80, 0.87);
-  background-image: linear-gradient(to bottom right, #5BBAFF , #597CE0);
-  height: 100vh;
-  min-width: 430px;
-  min-height: 932px;
+  --font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --line-height: 1.5;
+  --font-weight: 400;
+  --text-color: rgba(80, 80, 80, 0.87);
+  --background-gradient: linear-gradient(to bottom right, #5BBAFF, #597CE0);
 }
 
 html, body, #root, .wrapper {
-  height:100vh;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  line-height: var(--line-height);
+  font-weight: var(--font-weight);
+  color: var(--text-color);
+  background-color: #597CE0;
+  background-image: linear-gradient(to bottom right, #597CE0, transparent);
+  background-size:100% 300px;
+  background-image: -webkit-linear-gradient(top, #5BBAFF 0%, #597CE0 300px);
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 .ant-switch-checked {
@@ -1400,8 +1422,3 @@ html, body, #root, .wrapper {
     width: 20vw;
   }
 }
-
-
-
-
-

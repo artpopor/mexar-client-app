@@ -258,6 +258,7 @@ const Remmittance = () => {
     console.log("res", res);
     if (res.data) {
       openNotificationWithIcon('success', "create remittance done!")
+      navigate('/home')
     } else {
       openNotificationWithIcon('error', "something wrong!")
     }
