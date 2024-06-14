@@ -14,9 +14,7 @@ const Transaction = () => {
   const [fromCurrency, setFromCurrency] = useState("");
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
-  const { data, error, isLoading } = useGetUserTransactionQuery(
-    localStorage.getItem("access_token")
-  );
+  const { data, error, isLoading,refetch } = useGetUserTransactionQuery(access_token);
 
   useEffect(() => {
     if (error) {
@@ -24,6 +22,9 @@ const Transaction = () => {
     }
   }, [error]);
 
+  useEffect(() => {
+    refetch();
+  }, []);
   const TransactionList = (data: any) => {
     const { user, items } = data.data;
     const from_currency = items[0].from_currency.code;

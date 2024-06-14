@@ -17,17 +17,39 @@ const Profile = () => {
   console.log("transactionId :>> ", transactionId);
   const getUserInfo = useGetUserInfoQuery(access_token)
   const userInfo = getUserInfo?.data?.data
-  useEffect(()=>{
+  useEffect(() => {
     console.log('User :>> ', userInfo);
-  },[userInfo])
+  }, [userInfo])
+
+  const userInfoList = [{
+    title:'Phone :',
+    data: userInfo.phone_number
+  },
+  {
+  title:'Email :',
+  data: userInfo.email
+},
+{
+  title:'Firstname :',
+  data: userInfo.entity.first_name
+},
+{
+  title:'Lastname :',
+  data: userInfo.entity.last_name
+},
+{
+  title:'Middlename :',
+  data: userInfo.entity.middle_name
+},
+]
+
   const List = ({ title, data }: any) => {
     return (
       <>
-        <div className="flex flex-cols justify-between text-gray-500 font-thin">
-          <p>{title}</p>
-          <p className="font-normal">{data}</p>
+        <div className="flex content-center gap-2 mb-5 ">
+          <p className="text-gray-400 font-thin self-center content-end text-right w-[30%]">{title}</p>
+          <input className="rounded-xl shadow-md p-3 px-5 w-[70%]" placeholder="birthday" value={data} />
         </div>
-        <hr className="w-full " />
       </>
     );
   };
@@ -48,7 +70,7 @@ const Profile = () => {
         <div className="text-white mb-7 text-start w-full mt-2 px-4 text-2xl md:w-[80vw] flex flex-col self-center content-center justify-center">
           <div className="self-center flex-col content-center justify-center">
             <div className="self-center text-center content-center flex justify-center bg-white h-[120px] w-[120px] rounded-full m-3  ">
-              <img src={userInfo.avatar_url} className="self-center  w-[100px] h-[100px] rounded-full object-cover"/>
+              <img src={userInfo.avatar_url} className="self-center  w-[100px] h-[100px] rounded-full object-cover" />
             </div>
             <div className="flex flex-cols gap-2 text-center content-center justify-center">
               <div className="text-center">
@@ -62,20 +84,19 @@ const Profile = () => {
         <div className="flex flex-row  justify-around w-full mb-4">
           <div className="text-white flex flex-col text-center font-extralight">
             Outcome Total<p className="text-4xl font-thin">1000</p>
-            <div className="flex"><p className="self-end font-thin mr-1 ">December</p><FaChevronDown className="self-center text-xs"/></div>
+            <div className="flex"><p className="self-end font-thin mr-1 ">December</p><FaChevronDown className="self-center text-xs" /></div>
           </div>
-          <div className="text-white bg-white w-[1px] h-full"/>
+          <div className="text-white bg-white w-[1px] h-full" />
           <div className="text-white text-center font-extralight">
             Outcome Total<p className="text-4xl font-thin">THB</p>
           </div>
         </div>
 
         <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none">
-            <p className="text-gray-500 mb-4">Basic Infomations</p>
-            <div className="flex content-center gap-2 ">
-                <p className="text-gray-400 font-thin self-center">Birthday:</p>
-                <input className="rounded-xl shadow-md p-3 px-5 w-full" placeholder="birthday"/>
-            </div>
+         
+          {userInfoList?.map((list)=>{
+            return <List title={list.title} data={list.data}/>
+          })}
         </div>
       </>
 
