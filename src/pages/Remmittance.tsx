@@ -41,8 +41,6 @@ const Remmittance = () => {
   const [toAmount, setToAmount] = useState<any>()
   const [selectToCurrency, setSelectToCurrency] = useState<any>()
   const [rate, setRate] = useState<number>()
-  const getUsersList = useGetUserListQuery(access_token)
-  const Users = getUsersList?.data?.data
   const [selectedUser, setSelectedUser] = useState<any>()
   const [userOptions, setUserOptions] = useState([])
   const [uploadedDatas, setUploadDatas] = useState<any>([])
@@ -52,10 +50,26 @@ const Remmittance = () => {
   const [modalImgUrl, setModalImgUrl] = useState<string>('')
   const [createRemittance] = useCreateRemittanceMutation();
   const [uploadFile] = useFileUploadMutation();
-  const [selectAndRecvAccCheck, setSelectAndRecvAccCheck] = useState(false)
   const [transactionPurpose, setTransactionPurpose] = useState<string>('')
   const [documentType, setDocumentType] = useState<string>('')
+  const [search,setSearch] = useState<string>('')
+  const getUsersList = useGetUserListQuery({ token: access_token, search });
+    const Users = getUsersList?.data?.data;
 
+  useEffect(() => {
+    console.log("searchChange",search);
+
+    if (search && Users ) {
+      console.log('Users :>> ', Users);
+
+      const filteredOptions = Users?.filter((item:any) =>
+        item?.name?.toUpperCase().includes(search.toUpperCase()) || item?.first_name?.toUpperCase().includes(search.toUpperCase()) || item?.last_name?.toUpperCase().includes(search.toUpperCase())
+      );
+      setUserOptions(filteredOptions);
+    } else {
+      setUserOptions([]);
+    }
+  }, [search, getUsersList]);
 
   const documentTypeArray: { value: string; label: string }[] = [
     { value: 'bank-statements', label: 'Bank Statements' },
@@ -89,11 +103,11 @@ const Remmittance = () => {
     },
     {
       title: 'You send',
-      value: <p>{fromAmount}</p>
+      value: <p>{fromAmount} {selectFromCurrency?.currency?.symbol}</p>
     },
     {
       title: 'Total to Recieve',
-      value: <p className="font-normal text-orange-300">{toAmount}</p>
+      value: <p className="font-normal text-orange-300">{toAmount} {selectToCurrency?.currency?.symbol}</p>
     }
   ]
   const purpose: { value: string; label: string }[] = [
@@ -125,8 +139,9 @@ const Remmittance = () => {
     searchSelectFromCurrency && setSelectFromCurrency(searchSelectFromCurrency)
     const public_sell = selectToCurrency?.public_sell
     const public_buy = searchSelectFromCurrency?.public_buy
-    const calRate = public_sell * public_buy
+    const calRate = public_sell / public_buy
     selectToCurrency && setRate(calRate)
+    toAmount && setToAmount(fromAmount * calRate)
     setPublicBuy(public_buy)
   }
 
@@ -188,11 +203,9 @@ const Remmittance = () => {
     }
   }
 
-  const handleUserSearch = (value: any) => {
-    const filteredOptions = Users?.filter((item: any) =>
-      item.username.toUpperCase().startsWith(value.toUpperCase()) || item.email.toUpperCase().startsWith(value.toUpperCase())
-    );
-    setUserOptions(filteredOptions);
+  const handleUserSearch =async (value: any) => {
+    setSearch(value);
+
   };
 
   const handleRemoveData = (index: number) => {
@@ -218,12 +231,12 @@ const Remmittance = () => {
   const handleCreateRemittance = async () => {
     let prepareData = {
       "destination_country_id": selectedCountry?.id,
-      "department_id": userInfo?.departments?.[0]?.id,
+      "department_id": parseInt(import.meta.env.VITE_DEPARTMENT_ID),
       "entity_id": selectedUser?.id,
       "entity_address_id": 484,
       "sale_user_id": userInfo?.id,
       "kyc_screen": 0,
-      "purpose_of_transfer": "Developer testing",
+      "purpose_of_transfer": transactionPurpose,
       "process_fee": {
         "enable": 0,
         "fees": []
@@ -236,7 +249,8 @@ const Remmittance = () => {
           "exchange_rate": rate,
           "calculation_amount": toAmount
         }
-      ]
+      ],
+      'files': uploadedDatas.map((item:any)=> {return {'file_id':item?.id,'file_type':documentType}})
 
     }
     console.log("prepareData", prepareData);
@@ -249,8 +263,6 @@ const Remmittance = () => {
     }
 
   }
-
-
 
   return (
     <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
@@ -406,13 +418,14 @@ const Remmittance = () => {
 
                       <img src={selectedUser?.avatar_url} className="h-14 w-14 rounded-full" />
                       <div className="flex flex-col text-gray-500">
-                        <p className="text text-[#2d4da3]">{selectedUser?.username}</p>
+                        <p className="text text-[#2d4da3]">{selectedUser?.name || `${selectedUser.first_name} ${selectedUser.last_name}`}</p>
                         <p className="text-sm">{selectedUser?.email}</p>
                       </div>
                       <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div>
                     </div>
                   </div>
                 </div>}
+
               {!selectedUser && <AutoComplete
                 onSelect={onUserSelect}
                 onSearch={handleUserSearch}
@@ -420,21 +433,15 @@ const Remmittance = () => {
                 className="!w-full h-14"
               >
                 {userOptions.map((item: any) => (
-                  <Option key={item?.username} value={item?.id}>
+                  <Option key={item?.name || item.first_name} value={item?.id}>
                     <div className="flex gap-2">
                       <img src={item.avatar_url} className="w-6 h-6 rounded-full" />
-                      <p>{item.username}</p>
+                      <p>{item?.name || item?.first_name}</p>
                     </div>
                   </Option>
                 ))}
               </AutoComplete>}
-              {/*  */}
-              <div className="flex flex-cols gap-2 w-full">
-                <Checkbox defaultChecked={selectAndRecvAccCheck} onClick={() => setSelectAndRecvAccCheck(!selectAndRecvAccCheck)} />
-                <p className="font-thin text-gray-500 text-sm">
-                  Select and Recieve account
-                </p>
-              </div>
+
               <p className="font-thin text-gray-500">Transaciton Purpose</p>
               <Select className="h-12" placeholder="Select Purpose" options={purpose} onChange={(value) => setTransactionPurpose(value)} />
 
@@ -495,17 +502,14 @@ const Remmittance = () => {
 
                       <img src={selectedUser?.avatar_url} className="h-14 w-14 rounded-full" />
                       <div className="flex flex-col text-gray-500">
-                        <p className="text text-[#2d4da3]">{selectedUser?.username}</p>
+                        <p className="text text-[#2d4da3]">{selectedUser?.name || `${selectedUser.first_name} ${selectedUser.last_name}`}</p>
                         <p className="text-sm">{selectedUser?.email}</p>
                       </div>
                       <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div>
                     </div>
                   </div>
                 </div>}              <div className="flex flex-cols gap-2 w-full">
-                <Checkbox disabled defaultChecked={selectAndRecvAccCheck} />
-                <p className="font-thin text-gray-500">
-                  Select and Recieve account
-                </p>
+                
               </div>
 
               {summaryList.map((list: any) => {

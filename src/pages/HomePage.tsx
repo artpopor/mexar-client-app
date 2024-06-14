@@ -21,6 +21,7 @@ const HomePage = () => {
     const from_currency = items[0].from_currency.code;
     console.log("from_currency :>> ", from_currency);
     // const from_amount = items[0].from_amount
+    const from_flag = items[0].from_currency.flag
     const from_amount = parseFloat(items[0].from_amount).toFixed(2);
     const date = new Date(items[0].created_at);
     const year = date.getUTCFullYear();
@@ -43,7 +44,7 @@ const HomePage = () => {
         </div>
         <div className="flex self-center flex-cols justify-around content-between w-full">
           <p className="text-xl text-[#56aef5] m-1">
-          <p className="text-sm md:text-xl">{from_currency}</p> {from_amount}
+            <p className="text-sm md:text-xl">{from_currency}</p> {from_amount}
           </p>
           <p className="text-xl text-[#f5ac56] m-1">
             <p className="text-sm md:text-xl">{to_currency}</p> {to_amount}
@@ -53,24 +54,24 @@ const HomePage = () => {
       </div>
     );
   };
-  useEffect(()=>{
+  useEffect(() => {
     const checkIsAuthen = () => {
-          const isAuthen = localStorage.getItem("access_token")
-          if(!isAuthen){
-            navigate('/login')
-          }
+      const isAuthen = localStorage.getItem("access_token")
+      if (!isAuthen) {
+        navigate('/login')
+      }
     }
     checkIsAuthen()
-  },[])
-  useEffect(()=>{
+  }, [])
+  useEffect(() => {
     console.log('error :>> ', error);
-    if(error){navigate('/login')}
-  },[error])
+    if (error) { navigate('/login') }
+  }, [error])
   return (
     <div className="flex flex-col justify-start  content-around h-full items-center drop-shadow-md">
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
         <div className="text-white text-3xl content-center ">
-          <GoGear className="cursor-pointer" onClick={()=>navigate('/setting')} />
+          <GoGear className="cursor-pointer" onClick={() => navigate('/setting')} />
         </div>
         <ProfileSection />
       </div>
@@ -94,7 +95,7 @@ const HomePage = () => {
         </div>
         <div className="flex flex-cols justify-between text-gray-500">
           <p className="font-medium">Last Transaction</p>
-          <p className="font-medium cursor-pointer" onClick={()=>navigate('/transaction')}>see all</p>
+          <p className="font-medium cursor-pointer" onClick={() => navigate('/transaction')}>see all</p>
         </div>
         <hr className="w-full" />
         {/* Transaction List */}
@@ -107,7 +108,7 @@ const HomePage = () => {
             </div>
 
           </div>
-          <hr className="w-full mb-2"/>
+          <hr className="w-full mb-2" />
 
           {data?.data?.map((list: any) => {
             return <TransactionList data={list} />;

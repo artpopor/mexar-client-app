@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export const jsonServerApi = createApi({
-  reducerPath: "jsonServerApi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
+
+export const jsonBackOfficeServerApi = createApi({
+  reducerPath: "jsonBackOfficeServerApi",
+  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_BACKOFFICE }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (data) => ({
@@ -25,49 +26,13 @@ export const jsonServerApi = createApi({
     }),
     getUserTransaction: builder.query({
       query: (token) => ({
-        url: 'ewallet/me/transactions?include=user,entity,fees,items&currency_id=2&transaction_type=transfer,deposit',
+        url: 'transactions?user_id=1&include=items,entity,user',
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }),
     }),
-    
-  
-    getRate: builder.query({
-      query: (token) => ({
-        url: 'ewallet/rates',
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
-    getTransactionDetail: builder.query({
-      query: ({token,transactionId}) => ({
-        url: `ewallet/me/transactions/${transactionId}`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
-   
-    getUserInfo: builder.query({
-      query: (token) => ({
-        url: `me`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    }),
-  }),
-});
-export const jsonBackOfficeServerApi = createApi({
-  reducerPath: "jsonBackOfficeServerApi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_BACKOFFICE }),
-  endpoints: (builder) => ({
     getUserInfo: builder.query({
       query: (token) => ({
         url: `me`,
@@ -101,7 +66,7 @@ export const jsonBackOfficeServerApi = createApi({
 
     getCurrencyList: builder.query({
       query: (token) => ({
-        url: '/departments/1/currencies/rates?include=currency',
+        url: `/departments/${import.meta.env.VITE_DEPARTMENT_ID}/currencies/rates?include=currency`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -110,8 +75,8 @@ export const jsonBackOfficeServerApi = createApi({
     }),
 
     getUserList: builder.query({
-      query: ({token}) => ({
-        url: `users`,
+      query: ({token,search}) => ({
+        url: `crm/entities?q=${search}`,
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -130,17 +95,28 @@ export const jsonBackOfficeServerApi = createApi({
       }),
     }),
 
-    
+    getTransactionDetail: builder.query({
+      query: ({token,transactionId}) => ({
+        url: `transactions/${transactionId}?include=items,department,user,entity,fees,files,flows`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useVerifyOtpMutation, useGetUserTransactionQuery,useGetRateQuery,useGetTransactionDetailQuery} = jsonServerApi;
 
  export const {
   useGetUserInfoQuery,
+  useGetUserTransactionQuery,
   useCreateRemittanceMutation,
   useGetCountryListQuery,
   useGetCurrencyListQuery,
   useGetUserListQuery,
-  useFileUploadMutation
+  useFileUploadMutation,
+  useLoginMutation,
+  useVerifyOtpMutation,
+  useGetTransactionDetailQuery
  } = jsonBackOfficeServerApi

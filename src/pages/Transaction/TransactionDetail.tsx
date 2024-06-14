@@ -9,10 +9,13 @@ import { FaList } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa";
 import { useGetTransactionDetailQuery } from "../../services/apiStore";
 import { useParams } from "react-router-dom";
-import { Checkbox } from "antd";
+import { Checkbox,Modal } from "antd";
 
 const TransactionDetail = () => {
   const navigate = useNavigate();
+  const [modalImgUrl, setModalImgUrl] = useState<string>('')
+  const [showModal, setShowModal] = useState<boolean>(false)
+
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
   const { transactionId } = useParams();
@@ -21,43 +24,51 @@ const TransactionDetail = () => {
     token: access_token,
     transactionId: transactionId,
   });
+  const items = data?.data?.items
+  const uploadedDatas = data?.data?.files
+  const user = data?.data.user
   useEffect(() => {
-    console.log("data :>> ", data?.data?.items?.[0].to_amount);
+    console.log("data :>> ", data?.data);
   }, [data]);
   useEffect(() => {
     if (error) {
       navigate("/login");
     }
   }, [error]);
-  const detailLists = [
+  const summaryList = [
     {
-      title: "Purpose of transaction",
-      data: "",
+      title: 'Purpose of transaction',
+      value: <p className="font-normal text-gray-500">{}</p>
     },
     {
-      title: "Public Buy",
-      data: "",
+      title: 'Public Buy',
+      value: <p>{items?.[0]?.from_currency_buy_rate}</p>
     },
     {
-        title: "Total to recieve",
-        data: data?.data?.items?.[0].to_amount,
-      },
-  ];
-  const List = ({ title, data }: any) => {
-    return (
-      <>
-        <div className="flex flex-cols justify-between text-gray-500 font-thin">
-          <p>{title}</p>
-          <p className="font-normal">{data}</p>
-        </div>
-        <hr className="w-full " />
-      </>
-    );
-  };
+      title: 'Public Sell',
+      value: <p>{items?.[0]?.to_currency_sell_rate}</p>
+    },
+    {
+      title: 'Exchange Rate',
+      value: <p>{items?.[0]?.transaction_exchange_rate}</p>
+    },
+    {
+      title: 'You send',
+      value: <p>{items?.[0]?.from_amount} {items?.[0]?.from_currency?.symbol}</p>
+    },
+    {
+      title: 'Total to Recieve',
+      value: <p className="font-normal text-orange-300">{items?.[0]?.to_amount} {items?.[0]?.to_currency?.symbol}</p>
+    }
+   ]
+
 
   return (
     <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
       {/* Main Content here */}
+      {showModal && <Modal width={'80vw'} footer={null} open={showModal} onClose={() => setShowModal(!showModal)} closable onCancel={() => setShowModal(!showModal)}>
+        <img src={modalImgUrl} />
+      </Modal>}
       <>
         <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
           <div
@@ -78,21 +89,42 @@ const TransactionDetail = () => {
             <div className="shadow-lg w-full flex rounded-2xl bg-white p-5">
               <div className="flex gap-4">
                 <img
-                  src={data?.data?.user?.avatar_url}
+                  src={user?.avatar_url}
                   className="rounded-full h-10 w-10"
                 />
-                <p className="text-blue-900">{data?.data?.user?.name}</p>
+                <p className="text-blue-900">{user?.name || `${user?.first_name} ${user?.last_name}`}</p>
               </div>
             </div>
-            <div className="flex flex-cols gap-3">
-              <Checkbox />
-              <p className="text-gray-500 text-md font-thin">
-                Send and recieve account
-              </p>
-            </div>
-            {detailLists.map((list) => {
-              return <List title={list?.title} data={list?.data} />;
-            })}
+       
+            {summaryList?.map((list: any) => {
+                return (
+                  <div className="">
+                    <div className="flex flex-cols justify-between">
+                      <p className="font-thin text-gray-500">
+                        {list?.title}
+                      </p>
+                      {list?.value}
+                    </div>
+
+                    <hr className="m-1 w-full" />
+
+                  </div>
+                )
+              })}
+                  <p className=" text-gray-500 font-medium">Transaction file</p>
+              {uploadedDatas?.map((data: any, index: number) => {
+                return (
+                  <>
+                    <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" >
+                    
+
+                      <p className="text-gray-500 text-sm m-2 font-light">{data?.original_client_name}</p>
+                      {(data?.file?.mime_type == "image/png" || data?.file?.mime_type == "image/jpg") && <img src={data?.file?.url} onClick={() => { setModalImgUrl(data?.file?.url); setShowModal(true) }} />}
+                    </div>
+                  </>
+
+                )
+              })}
           </div>
         </div>
       </>
