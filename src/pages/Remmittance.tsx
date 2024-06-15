@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect, HTMLProps } from "react";
+import React, { useState, useEffect, HTMLProps } from "react";
 import MenuBar from "../components/MenuBar";
 import { IoChevronBack } from "react-icons/io5";
 import ProfileSection from "./ProfileSection";
 import "../components/components.css";
-import React from "react";
-import type { DefaultOptionType } from "antd/es/select";
 import Button from "../components/Button";
 import {
   useGetCountryListQuery,
@@ -13,22 +11,18 @@ import {
   useGetUserInfoQuery,
   useGetUserListQuery,
   useCreateRemittanceMutation,
-  useFileUploadMutation
 } from "../services/apiStore";
-import CustomSelect from "../components/CustomSelect";
-import { AutoComplete, Input, Select, Upload, Checkbox, Modal, Alert, notification, Space } from "antd";
+import Input from "../components/Input";
+import { AutoComplete, Select, Modal, notification } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
-
 const Remmittance = () => {
   const navigate = useNavigate();
-  const [api, contextHolder] = notification.useNotification();
-
   const access_token = localStorage.getItem("access_token");
   const [step, setStep] = useState<string>("step1");
   const { Option } = AutoComplete;
-  const [options, setOptions] = useState([]);
+  const [options, setOptions] = useState<[]>([]);
   const CountryListData = useGetCountryListQuery(access_token);
   const getUserInfo = useGetUserInfoQuery(access_token)
   const userInfo = getUserInfo?.data?.data
@@ -37,32 +31,33 @@ const Remmittance = () => {
   const CurrencyListData = useGetCurrencyListQuery(access_token);
   const CurrencyListArray = CurrencyListData?.data?.data;
   const [selectFromCurrency, setSelectFromCurrency] = useState<any>()
-  const [fromAmount, setFromAmount] = useState<any>()
-  const [toAmount, setToAmount] = useState<any>()
+  const [fromAmount, setFromAmount] = useState<number>()
+  const [toAmount, setToAmount] = useState<number>()
   const [selectToCurrency, setSelectToCurrency] = useState<any>()
   const [rate, setRate] = useState<number>()
   const [selectedUser, setSelectedUser] = useState<any>()
-  const [userOptions, setUserOptions] = useState([])
+  const [userOptions, setUserOptions] = useState<[]>([])
   const [uploadedDatas, setUploadDatas] = useState<any>([])
-  const [publicBuy, setPublicBuy] = useState()
-  const [publicSell, setPublicSell] = useState()
+  const [publicBuy, setPublicBuy] = useState<number | null>()
+  const [publicSell, setPublicSell] = useState<number | null>()
   const [showModal, setShowModal] = useState<boolean>(false)
   const [modalImgUrl, setModalImgUrl] = useState<string>('')
   const [createRemittance] = useCreateRemittanceMutation();
-  const [uploadFile] = useFileUploadMutation();
   const [transactionPurpose, setTransactionPurpose] = useState<string>('')
   const [documentType, setDocumentType] = useState<string>('')
-  const [search,setSearch] = useState<string>('')
+  const [search, setSearch] = useState<string>('')
   const getUsersList = useGetUserListQuery({ token: access_token, search });
-    const Users = getUsersList?.data?.data;
+  const Users = getUsersList?.data?.data;
+
+  useEffect(()=>{console.log('uploadedDatas :>> ', typeof(fromAmount))},[fromAmount])
 
   useEffect(() => {
-    console.log("searchChange",search);
+    console.log("searchChange", search);
 
-    if (search && Users ) {
+    if (search && Users) {
       console.log('Users :>> ', Users);
 
-      const filteredOptions = Users?.filter((item:any) =>
+      const filteredOptions = Users?.filter((item: any) =>
         item?.name?.toUpperCase().includes(search.toUpperCase()) || item?.first_name?.toUpperCase().includes(search.toUpperCase()) || item?.last_name?.toUpperCase().includes(search.toUpperCase())
       );
       setUserOptions(filteredOptions);
@@ -120,7 +115,7 @@ const Remmittance = () => {
     { value: 'charity', label: 'Charitable Donations' },
   ];
 
-  const handleCountrySearch = (value: any) => {
+  const handleCountrySearch = (value: string) => {
     const filteredOptions = CountryListSorted.filter((item: any) =>
       item.common_name.toUpperCase().startsWith(value.toUpperCase())
     );
@@ -141,7 +136,7 @@ const Remmittance = () => {
     const public_buy = searchSelectFromCurrency?.public_buy
     const calRate = public_sell / public_buy
     selectToCurrency && setRate(calRate)
-    toAmount && setToAmount(fromAmount * calRate)
+    fromAmount && toAmount && setToAmount(fromAmount * calRate)
     setPublicBuy(public_buy)
   }
 
@@ -170,10 +165,10 @@ const Remmittance = () => {
 
   }
 
-  const handleChangeRate = (value: any) => {
-    const rateValue = value.target.value
+  const handleChangeRate = (value: React.ChangeEvent<HTMLInputElement>) => {
+    const rateValue:number = parseFloat(value.target.value)
     setRate(rateValue)
-    setToAmount(rateValue * fromAmount)
+    fromAmount && setToAmount(rateValue * fromAmount)
   }
 
   const openNotificationWithIcon = (type: NotificationType, text: string) => {
@@ -203,9 +198,8 @@ const Remmittance = () => {
     }
   }
 
-  const handleUserSearch =async (value: any) => {
+  const handleUserSearch = async (value: string) => {
     setSearch(value);
-
   };
 
   const handleRemoveData = (index: number) => {
@@ -223,7 +217,6 @@ const Remmittance = () => {
   };
 
   const handleUploadSuccess = (data: any) => {
-
     setUploadDatas([...uploadedDatas, data?.data?.data])
     console.log(data.data.data);
   };
@@ -245,12 +238,12 @@ const Remmittance = () => {
         {
           "source_currency_id": selectFromCurrency?.currency_id,
           "target_currency_id": selectToCurrency?.currency_id,
-          "amount": parseFloat(fromAmount),
+          "amount": fromAmount,
           "exchange_rate": rate,
           "calculation_amount": toAmount
         }
       ],
-      'files': uploadedDatas.map((item:any)=> {return {'file_id':item?.id,'file_type':documentType}})
+      'files': uploadedDatas.map((item: any) => { return { 'file_id': item?.id, 'file_type': documentType } })
 
     }
     console.log("prepareData", prepareData);
@@ -329,7 +322,7 @@ const Remmittance = () => {
 
                 <p className="font-thin text-gray-500">From Currency</p>
                 <div className="flex">
-                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' onSelect={handleSelectFromCurrency}>
+                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' value={selectFromCurrency?.id} onSelect={handleSelectFromCurrency}>
                     {CurrencyListArray?.map((item: any) => (
                       <Select.Option key={item?.id} value={item?.id}>
                         <div className="flex flex-cols gap-2 justify-center content-center self-center">
@@ -342,25 +335,29 @@ const Remmittance = () => {
                       </Select.Option>
                     ))}
                   </Select>
-                  <input
-                    className="w-full border rounded-xl rounded-l-none p-4 h-14"
+              
+                  <Input
+                    theme='border'
+                    className="text-[#56AEF5] text-xl rounded-l-none"
                     placeholder="From amount"
                     type="number"
-                    value={fromAmount}
                     onChange={handleChangeFromAmount}
+                    value={fromAmount}
                   />
                 </div>
-                <p className="font-thin text-gray-500">Rate</p>
-                <input
-                  className="w-full border rounded-xl p-4 h-14 text-center"
-                  placeholder="Enter rate"
+                <Input
+                  label='Rate'
+                  theme='border'
+                  className="text-center text-[#56AEF5] font-medium text-xl"
+                  placeholder="rate"
                   type="number"
                   onChange={handleChangeRate}
                   value={rate}
                 />
+
                 <p className="font-thin text-gray-500">To Currency</p>
                 <div className="flex">
-                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' onSelect={handleSelectToCurrency}>
+                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' value={selectToCurrency?.id} onSelect={handleSelectToCurrency}>
                     {CurrencyListArray?.map((item: any) => (
                       <Select.Option key={item?.id} value={item?.id}>
                         <div className="flex flex-cols gap-2 justify-center content-center self-center">
@@ -373,12 +370,13 @@ const Remmittance = () => {
                       </Select.Option>
                     ))}
                   </Select>
-                  <input
-                    className="w-full border rounded-xl rounded-l-none p-4 h-14"
+                  <Input
+                    theme='border'
+                    className="text-[#F5AC56] text-xl rounded-l-none"
                     placeholder="To amount"
                     type="number"
-                    value={toAmount}
                     onChange={handleChangeToAmount}
+                    value={toAmount}
                   />
                 </div>
               </div>
@@ -510,7 +508,7 @@ const Remmittance = () => {
                     </div>
                   </div>
                 </div>}              <div className="flex flex-cols gap-2 w-full">
-                
+
               </div>
 
               {summaryList.map((list: any) => {

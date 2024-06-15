@@ -1,6 +1,13 @@
     .ant-switch-checked {
         background-color: #FFEB80 !important;
     }
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
     .custom-select-container {
         display: flex;
         flex-direction: column;

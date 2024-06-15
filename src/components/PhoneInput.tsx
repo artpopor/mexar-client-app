@@ -1,8 +1,8 @@
-import { Space, Select, Input } from "antd";
+import { Space, Select } from "antd";
 import React, { forwardRef } from "react";
 import CountryCodeWithFlag from "../assets/CountryCodeWithFlag.json";
 import './components.css';
-
+import Input from "./Input";
 interface PhoneValue {
   dialCode: string;
   phoneNumber: string;
@@ -31,11 +31,11 @@ const PhoneInput = forwardRef<HTMLInputElement, Props>(
     };
 
     return (
-      <div className="h-11 gap-0 flex flex-cols">
+      <div className="h-14 gap-0 flex flex-cols">
         <Select
           value={value.dialCode}
           onChange={handleDialCodeChange}
-          className="h-12 custom-select-country w-[30%]"
+          className="h-14 custom-select-country w-[30%]"
         >
           {CountryCodeWithFlag.map((country) => (
             <Select.Option key={country.dial_code} value={country.dial_code}>
@@ -44,7 +44,7 @@ const PhoneInput = forwardRef<HTMLInputElement, Props>(
           ))}
         </Select>
         <Input
-          className="border-none rounded-r-xl text-lg rounded-l-none w-full "
+          className="border-none rounded-r-xl text-lg rounded-l-none w-full !h-14"
           value={value.phoneNumber}
           placeholder={props.placeholder}
           onChange={handlePhoneNumberChange}
