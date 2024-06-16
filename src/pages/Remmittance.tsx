@@ -16,6 +16,8 @@ import Input from "../components/Input";
 import { AutoComplete, Select, Modal, notification } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
+import InputSelect from "../components/InputSelect";
+import SearchSelect from "../components/SearchSelect";
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 const Remmittance = () => {
   const navigate = useNavigate();
@@ -49,7 +51,7 @@ const Remmittance = () => {
   const getUsersList = useGetUserListQuery({ token: access_token, search });
   const Users = getUsersList?.data?.data;
 
-  useEffect(()=>{console.log('uploadedDatas :>> ', typeof(fromAmount))},[fromAmount])
+  useEffect(() => { console.log('uploadedDatas :>> ', typeof (fromAmount)) }, [fromAmount])
 
   useEffect(() => {
     console.log("searchChange", search);
@@ -166,7 +168,7 @@ const Remmittance = () => {
   }
 
   const handleChangeRate = (value: React.ChangeEvent<HTMLInputElement>) => {
-    const rateValue:number = parseFloat(value.target.value)
+    const rateValue: number = parseFloat(value.target.value)
     setRate(rateValue)
     fromAmount && setToAmount(rateValue * fromAmount)
   }
@@ -257,7 +259,9 @@ const Remmittance = () => {
     }
 
   }
-
+  const onDeselectCountry = () => {
+    setSelectedCountry(null)
+  }
   return (
     <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
       {showModal && <Modal width={'80vw'} footer={null} open={showModal} onClose={() => setShowModal(!showModal)} closable onCancel={() => setShowModal(!showModal)}>
@@ -287,29 +291,21 @@ const Remmittance = () => {
               {/*CONTENT START HERE */}
               <div className="flex flex-col gap-2">
                 <p className="font-thin text-gray-500">Destination Country</p>
-                {selectedCountry &&
-                  <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2 max-w-[430px]">
-                    <div className="flex flex-col relative h-full">
-                      <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => setSelectedCountry(null)} />
-                      <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
-
-                        <img src={selectedCountry?.flag} className="h-14 w-14 rounded-full" />
-                        <div className="flex flex-col text-gray-500">
-                          <p className="text text-[#2d4da3]">{selectedCountry?.common_name}</p>
-                          <p className="text-sm">{selectedCountry?.region}</p>
-                        </div>
-                        <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400"></p>{selectedCountry?.currency_code}</div>
-                      </div>
-                    </div>
-                  </div> ||
-                  <AutoComplete
-                    onSelect={onCountrySelect}
-                    onSearch={handleCountrySearch}
-                    placeholder="Search countries"
-                    className="!w-full h-14"
-                    defaultOpen
-                  >
-                    {options.map((item: any) => (
+                
+                <SearchSelect
+                onSelect={onCountrySelect}
+                onSearch={handleCountrySearch}
+                value={selectedCountry}
+                onClose={onDeselectCountry}
+                placeholder="Destination Country"
+                selectCard={
+                  {imageUrl:selectedCountry?.flag,
+                  title:selectedCountry?.common_name,
+                  subtitle:selectedCountry?.region,
+                  rightText:selectedCountry?.currency_code}
+                }
+                >
+                {options.map((item: any) => (
                       <Option key={item.id} value={item?.common_name}>
                         <div className="flex gap-2">
                           <img src={item.flag} className="w-6 h-6 rounded-full" />
@@ -317,68 +313,44 @@ const Remmittance = () => {
                         </div>
                       </Option>
                     ))}
-                  </AutoComplete>
-                }
+                </SearchSelect>
+                <InputSelect label="From Currency" onChangeInput={handleChangeFromAmount} inputValue={fromAmount} inputPlaceHolder="From Amount" selectPlaceHolder="currency" onSelect={handleSelectFromCurrency} selectValue={selectFromCurrency?.id}>
+                  {CurrencyListArray?.map((item: any) => (
+                    <Select.Option key={item?.id} value={item?.id}>
+                      <div className="flex flex-cols gap-2 justify-center content-center self-center">
+                        <p>{item.currency.code}</p>
+                        <img
+                          className="rounded-md w-5 h-5 self-center"
+                          src={item.currency.flag}
+                        />
+                      </div>
+                    </Select.Option>
+                  ))}
+                </InputSelect>
 
-                <p className="font-thin text-gray-500">From Currency</p>
-                <div className="flex">
-                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' value={selectFromCurrency?.id} onSelect={handleSelectFromCurrency}>
-                    {CurrencyListArray?.map((item: any) => (
-                      <Select.Option key={item?.id} value={item?.id}>
-                        <div className="flex flex-cols gap-2 justify-center content-center self-center">
-                          <p>{item.currency.code}</p>
-                          <img
-                            className="rounded-md w-5 h-5 self-center"
-                            src={item.currency.flag}
-                          />
-                        </div>
-                      </Select.Option>
-                    ))}
-                  </Select>
-              
-                  <Input
-                    theme='border'
-                    className="text-[#56AEF5] text-xl rounded-l-none"
-                    placeholder="From amount"
-                    type="number"
-                    onChange={handleChangeFromAmount}
-                    value={fromAmount}
-                  />
-                </div>
                 <Input
                   label='Rate'
                   theme='border'
-                  className="text-center text-[#56AEF5] font-medium text-xl"
+                  className="text-center text-[#56AEF5] font-normal text-xl"
                   placeholder="rate"
                   type="number"
                   onChange={handleChangeRate}
                   value={rate}
                 />
 
-                <p className="font-thin text-gray-500">To Currency</p>
-                <div className="flex">
-                  <Select className="select-currency w-[40%] h-14 self-center" placeholder='Currency' value={selectToCurrency?.id} onSelect={handleSelectToCurrency}>
-                    {CurrencyListArray?.map((item: any) => (
-                      <Select.Option key={item?.id} value={item?.id}>
-                        <div className="flex flex-cols gap-2 justify-center content-center self-center">
-                          <p>{item.currency.code}</p>
-                          <img
-                            className="rounded-md w-5 h-5 self-center"
-                            src={item.currency.flag}
-                          />
-                        </div>
-                      </Select.Option>
-                    ))}
-                  </Select>
-                  <Input
-                    theme='border'
-                    className="text-[#F5AC56] text-xl rounded-l-none"
-                    placeholder="To amount"
-                    type="number"
-                    onChange={handleChangeToAmount}
-                    value={toAmount}
-                  />
-                </div>
+                <InputSelect inputClassName="text-[#F5AC56]" label="To Currency" onChangeInput={handleChangeToAmount} inputPlaceHolder="From Amount" selectPlaceHolder="currency" inputValue={toAmount} onSelect={handleSelectToCurrency} selectValue={selectToCurrency?.id}>
+                  {CurrencyListArray?.map((item: any) => (
+                    <Select.Option key={item?.id} value={item?.id}>
+                      <div className="flex flex-cols gap-2 justify-center content-center self-center">
+                        <p>{item.currency.code}</p>
+                        <img
+                          className="rounded-md w-5 h-5 self-center"
+                          src={item.currency.flag}
+                        />
+                      </div>
+                    </Select.Option>
+                  ))}
+                </InputSelect>
               </div>
             </div>
             <Button
@@ -409,28 +381,21 @@ const Remmittance = () => {
             <div className="flex flex-col gap-3">
               <p className="font-thin text-gray-500">Select custormer</p>
               {/*  */}
-              {selectedUser &&
-                <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2 max-w-[430px]">
-                  <div className="flex flex-col relative h-full">
-                    <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => setSelectedUser(null)} />
-                    <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
-
-                      <img src={selectedUser?.avatar_url} className="h-14 w-14 rounded-full" />
-                      <div className="flex flex-col text-gray-500">
-                        <p className="text text-[#2d4da3]">{selectedUser?.name || `${selectedUser.first_name} ${selectedUser.last_name}`}</p>
-                        <p className="text-sm">{selectedUser?.email}</p>
-                      </div>
-                      <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div>
-                    </div>
-                  </div>
-                </div>}
-
-              {!selectedUser && <AutoComplete
+      
+                    
+              <SearchSelect
+                placeholder="Username or email"
                 onSelect={onUserSelect}
                 onSearch={handleUserSearch}
-                placeholder="Username or email"
-                className="!w-full h-14"
-              >
+                value={selectedUser}
+                onClose={() => setSelectedUser(null)}
+                selectCard={
+                  {imageUrl:selectedUser?.avatar_url,
+                  title:selectedUser?.name || `${selectedUser?.first_name} ${selectedUser?.last_name}`,
+                  subtitle:selectedUser?.email,
+                  rightText:selectedUser?.language}
+                }
+                >
                 {userOptions.map((item: any) => (
                   <Option key={item?.name || item.first_name} value={item?.id}>
                     <div className="flex gap-2">
@@ -439,7 +404,7 @@ const Remmittance = () => {
                     </div>
                   </Option>
                 ))}
-              </AutoComplete>}
+                </SearchSelect>
 
               <p className="font-thin text-gray-500">Transaciton Purpose</p>
               <Select className="h-12" placeholder="Select Purpose" options={purpose} onChange={(value) => setTransactionPurpose(value)} />

@@ -10,6 +10,8 @@ import OTPInput from "../components/OtpInput";
 import { loginSchema } from "../Validations/loginValidation";
 import { Alert } from "antd";
 import { notification, Space } from "antd";
+import CountryCodeWithFlag from "../assets/CountryCodeWithFlag.json";
+
 import {
   useLoginMutation,
   useVerifyOtpMutation,
@@ -17,18 +19,22 @@ import {
 } from "../services/apiStore";
 import { MdMoodBad } from "react-icons/md";
 import PhoneInput from "../components/phoneInput";
+import InputSelect from "../components/InputSelect";
+import { Select } from "antd";
 const Login = () => {
   const [step, setStep] = useState<String>("getBasicInfomation");
   const navigate = useNavigate();
   const { register, handleSubmit, control } = useForm({ mode: "onChange" });
-  const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
   const [login] = useLoginMutation();
   const [verifyOtp] = useVerifyOtpMutation();
   const [userLoginData, setUserLoginData] = useState({});
-  const [loginByPhone, setLoginByPhone] = useState(false);
+  const [loginByPhone, setLoginByPhone] = useState<boolean>(false);
+  const [phoneNumber, setPhoneNumber] = useState<string>('')
+  const [dialCode, setDialCode] = useState<string>('+66')
 
-  const openNotification = async (message:string) => {
+  const openNotification = async (message: string) => {
     await notification.open({
       message: "Warning!",
       description: message,
@@ -37,20 +43,26 @@ const Login = () => {
   };
   const handleSendOtp = async (formData: any) => {
     const isValid = await loginSchema.isValid(formData);
-    if (isValid) {
-      const res = await login(formData);
-      console.log("res :>> ", res.data);
-      if (res?.data?.meta?.code == 200) {
-        setUserLoginData(formData);
-        setStep("getOtp");
-      } else {
-        openNotification("Wrong username or password!");
-      }
-    } else {
-      openNotification("username or password is not valid!");
+    switch (loginByPhone) {
+      case false:
+        break
+      case true:
+        if (isValid) {
+          const res = await login(formData);
+          console.log("res :>> ", res.data);
+          if (res?.data?.meta?.code == 200) {
+            setUserLoginData(formData);
+            setStep("getOtp");
+          } else {
+            openNotification("Wrong username or password!");
+          }
+        } else {
+          openNotification("username or password is not valid!");
+        }
+        break
     }
-  };
 
+  };
   const handleLogin = async (formData: any) => {
     console.log("formData :>> ", formData);
     const res = await verifyOtp(formData);
@@ -97,7 +109,7 @@ const Login = () => {
                 <p>
                   Login by <b>'Email'</b>
                 </p>
-                <CustomSwitch  onChange={() => setLoginByPhone(!loginByPhone)} />
+                <CustomSwitch onChange={() => setLoginByPhone(!loginByPhone)} />
               </div>
 
               {(loginByPhone && (
@@ -108,19 +120,21 @@ const Login = () => {
                   maxLength={20}
                 />
               )) || (
-                <Controller
-                name="phone"
-                control={control}
-                defaultValue={{ dialCode: "+66", phoneNumber: "" }}
-                
-                render={({ field }) => (
-                  <PhoneInput
-                    {...field}
-                    placeholder="xx-xxx-xxx"
-                  />
+                  <InputSelect onChangeInput={(e) => setPhoneNumber(e.target.value)} onSelect={(e) => setDialCode(e)} defaultSelectValue='+66' inputClassName="!text-gray-500" inputPlaceHolder="xx-xxx-xxx"  >
+                    {CountryCodeWithFlag?.map((item: { name: string, code: string, emoji: string, image: string, dial_code: string }) => (
+                      <Select.Option key={item?.code} value={item?.dial_code} >
+                        <div className="flex flex-cols gap-2 justify-center content-center self-center">
+                          <p>{item?.emoji}</p>
+                          <p>{item?.dial_code}</p>
+                        </div>
+                      </Select.Option>
+                    ))}
+                  </InputSelect>
+
+
                 )}
-              />
-              )}
+
+
               <div className="flex flex-col justify-end text-end gap-2">
                 <Input
                   {...register("password")}
@@ -134,7 +148,7 @@ const Login = () => {
                 type="submit"
                 className="w-full"
                 onClick={handleSubmit(handleSendOtp)}
-                
+
               >
                 SEND OTP
               </Button>

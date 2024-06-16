@@ -9,7 +9,7 @@ const Input = forwardRef<HTMLInputElement, Props>(({ className,theme, ...props }
   if (theme == 'border') { baseClassName += "border" }
   return  (
   <>
-    <p className="font-thin text-gray-500">{props.label}</p>
+    <p className="font-thin text-gray-500 ">{props.label}</p>
     <input  {...props} ref={ref} className={`${baseClassName} ${className}`} />
   </>
   );

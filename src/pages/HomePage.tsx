@@ -6,12 +6,9 @@ import { FaChevronRight } from "react-icons/fa";
 import MenuBar from "../components/MenuBar";
 import ProfileSection from "./ProfileSection";
 import { useGetUserTransactionQuery } from "../services/apiStore";
-
+import { Spin } from "antd";
 const HomePage = () => {
   const navigate = useNavigate();
-  const draftArrayData = [1, 2, 3, 4, 5, 6];
-  const profileImgUrl =
-    "https://images.unsplash.com/photo-1542596594-649edbc13630?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aGFwcHklMjBnaXJsfGVufDB8fDB8fHww";
   const { data, error, isLoading } = useGetUserTransactionQuery(
     localStorage.getItem("access_token")
   );
@@ -19,9 +16,6 @@ const HomePage = () => {
   const TransactionList = (data: any) => {
     const { user, items } = data.data;
     const from_currency = items[0].from_currency.code;
-    console.log("from_currency :>> ", from_currency);
-    // const from_amount = items[0].from_amount
-    const from_flag = items[0].from_currency.flag
     const from_amount = parseFloat(items[0].from_amount).toFixed(2);
     const date = new Date(items[0].created_at);
     const year = date.getUTCFullYear();
@@ -109,7 +103,9 @@ const HomePage = () => {
 
           </div>
           <hr className="w-full mb-2" />
-
+          {
+            isLoading && <Spin className="self-center w-full !h-full" size="large"/>
+          }
           {data?.data?.map((list: any) => {
             return <TransactionList data={list} />;
           })}
