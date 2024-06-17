@@ -8,6 +8,8 @@ import "../../components/components.css";
 import { FaList } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa";
 import { useGetUserTransactionQuery } from "../../services/apiStore";
+import { Spin } from "antd";
+import { MdExpandMore } from "react-icons/md";
 
 const Transaction = () => {
   const navigate = useNavigate();
@@ -26,9 +28,7 @@ const Transaction = () => {
 
     refetch();
   }, []);
-  useEffect(()=>{console.log(data.data);},[
-    data
-  ])
+
   const TransactionList = (data: any) => {
     const { user, items,entity } = data.data;
     const from_currency = items[0].from_currency.code;
@@ -44,20 +44,20 @@ const Transaction = () => {
     const to_currency = items[0].to_currency.code;
     const to_amount = parseFloat(items[0].to_amount).toFixed(2);
     return (
-      <div onClick={()=>navigate(`${items?.[0]?.id}`)} className="bg-white cursor-pointer hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
-        <div  className=" w-full flex flex-cols content-center self-center gap-3">
-          <img
+      <div onClick={()=>navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
+        <div  className="flex w-[40%] flex-cols content-center self-center gap-3">
+          {/* <img
             width={30}
             height={30}
             className="rounded-full w-10 h-10 object-cover	"
             src={user?.avatar_url}
-          />
+          /> */}
           <div>
             <p className="text-[#56aef5]">{entity?.name || `${entity?.first_name} ${entity?.last_name}`} </p>
             <p className="self-center text-sm text-gray-500">{formattedDate}</p>
           </div>
         </div>
-        <div className="flex flex-row justify-around w-full">
+        <div className="grid grid-cols-2 justify-between w-[60%]">
           <div className="flex flex-row">
             <img
               width={30}
@@ -90,7 +90,7 @@ const Transaction = () => {
   };
 
   return (
-    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-auto">
+    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md min-h-screen">
       {/* Main Content here */}
       <>
         <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
@@ -107,26 +107,29 @@ const Transaction = () => {
           Transaction
         </p>
 
-        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none">
+        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none min-h-screen">
           <div className="flex flex-col justify-start gap-4 h-full">
             <div className="flex flex-cols justify-end gap-3 content-center">
               List view
               <FaList className="self-center" />
             </div>
             <div className="w-full  flex flex-cols justify-between">
-              <div className="w-full"></div>
+              <div className="w-[40%]"></div>
               <div className="flex flex-cols justify-around w-full">
                 <p>From</p>
                 <p>To</p>
               </div>
             </div>
 
-            <hr className="w-full mb-2" />
+            <hr className="w-full" />
             <div>
               {data?.data?.map((list: any) => {
                 return <TransactionList data={list} />;
               })}
             </div>
+            {
+            isLoading && <Spin className="self-center w-full !h-full" size="large"/>
+          }
           </div>
         </div>
       </>

@@ -149,7 +149,7 @@ const Remmittance = () => {
     const public_sell = searchSelectToCurrency.public_sell
     const public_buy = selectFromCurrency?.public_buy
     const calRate = public_sell / public_buy
-    console.log(public_sell.toString(),public_buy.toString());
+    console.log(public_sell.toString(), public_buy.toString());
     selectFromCurrency && setRate(calRate)
     fromAmount && setToAmount(fromAmount * calRate)
     setPublicSell(public_sell)
@@ -293,28 +293,30 @@ const Remmittance = () => {
               {/*CONTENT START HERE */}
               <div className="flex flex-col gap-2">
                 <p className="font-thin text-gray-500">Destination Country</p>
-                
+
                 <SearchSelect
-                onSelect={onCountrySelect}
-                onSearch={handleCountrySearch}
-                value={selectedCountry}
-                onClose={onDeselectCountry}
-                placeholder="Destination Country"
-                selectCard={
-                  {imageUrl:selectedCountry?.flag,
-                  title:selectedCountry?.common_name,
-                  subtitle:selectedCountry?.region,
-                  rightText:selectedCountry?.currency_code}
-                }
+                  onSelect={onCountrySelect}
+                  onSearch={handleCountrySearch}
+                  value={selectedCountry}
+                  onClose={onDeselectCountry}
+                  placeholder="Destination Country"
+                  selectCard={
+                    {
+                      imageUrl: selectedCountry?.flag,
+                      title: selectedCountry?.common_name,
+                      subtitle: selectedCountry?.region,
+                      rightText: selectedCountry?.currency_code
+                    }
+                  }
                 >
-                {options.map((item: any) => (
-                      <Option key={item.id} value={item?.common_name}>
-                        <div className="flex gap-2">
-                          <img src={item.flag} className="w-6 h-6 rounded-full" />
-                          <p>{item.common_name}</p>
-                        </div>
-                      </Option>
-                    ))}
+                  {options.map((item: any) => (
+                    <Option key={item.id} value={item?.common_name}>
+                      <div className="flex gap-2">
+                        <img src={item.flag} className="w-6 h-6 rounded-full" />
+                        <p>{item.common_name}</p>
+                      </div>
+                    </Option>
+                  ))}
                 </SearchSelect>
                 <InputSelect label="From Currency" onChangeInput={handleChangeFromAmount} inputValue={fromAmount} inputPlaceHolder="From Amount" selectPlaceHolder="currency" onSelect={handleSelectFromCurrency} selectValue={selectFromCurrency?.id}>
                   {CurrencyListArray?.map((item: any) => (
@@ -383,8 +385,8 @@ const Remmittance = () => {
             <div className="flex flex-col gap-3">
               <p className="font-thin text-gray-500">Select custormer</p>
               {/*  */}
-      
-                    
+
+
               <SearchSelect
                 placeholder="Username or email"
                 onSelect={onUserSelect}
@@ -392,12 +394,14 @@ const Remmittance = () => {
                 value={selectedUser}
                 onClose={() => setSelectedUser(null)}
                 selectCard={
-                  {imageUrl:selectedUser?.avatar_url,
-                  title:selectedUser?.name || `${selectedUser?.first_name} ${selectedUser?.last_name}`,
-                  subtitle:selectedUser?.email,
-                  rightText:selectedUser?.language}
+                  {
+                    imageUrl: selectedUser?.avatar_url,
+                    title: selectedUser?.name || `${selectedUser?.first_name} ${selectedUser?.last_name}`,
+                    subtitle: selectedUser?.email,
+                    rightText: selectedUser?.language
+                  }
                 }
-                >
+              >
                 {userOptions.map((item: any) => (
                   <Option key={item?.name || item.first_name} value={item?.id}>
                     <div className="flex gap-2">
@@ -406,13 +410,14 @@ const Remmittance = () => {
                     </div>
                   </Option>
                 ))}
-                </SearchSelect>
+              </SearchSelect>
 
               <p className="font-thin text-gray-500">Transaciton Purpose</p>
-              <Select className="h-12" placeholder="Select Purpose" options={purpose} onChange={(value) => setTransactionPurpose(value)} />
+              <Select className="h-12" value={transactionPurpose} placeholder="Select Purpose" options={purpose} onChange={(value) => setTransactionPurpose(value)} />
 
               <p className="font-thin text-gray-500">Document Type</p>
               <Select
+                value={documentType}
                 className="h-12 mb-3"
                 placeholder="Select Document Type"
                 options={documentTypeArray}
@@ -494,21 +499,23 @@ const Remmittance = () => {
                 )
               })}
               <p className=" text-gray-500 font-medium">Transaction file</p>
-              {uploadedDatas?.map((data: any, index: number) => {
-                return (
-                  <>
-                    <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" onClick={() => { setModalImgUrl(data.url); setShowModal(true) }}>
-                      <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
-                        handleRemoveData(index)
-                      }} />
+              <div className="grid grid-cols-2 gap-2">
 
-                      <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
-                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
-                    </div>
-                  </>
+                {uploadedDatas?.map((data: any, index: number) => {
+                  return (
+                    <>
+                      <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer" onClick={() => { setModalImgUrl(data.url); setShowModal(true) }}>
+                        <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => {
+                          handleRemoveData(index)
+                        }} />
 
-                )
-              })}
+                        <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
+                        {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
+                      </div>
+                    </>
+
+                  )
+                })}</div>
             </div>
 
             <Button

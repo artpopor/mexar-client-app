@@ -7,15 +7,29 @@ import MenuBar from "../components/MenuBar";
 import ProfileSection from "./ProfileSection";
 import { useGetUserTransactionQuery } from "../services/apiStore";
 import { Spin } from "antd";
+import { MdExpandMore } from "react-icons/md";
 const HomePage = () => {
   const navigate = useNavigate();
   const { data, error, isLoading } = useGetUserTransactionQuery(
     localStorage.getItem("access_token")
   );
+  function formatNumber(num: number) {
+    if (num >= 1e9) {
+      return (num / 1e9).toFixed(2) + 'B';
+    } else if (num >= 1e6) {
+      return (num / 1e6).toFixed(2) + 'M';
+    } else if (num >= 1e3) {
+      return (num / 1e3).toFixed(2) + 'K';
+    } else {
+      return num.toString();
+    }
+  }
 
   const TransactionList = (data: any) => {
-    const { user, items } = data.data;
+    const { user, items, entity } = data.data;
     const from_currency = items[0].from_currency.code;
+    console.log("from_currency :>> ", items);
+    // const from_amount = items[0].from_amount
     const from_amount = parseFloat(items[0].from_amount).toFixed(2);
     const date = new Date(items[0].created_at);
     const year = date.getUTCFullYear();
@@ -26,25 +40,47 @@ const HomePage = () => {
     const to_currency = items[0].to_currency.code;
     const to_amount = parseFloat(items[0].to_amount).toFixed(2);
     return (
-      <div className="bg-white mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-between ">
-        <div className="w-full flex flex-cols content-center self-center gap-3">
-          <p className="self-center text-gray-500">{formattedDate}</p>
-          <img
+      <div onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
+        <div className="flex w-[40%] flex-cols content-center self-center gap-3">
+          {/* <img
             width={30}
             height={30}
             className="rounded-full w-10 h-10 object-cover	"
             src={user?.avatar_url}
-          />
+          /> */}
+          <div>
+            <p className="text-[#56aef5]">{entity?.name || `${entity?.first_name} ${entity?.last_name}`} </p>
+            <p className="self-center text-sm text-gray-500">{formattedDate}</p>
+          </div>
         </div>
-        <div className="flex self-center flex-cols justify-around content-between w-full">
-          <p className="text-xl text-[#56aef5] m-1">
-            <p className="text-sm md:text-xl">{from_currency}</p> {from_amount}
-          </p>
-          <p className="text-xl text-[#f5ac56] m-1">
-            <p className="text-sm md:text-xl">{to_currency}</p> {to_amount}
-          </p>
+        <div className="grid grid-cols-2 justify-between w-[60%]">
+          <div className="flex flex-row">
+            <img
+              width={30}
+              height={30}
+              className="rounded-lg w-5 h-5 object-cover self-center mr-1"
+              src={items[0].from_currency.flag}
+            />
+            <p className="text-sm text-[#56aef5] m-1">
+              <p className="text-sm md:text-xl">{from_currency}</p>{" "}
+              {formatNumber(parseFloat(from_amount))}
+            </p>
+          </div>
+
+          <div className="flex flex-row">
+            <img
+              width={30}
+              height={30}
+              className="rounded-lg w-5 h-5 object-cover self-center mr-1"
+              src={items[0].to_currency.flag}
+            />
+            <p className="text-sm text-[#f5ac56] m-1">
+              <p className="text-sm md:text-xl mr-1">{to_currency}</p>{" "}
+              {formatNumber(parseFloat(to_amount))}
+            </p>
+          </div>
         </div>
-        <FaChevronRight className="self-center text-gray-400 text-2xl" />
+        {/* <FaChevronRight className="self-center text-gray-400 text-xl" /> */}
       </div>
     );
   };
@@ -62,7 +98,7 @@ const HomePage = () => {
     if (error) { navigate('/login') }
   }, [error])
   return (
-    <div className="flex flex-col justify-start  content-around h-full items-center drop-shadow-md">
+    <div className="flex flex-col justify-start  content-around min-h-screen items-center drop-shadow-md">
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
         <div className="text-white text-3xl content-center ">
           <GoGear className="cursor-pointer" onClick={() => navigate('/setting')} />
@@ -70,7 +106,7 @@ const HomePage = () => {
         <ProfileSection />
       </div>
       {/* Main Content here */}
-      <div className="bg-[#F6FAFF] !min-h-screen mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3 h-auto  rounded-b-none">
+      <div className="bg-[#F6FAFF] !min-h-screen mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3  rounded-b-none">
         <p className="font-medium text-gray-500">Services</p>
         <div className="flex self-center lg:self-start flex-cols justify-between w-full max-w-[450px] lg:w-[400px] bg-gradient-to-br from-[#5BBBFF] to-[#5983E4]  rounded-3xl p-5">
           <div className="text-white">
@@ -88,15 +124,15 @@ const HomePage = () => {
           </Button>
         </div>
         <div className="flex flex-cols justify-between text-gray-500">
-          <p className="font-medium">Last Transaction</p>
+          <p className="font-medium">Lastest Transaction</p>
           <p className="font-medium cursor-pointer hover:text-[#56AEF5]" onClick={() => navigate('/transaction')}>see all</p>
         </div>
         <hr className="w-full" />
         {/* Transaction List */}
         <div>
           <div className="w-full mb-2 text-gray-400 flex flex-cols content-between justify-between">
-            <div className="w-full"></div>
-            <div className="w-full  flex flex-cols justify-around">
+            <div className="w-[40%]"></div>
+            <div className="w-[60%] grid-cols-2 grid justify-between">
               <p>From</p>
               <p>To</p>
             </div>
@@ -104,11 +140,13 @@ const HomePage = () => {
           </div>
           <hr className="w-full mb-2" />
           {
-            isLoading && <Spin className="self-center w-full !h-full" size="large"/>
+            isLoading && <Spin className="self-center w-full !h-full" size="large" />
           }
-          {data?.data?.map((list: any) => {
+          {data?.data?.slice(0, 5).map((list: any) => {
             return <TransactionList data={list} />;
           })}
+          <MdExpandMore className="self-center w-full text-gray-400 text-3xl hover:text-[#56AEF5] cursor-pointer" onClick={() => navigate('/transaction')} />
+
         </div>
       </div>
       {/* Menu !it's absolute */}
