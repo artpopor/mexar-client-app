@@ -26,7 +26,7 @@ const TransactionDetail = () => {
   });
   const items = data?.data?.items
   const uploadedDatas = data?.data?.files
-  const user = data?.data.user
+  const user = data?.data.entity
   useEffect(() => {
     console.log("data :>> ", data?.data);
   }, [data]);
@@ -88,10 +88,10 @@ const TransactionDetail = () => {
           <div className="flex flex-col justify-start gap-4 h-full">
             <div className="shadow-lg w-full flex rounded-2xl bg-white p-5">
               <div className="flex gap-4">
-                <img
+                {user?.avatar_Url && <img
                   src={user?.avatar_url}
                   className="rounded-full h-10 w-10"
-                />
+                />}
                 <p className="text-blue-900">{user?.name || `${user?.first_name} ${user?.last_name}`}</p>
               </div>
             </div>

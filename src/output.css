@@ -832,6 +832,14 @@ video {
   min-height: 100vh;
 }
 
+.\!min-h-\[100vh\] {
+  min-height: 100vh !important;
+}
+
+.\!min-h-screen {
+  min-height: 100vh !important;
+}
+
 .\!w-full {
   width: 100% !important;
 }

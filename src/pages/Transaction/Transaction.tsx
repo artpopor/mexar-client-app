@@ -23,10 +23,14 @@ const Transaction = () => {
   }, [error]);
 
   useEffect(() => {
+
     refetch();
   }, []);
+  useEffect(()=>{console.log(data.data);},[
+    data
+  ])
   const TransactionList = (data: any) => {
-    const { user, items } = data.data;
+    const { user, items,entity } = data.data;
     const from_currency = items[0].from_currency.code;
     console.log("from_currency :>> ", items);
     // const from_amount = items[0].from_amount
@@ -49,7 +53,7 @@ const Transaction = () => {
             src={user?.avatar_url}
           />
           <div>
-            <p className="text-[#56aef5]">{user.name}</p>
+            <p className="text-[#56aef5]">{entity?.name || `${entity?.first_name} ${entity?.last_name}`} </p>
             <p className="self-center text-sm text-gray-500">{formattedDate}</p>
           </div>
         </div>

@@ -62,7 +62,6 @@ const Rate = () => {
     selectedOption && setFromCurrency(selectedOption);
   };
 
-
   const handleToCurrencySearch = (value: string) => {
     const filteredOptions = CurrencyListArray.filter((item: any) =>
       item.currency.code.toUpperCase().startsWith(value.toUpperCase())
@@ -78,7 +77,7 @@ const Rate = () => {
   };
 
   return (
-    <div className="flex flex-col relative justify-start  content-around  items-center drop-shadow-md min-h-[100vh]">
+    <div className="flex flex-col relative justify-start  content-around  items-center drop-shadow-md !min-h-screen">
       {/* Main Content here */}
       <>
       <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
@@ -95,7 +94,7 @@ const Rate = () => {
           Rate
         </p>
 
-        <div className="bg-[#F6FAFF] mt-2  w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none gap-3">
+        <div className="bg-[#F6FAFF] mt-2  w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none gap-3 !min-h-screen">
          <div className="flex flex-col gap-3 px-4 pt-4">
              <div className="flex gap-2 ">
             <p className="self-center text-end text-gray-500 w-12">From:</p>
