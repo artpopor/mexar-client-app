@@ -68,6 +68,7 @@ const Remmittance = () => {
     }
   }, [search, getUsersList]);
 
+
   const documentTypeArray: { value: string; label: string }[] = [
     { value: 'bank-statements', label: 'Bank Statements' },
     { value: 'pay-slips', label: 'Pay Slips' },
@@ -143,11 +144,12 @@ const Remmittance = () => {
   }
 
   const handleSelectToCurrency = (id: string) => {
-    const searchSelecToCurrency = CurrencyListArray.find((item: any) => item.id === id)
-    searchSelecToCurrency && setSelectToCurrency(searchSelecToCurrency)
-    const public_sell = searchSelecToCurrency.public_sell
+    const searchSelectToCurrency = CurrencyListArray.find((item: any) => item.id === id)
+    searchSelectToCurrency && setSelectToCurrency(searchSelectToCurrency)
+    const public_sell = searchSelectToCurrency.public_sell
     const public_buy = selectFromCurrency?.public_buy
     const calRate = public_sell / public_buy
+    console.log(public_sell.toString(),public_buy.toString());
     selectFromCurrency && setRate(calRate)
     fromAmount && setToAmount(fromAmount * calRate)
     setPublicSell(public_sell)

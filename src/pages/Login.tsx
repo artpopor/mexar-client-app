@@ -18,7 +18,6 @@ import {
   useGetUserTransactionQuery,
 } from "../services/apiStore";
 import { MdMoodBad } from "react-icons/md";
-import PhoneInput from "../components/phoneInput";
 import InputSelect from "../components/InputSelect";
 import { Select } from "antd";
 const Login = () => {
