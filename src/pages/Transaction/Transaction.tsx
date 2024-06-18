@@ -16,7 +16,7 @@ const Transaction = () => {
   const [fromCurrency, setFromCurrency] = useState("");
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
-  const { data, error, isLoading,refetch } = useGetUserTransactionQuery(access_token);
+  const { data, error, isLoading, refetch } = useGetUserTransactionQuery(access_token);
 
   useEffect(() => {
     if (error) {
@@ -28,9 +28,19 @@ const Transaction = () => {
 
     refetch();
   }, []);
-
+  function formatNumber(num: number) {
+    if (num >= 1e9) {
+      return (num / 1e9).toFixed(2) + 'B';
+    } else if (num >= 1e6) {
+      return (num / 1e6).toFixed(2) + 'M';
+    } else if (num >= 1e3) {
+      return (num / 1e3).toFixed(2) + 'K';
+    } else {
+      return num.toString();
+    }
+  }
   const TransactionList = (data: any) => {
-    const { user, items,entity } = data.data;
+    const { user, items, entity } = data.data;
     const from_currency = items[0].from_currency.code;
     console.log("from_currency :>> ", items);
     // const from_amount = items[0].from_amount
@@ -43,9 +53,21 @@ const Transaction = () => {
 
     const to_currency = items[0].to_currency.code;
     const to_amount = parseFloat(items[0].to_amount).toFixed(2);
+    const status = data?.data.status
+    let bgColorClass;
+
+    if (status === 'completed') {
+      bgColorClass = 'bg-green-400';
+    } else if (status === 'lead') {
+      bgColorClass = 'bg-orange-400';
+    } else if (status === 'pending') {
+      bgColorClass = 'bg-yellow-400';
+    } else {
+      bgColorClass = 'bg-gray-300'; 
+    }
     return (
-      <div onClick={()=>navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
-        <div  className="flex w-[40%] flex-cols content-center self-center gap-3">
+      <div onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-3 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
+        <div className="flex w-[40%] flex-cols content-center self-center gap-3">
           {/* <img
             width={30}
             height={30}
@@ -57,7 +79,7 @@ const Transaction = () => {
             <p className="self-center text-sm text-gray-500">{formattedDate}</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 justify-between w-[60%]">
+        <div className="grid grid-cols-2  w-[60%] content-center items-center ">
           <div className="flex flex-row">
             <img
               width={30}
@@ -67,7 +89,7 @@ const Transaction = () => {
             />
             <p className="text-sm text-[#56aef5] m-1">
               <p className="text-sm md:text-xl">{from_currency}</p>{" "}
-              {from_amount}
+              {formatNumber(parseFloat(from_amount))}
             </p>
           </div>
 
@@ -80,11 +102,12 @@ const Transaction = () => {
             />
             <p className="text-sm text-[#f5ac56] m-1">
               <p className="text-sm md:text-xl mr-1">{to_currency}</p>{" "}
-              {to_amount}
+              {formatNumber(parseFloat(to_amount))}
             </p>
           </div>
+          <p className={`${bgColorClass} text-white text-xs text-right absolute -top-2 -right-2 border b rounded-md p-1`}>{data?.data.status}</p>
+
         </div>
-        <FaChevronRight className="self-center text-gray-400 text-xl" />
       </div>
     );
   };
@@ -128,8 +151,8 @@ const Transaction = () => {
               })}
             </div>
             {
-            isLoading && <Spin className="self-center w-full !h-full" size="large"/>
-          }
+              isLoading && <Spin className="self-center w-full !h-full" size="large" />
+            }
           </div>
         </div>
       </>

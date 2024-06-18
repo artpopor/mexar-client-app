@@ -7,6 +7,7 @@ import ProfileSection from "./ProfileSection";
 import SearchSelect from "../components/SearchSelect";
 import { AutoComplete, Spin, Carousel } from "antd";
 import Input from "../components/Input";
+import { TbCoinFilled } from "react-icons/tb";
 
 const Rate = () => {
   const navigate = useNavigate();
@@ -187,13 +188,13 @@ const Rate = () => {
           </div>
 
 
-          <div className="bg-white w-full h-full rounded-3xl shadow-lg px-3">
+        {fromCurrency && <div className="bg-white w-full h-full rounded-3xl shadow-lg px-3">
             <div className="p-4 w-full flex justify-between text-gray-500 font-light">
               <p className="w-full ml-4">To Currency</p>
               <div className="flex flex-cols justify-around w-full"><p>From</p><p>To</p></div>
             </div>
 
-            {CurrencyListArray?.map((item: any) => {
+            { CurrencyListArray?.map((item: any) => {
               return (
                 <List title={item?.currency?.code} data={item} />
               )
@@ -201,7 +202,7 @@ const Rate = () => {
             {
               CurrencyListData.isLoading && <Spin className="self-center w-full !h-full m-5" size="large" />
             }
-          </div>
+          </div> || <div className="w-full text-center h-[30vh] rounded-3xl text-gray-400 items-center align-middle content-center flex gap-1 justify-center border"><p>Select From currency to see rate</p> <TbCoinFilled/></div>}
         </div>
         {toCurrency && <div className="sticky w-[90%] h-20 bg-white bottom-32 shadow-xl p-2 rounded-xl flex content-center justify-around text-center items-center">
           <Input value={fromAmount} onChange={(e) => setFromAmount(parseFloat(e.target.value))} theme="border" className="!w-[30%] text-center text-2xl !text-[#56AEF5]" />

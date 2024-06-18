@@ -99,3 +99,7 @@
       .ant-btn {
         height: 48px !important;
       }
+      .input-placeholder::placeholder {
+        font-weight:200 ;
+        font-size: smaller;
+      }

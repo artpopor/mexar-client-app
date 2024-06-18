@@ -10,7 +10,9 @@ import { FaChevronRight } from "react-icons/fa";
 import { useGetTransactionDetailQuery } from "../../services/apiStore";
 import { useParams } from "react-router-dom";
 import { Checkbox, Modal } from "antd";
+import { CgArrowsExchangeAltV } from "react-icons/cg";
 
+import draftProfile from '../../assets/draftProfile.png'
 const TransactionDetail = () => {
   const navigate = useNavigate();
   const [modalImgUrl, setModalImgUrl] = useState<string>("");
@@ -24,9 +26,30 @@ const TransactionDetail = () => {
     token: access_token,
     transactionId: transactionId,
   });
+  const status = data?.data?.status
   const items = data?.data?.items;
   const uploadedDatas = data?.data?.files;
   const user = data?.data.entity;
+  const timeStampToLocaltime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const bangkokOffset = 7 * 60;
+    const localOffset = date.getTimezoneOffset();
+    const totalOffset = bangkokOffset + localOffset;
+    const bangkokDate = new Date(date.getTime() + totalOffset * 60 * 1000);
+    const year = bangkokDate.getFullYear();
+    const month = (bangkokDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = bangkokDate.getDate().toString().padStart(2, '0');
+    const hours = bangkokDate.getHours().toString().padStart(2, '0');
+    const minutes = bangkokDate.getMinutes().toString().padStart(2, '0');
+    const seconds = bangkokDate.getSeconds().toString().padStart(2, '0');
+    const formattedDate = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`
+    return formattedDate
+  }
+    ;
+
+
+
+  // const formattedDate = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
   useEffect(() => {
     console.log("data :>> ", data?.data);
   }, [data]);
@@ -37,37 +60,22 @@ const TransactionDetail = () => {
   }, [error]);
   const summaryList = [
     {
-      title: "Purpose of transaction",
-      value: <p className="font-normal text-gray-500">{}</p>,
+      title: "Transaction :",
+      value: <p className="font-normal text-gray-500">#{items?.[0]?.transaction_id}</p>,
     },
     {
-      title: "Public Buy",
-      value: <p>{items?.[0]?.from_currency_buy_rate}</p>,
+      title: "status :",
+      value: <p>{status}</p>,
     },
     {
-      title: "Public Sell",
-      value: <p>{items?.[0]?.to_currency_sell_rate}</p>,
+      title: "Date Issued :",
+      value: <p>{timeStampToLocaltime(items?.[0]?.created_at)}</p>,
     },
     {
-      title: "Exchange Rate",
-      value: <p>{items?.[0]?.transaction_exchange_rate}</p>,
+      title: "Date Due :",
+      value: <p>{timeStampToLocaltime(data?.data?.due_at)}</p>,
     },
-    {
-      title: "You send",
-      value: (
-        <p>
-          {items?.[0]?.from_amount} {items?.[0]?.from_currency?.symbol}
-        </p>
-      ),
-    },
-    {
-      title: "Total to Recieve",
-      value: (
-        <p className="font-normal text-orange-300">
-          {items?.[0]?.to_amount} {items?.[0]?.to_currency?.symbol}
-        </p>
-      ),
-    },
+
   ];
 
   return (
@@ -75,6 +83,7 @@ const TransactionDetail = () => {
       {/* Main Content here */}
       {showModal && (
         <Modal
+
           width={"80vw"}
           footer={null}
           open={showModal}
@@ -104,14 +113,14 @@ const TransactionDetail = () => {
           <div className="flex flex-col justify-start gap-4 h-full">
             <div className="shadow-lg w-full flex rounded-2xl bg-white p-5">
               <div className="flex gap-4">
-                {user?.avatar_Url && (
-                  <img
-                    src={user?.avatar_url}
-                    className="rounded-full h-10 w-10"
-                  />
-                )}
+
+                <img
+                  src={user?.avatar_url || draftProfile}
+                  className="rounded-full h-10 w-10"
+                />
+
                 <p className="text-blue-900">
-                  {user?.name || `${user?.first_name} ${user?.last_name}`}
+                  {user?.name || `${user?.first_name} ${user?.middle_name} ${user?.last_name}`}
                 </p>
               </div>
             </div>
@@ -128,30 +137,52 @@ const TransactionDetail = () => {
                 </div>
               );
             })}
+            <div className="w-full p-4 bg-white shadow-lg rounded-lg">
+              <div className="w-full flex justify-between">
+                <p>From :</p>
+                <p className="text-[#56AEF5]">{items?.[0]?.from_amount} {items?.[0]?.from_currency?.code}</p>
+              </div>
+              <div className="w-full flex justify-end">
+                <p className="text-sm text-gray-400 ">Buy rate {items?.[0]?.from_currency_buy_rate}</p>
+              </div>
+            </div>
+            {/* <CgArrowsExchangeAltV className="w-full text-2xl text-gray-400" /> */}
+
+            <div className="w-full p-4 bg-white shadow-lg rounded-lg">
+              <div className="w-full flex justify-between">
+                <p>To :</p>
+                <p className="text-orange-300">{items?.[0]?.to_amount} {items?.[0]?.to_currency?.code}</p>
+              </div>
+              <div className="w-full flex justify-end">
+                <p className="text-sm text-gray-400">Sell rate {items?.[0]?.to_currency_sell_rate}</p>
+              </div>
+
+            </div>
+
             <p className=" text-gray-500 font-medium">Transaction file</p>
             <div className="grid grid-cols-2 gap-2">
 
-            {uploadedDatas?.map((data: any, index: number) => {
-              return (
-                <>
-                  <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer">
-                    <p className="text-gray-500 text-sm m-2 font-light">
-                      {data?.original_client_name}
-                    </p>
-                    {(data?.file?.mime_type == "image/png" ||
-                      data?.file?.mime_type == "image/jpg") && (
-                      <img
-                        src={data?.file?.url}
-                        onClick={() => {
-                          setModalImgUrl(data?.file?.url);
-                          setShowModal(true);
-                        }}
-                      />
-                    )}
-                  </div>
-                </>
-              );
-            })}</div>
+              {uploadedDatas?.map((data: any, index: number) => {
+                return (
+                  <>
+                    <div className="bg-white p-3 shadow-md w-full relative hover:bg-slate-100 cursor-pointer">
+                      <p className="text-gray-500 text-sm m-2 font-light">
+                        {data?.original_client_name}
+                      </p>
+                      {(data?.file?.mime_type == "image/png" ||
+                        data?.file?.mime_type == "image/jpg") && (
+                          <img
+                            src={data?.file?.url}
+                            onClick={() => {
+                              setModalImgUrl(data?.file?.url);
+                              setShowModal(true);
+                            }}
+                          />
+                        )}
+                    </div>
+                  </>
+                );
+              })}</div>
           </div>
         </div>
       </>

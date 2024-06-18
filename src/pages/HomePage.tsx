@@ -8,8 +8,15 @@ import ProfileSection from "./ProfileSection";
 import { useGetUserTransactionQuery } from "../services/apiStore";
 import { Spin } from "antd";
 import { MdExpandMore } from "react-icons/md";
+import { animated,useSpring } from '@react-spring/web'
+
+import draftProfile from "../assets/draftProfile.png"
 const HomePage = () => {
   const navigate = useNavigate();
+  const springs = useSpring({
+    from: { x: 100 },
+    to: { x: 0 },
+  })
   const { data, error, isLoading } = useGetUserTransactionQuery(
     localStorage.getItem("access_token")
   );
@@ -39,21 +46,35 @@ const HomePage = () => {
 
     const to_currency = items[0].to_currency.code;
     const to_amount = parseFloat(items[0].to_amount).toFixed(2);
+    const status = data?.data.status
+    let bgColorClass;
+
+    if (status === 'completed') {
+      bgColorClass = 'bg-green-400';
+    } else if (status === 'lead') {
+      bgColorClass = 'bg-orange-400';
+    } else if (status === 'pending') {
+      bgColorClass = 'bg-yellow-400';
+    } else {
+      bgColorClass = 'bg-gray-300'; 
+    }
     return (
-      <div onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
+      <animated.div style={{...springs}} onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center " >
         <div className="flex w-[40%] flex-cols content-center self-center gap-3">
-          {/* <img
-            width={30}
-            height={30}
-            className="rounded-full w-10 h-10 object-cover	"
-            src={user?.avatar_url}
-          /> */}
+        
           <div>
-            <p className="text-[#56aef5]">{entity?.name || `${entity?.first_name} ${entity?.last_name}`} </p>
+            <div className="flex">
+              {/* <img
+                className="rounded-full w-5 h-5 self-center object-cover	"
+                src={user?.imgUrl || draftProfile}
+              /> */}
+              <p className="text-[#56aef5]">{entity?.name || `${entity?.first_name} ${entity?.last_name}`} </p>
+
+            </div>
             <p className="self-center text-sm text-gray-500">{formattedDate}</p>
           </div>
         </div>
-        <div className="grid grid-cols-2 justify-between w-[60%]">
+        <div className="grid grid-cols-3 gap-2 w-[60%] content-center items-center ">
           <div className="flex flex-row">
             <img
               width={30}
@@ -66,8 +87,10 @@ const HomePage = () => {
               {formatNumber(parseFloat(from_amount))}
             </p>
           </div>
+          <FaChevronRight className="self-center w-full text-gray-400" />
 
           <div className="flex flex-row">
+
             <img
               width={30}
               height={30}
@@ -79,9 +102,10 @@ const HomePage = () => {
               {formatNumber(parseFloat(to_amount))}
             </p>
           </div>
+          <p className={`${bgColorClass} text-white text-xs text-right absolute -top-2 -right-2 border b rounded-md p-1`}>{data?.data.status}</p>
         </div>
         {/* <FaChevronRight className="self-center text-gray-400 text-xl" /> */}
-      </div>
+      </animated.div>
     );
   };
   useEffect(() => {
@@ -106,9 +130,9 @@ const HomePage = () => {
         <ProfileSection />
       </div>
       {/* Main Content here */}
-      <div className="bg-[#F6FAFF] !min-h-screen mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3  rounded-b-none">
+      <div  className="bg-[#F6FAFF] !min-h-screen mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3  rounded-b-none">
         <p className="font-medium text-gray-500">Services</p>
-        <div className="flex self-center lg:self-start flex-cols justify-between w-full max-w-[450px] lg:w-[400px] bg-gradient-to-br from-[#5BBBFF] to-[#5983E4]  rounded-3xl p-5">
+        <animated.div style={{...springs}} className="flex self-center lg:self-start flex-cols justify-between w-full max-w-[450px] lg:w-[400px] bg-gradient-to-br from-[#5BBBFF] to-[#5983E4]  rounded-3xl p-5">
           <div className="text-white">
             <p className="">Remittance</p>
             <hr className="m-1 w-64" />
@@ -122,27 +146,19 @@ const HomePage = () => {
           >
             <FaChevronRight className="text-base self-center content-center" />
           </Button>
-        </div>
+        </animated.div>
         <div className="flex flex-cols justify-between text-gray-500">
           <p className="font-medium">Lastest Transaction</p>
           <p className="font-medium cursor-pointer hover:text-[#56AEF5]" onClick={() => navigate('/transaction')}>see all</p>
         </div>
-        <hr className="w-full" />
         {/* Transaction List */}
         <div>
-          <div className="w-full mb-2 text-gray-400 flex flex-cols content-between justify-between">
-            <div className="w-[40%]"></div>
-            <div className="w-[60%] grid-cols-2 grid justify-between">
-              <p>From</p>
-              <p>To</p>
-            </div>
 
-          </div>
           <hr className="w-full mb-2" />
           {
             isLoading && <Spin className="self-center w-full !h-full" size="large" />
           }
-          {data?.data?.slice(0, 5).map((list: any) => {
+          {data?.data?.slice(0, 6).map((list: any) => {
             return <TransactionList data={list} />;
           })}
           <MdExpandMore className="self-center w-full text-gray-400 text-3xl hover:text-[#56AEF5] cursor-pointer" onClick={() => navigate('/transaction')} />

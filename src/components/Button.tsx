@@ -10,7 +10,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const ButtonComponent = ({ className, ...props }: Props, ref: React.Ref<HTMLButtonElement>) => {
   const baseClassName =
-    "bg-[#FFEB80] text-[#556CBB] font-medium text-xl p-3 px-4 rounded-xl outline-none focus:outline-4";
+    "bg-[#FFEB80] text-[#556CBB] font-medium text-xl p-3 px-4 rounded-xl outline-none focus:outline-4 ";
 
   return (
     <button

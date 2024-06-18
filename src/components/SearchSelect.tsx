@@ -1,5 +1,6 @@
 import { AutoComplete, SelectProps } from "antd"
 import { IoMdClose } from "react-icons/io"
+import draftProfile from "../assets/draftProfile.png"
 type Props = {
   onSelect?: SelectProps<any>["onSelect"];
   onSearch?: (event: any) => void
@@ -25,7 +26,7 @@ const SearchSelect = ({ onSelect, onSearch, children, value, cardClassName, sele
             <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={onClose} />
             <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
 
-              {selectCard?.imageUrl && <img src={selectCard?.imageUrl} className="h-[70%] aspect-square rounded-full" />}                
+            <img src={selectCard?.imageUrl || draftProfile} className="h-[70%] aspect-square rounded-full" />              
               <div className="flex flex-col text-gray-500">
                 <p className="text text-[#2d4da3]">{selectCard?.title}</p>
                 <p className="text-sm">{selectCard?.subtitle}</p>

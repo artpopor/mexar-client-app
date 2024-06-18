@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect, HTMLProps } from "react";
 import MenuBar from "../components/MenuBar";
-import { IoChevronBack } from "react-icons/io5";
+import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import ProfileSection from "./ProfileSection";
 import "../components/components.css";
 import Button from "../components/Button";
+import { MdPeopleAlt } from "react-icons/md";
+import draftProfile from '../assets/draftProfile.png'
 import {
   useGetCountryListQuery,
   useGetCurrencyListQuery,
@@ -13,7 +15,7 @@ import {
   useCreateRemittanceMutation,
 } from "../services/apiStore";
 import Input from "../components/Input";
-import { AutoComplete, Select, Modal, notification } from "antd";
+import { AutoComplete, Select, Modal, notification, Checkbox } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
 import InputSelect from "../components/InputSelect";
@@ -22,7 +24,7 @@ type NotificationType = 'success' | 'info' | 'warning' | 'error';
 const Remmittance = () => {
   const navigate = useNavigate();
   const access_token = localStorage.getItem("access_token");
-  const [step, setStep] = useState<string>("step1");
+  const [step, setStep] = useState<string>("step2");
   const { Option } = AutoComplete;
   const [options, setOptions] = useState<[]>([]);
   const CountryListData = useGetCountryListQuery(access_token);
@@ -48,7 +50,11 @@ const Remmittance = () => {
   const [transactionPurpose, setTransactionPurpose] = useState<string>('')
   const [documentType, setDocumentType] = useState<string>('')
   const [search, setSearch] = useState<string>('')
+  const [costRate, setCostRate] = useState<number | undefined>()
+  const [disableCostRate, setDisableCostRate] = useState<boolean>(true)
   const getUsersList = useGetUserListQuery({ token: access_token, search });
+  const [showSelectUsers, setShowSelectUsers] = useState<boolean>(true)
+  const [showAddEntity,setShowAddEmtity] = useState<boolean>(true)
   const Users = getUsersList?.data?.data;
 
   useEffect(() => { console.log('uploadedDatas :>> ', typeof (fromAmount)) }, [fromAmount])
@@ -98,6 +104,10 @@ const Remmittance = () => {
     {
       title: 'Exchange Rate',
       value: <p>{rate}</p>
+    },
+    {
+      title: 'Cost rate',
+      value: <p>{costRate || '-'}</p>
     },
     {
       title: 'You send',
@@ -244,7 +254,8 @@ const Remmittance = () => {
           "target_currency_id": selectToCurrency?.currency_id,
           "amount": fromAmount,
           "exchange_rate": rate,
-          "calculation_amount": toAmount
+          "calculation_amount": toAmount,
+          "cost_rate": costRate
         }
       ],
       'files': uploadedDatas.map((item: any) => { return { 'file_id': item?.id, 'file_type': documentType } })
@@ -268,6 +279,46 @@ const Remmittance = () => {
     <div className="flex flex-col  justify-start h-[100vh] content-around  items-center drop-shadow-md ">
       {showModal && <Modal width={'80vw'} footer={null} open={showModal} onClose={() => setShowModal(!showModal)} closable onCancel={() => setShowModal(!showModal)}>
         <img src={modalImgUrl} />
+      </Modal>}
+      {showSelectUsers && <Modal width={'95vw'} footer={null} open={showSelectUsers} closable onCancel={() => setShowSelectUsers(!showSelectUsers)}>
+        <div className="h-[70vh] flex flex-col justify-between">
+          <div>
+            <p className="font-thin text-gray-500 mb-2">Select Costomer</p>
+
+            <SearchSelect
+              placeholder="Username or email"
+              onSelect={onUserSelect}
+              onSearch={handleUserSearch}
+              value={selectedUser}
+              onClose={() => setSelectedUser(null)}
+              selectCard={
+                {
+                  imageUrl: selectedUser?.avatar_url,
+                  title: selectedUser?.name || `${selectedUser?.first_name} ${selectedUser?.last_name}`,
+                  subtitle: selectedUser?.email,
+                  rightText: selectedUser?.language
+                }
+              }
+            >
+              {userOptions.map((item: any) => (
+                <Option key={item?.name || item.first_name} value={item?.id}>
+                  <div className="flex gap-2">
+                    <img src={item.avatar_url || draftProfile} className="w-6 h-6 rounded-full" />
+                    <p>{item?.name || item?.first_name}</p>
+                  </div>
+                </Option>
+              ))}
+            </SearchSelect>
+          </div>
+
+          <div className="flex justify-between mt-4">
+            <Button className="!bg-white border" >add entities</Button>
+
+            <Button onClick={() => setShowSelectUsers(false)} className="!bg-[#2d4da3] text-white">Save</Button>
+          </div>
+        </div>
+
+
       </Modal>}
 
       {step == "step1" && (
@@ -318,7 +369,7 @@ const Remmittance = () => {
                     </Option>
                   ))}
                 </SearchSelect>
-                <InputSelect label="From Currency" onChangeInput={handleChangeFromAmount} inputValue={fromAmount} inputPlaceHolder="From Amount" selectPlaceHolder="currency" onSelect={handleSelectFromCurrency} selectValue={selectFromCurrency?.id}>
+                <InputSelect inputClassName="!text-[#56AEF5]" label="From Currency" onChangeInput={handleChangeFromAmount} inputValue={fromAmount} inputPlaceHolder="From Amount" selectPlaceHolder="currency" onSelect={handleSelectFromCurrency} selectValue={selectFromCurrency?.id}>
                   {CurrencyListArray?.map((item: any) => (
                     <Select.Option key={item?.id} value={item?.id}>
                       <div className="flex flex-cols gap-2 justify-center content-center self-center">
@@ -335,14 +386,14 @@ const Remmittance = () => {
                 <Input
                   label='Rate'
                   theme='border'
-                  className="text-center text-[#56AEF5] font-normal text-xl"
+                  className="text-center !text-[#56AEF5] font-normal text-xl"
                   placeholder="rate"
                   type="number"
                   onChange={handleChangeRate}
                   value={rate}
                 />
 
-                <InputSelect inputClassName="text-[#F5AC56]" label="To Currency" onChangeInput={handleChangeToAmount} inputPlaceHolder="From Amount" selectPlaceHolder="currency" inputValue={toAmount} onSelect={handleSelectToCurrency} selectValue={selectToCurrency?.id}>
+                <InputSelect inputClassName="!text-[#F5AC56]" label="To Currency" onChangeInput={handleChangeToAmount} inputPlaceHolder="From Amount" selectPlaceHolder="currency" inputValue={toAmount} onSelect={handleSelectToCurrency} selectValue={selectToCurrency?.id}>
                   {CurrencyListArray?.map((item: any) => (
                     <Select.Option key={item?.id} value={item?.id}>
                       <div className="flex flex-cols gap-2 justify-center content-center self-center">
@@ -355,13 +406,23 @@ const Remmittance = () => {
                     </Select.Option>
                   ))}
                 </InputSelect>
+                <p className="font-thin text-gray-500 ">Cost rate</p>
+                <Input
+                  theme='border'
+                  className="text-center !text-[#56AEF5] font-normal text-xl"
+                  placeholder="cost rate"
+                  type="number"
+                  onChange={(e) => setCostRate(parseFloat(e.target.value))}
+                  value={costRate}
+                />
+
               </div>
             </div>
             <Button
               className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
               onClick={() => handleNextStep('step2')}
             >
-              Next
+              <IoChevronForward className="self-center w-full text-3xl" />
             </Button>
           </div>
         </>
@@ -383,43 +444,35 @@ const Remmittance = () => {
           </p>
           <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
             <div className="flex flex-col gap-3">
-              <p className="font-thin text-gray-500">Select custormer</p>
+              <p className="font-thin text-gray-500 flex gap-2">Select custormer <MdPeopleAlt className="self-center text-lg" />
+              </p>
               {/*  */}
+              {!selectedUser && <Button onClick={() => setShowSelectUsers(true)} className="!text-xs !bg-[#2d4da3] text-white !w-[30%] flex gap-2 justify-center">Select</Button>}
+              {selectedUser && <div className="bg-white h-28 w-full shadow-lg rounded-2xl p-2 max-w-[430px] self-center">
+                <div className="flex flex-col relative h-full">
+                  <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={() => setSelectedUser(undefined)} />
+                  <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
 
-
-              <SearchSelect
-                placeholder="Username or email"
-                onSelect={onUserSelect}
-                onSearch={handleUserSearch}
-                value={selectedUser}
-                onClose={() => setSelectedUser(null)}
-                selectCard={
-                  {
-                    imageUrl: selectedUser?.avatar_url,
-                    title: selectedUser?.name || `${selectedUser?.first_name} ${selectedUser?.last_name}`,
-                    subtitle: selectedUser?.email,
-                    rightText: selectedUser?.language
-                  }
-                }
-              >
-                {userOptions.map((item: any) => (
-                  <Option key={item?.name || item.first_name} value={item?.id}>
-                    <div className="flex gap-2">
-                      <img src={item.avatar_url} className="w-6 h-6 rounded-full" />
-                      <p>{item?.name || item?.first_name}</p>
+                    <img src={selectedUser?.imageUrl || draftProfile} className="h-[70%] aspect-square rounded-full" />
+                    <div className="flex flex-col text-gray-500 !w-full">
+                      <p className="text text-[#2d4da3] !w-full">{selectedUser?.first_name} {selectedUser?.middle_name} {selectedUser?.last_name}</p>
+                      <p className="text-sm">{selectedUser?.gender}</p>
                     </div>
-                  </Option>
-                ))}
-              </SearchSelect>
+                    <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400"></p>{selectedUser?.rightText}</div>
+                  </div>
+                </div>
+              </div>
+              }
 
               <p className="font-thin text-gray-500">Transaciton Purpose</p>
-              <Select className="h-12" value={transactionPurpose} placeholder="Select Purpose" options={purpose} onChange={(value) => setTransactionPurpose(value)} />
+              <Select className="h-12" value={transactionPurpose || undefined} placeholder="Select Purpose" options={purpose} onChange={(value) => setTransactionPurpose(value)} />
 
               <p className="font-thin text-gray-500">Document Type</p>
               <Select
-                value={documentType}
+                value={documentType || undefined}
                 className="h-12 mb-3"
                 placeholder="Select Document Type"
+
                 options={documentTypeArray}
                 onChange={(value) => setDocumentType(value)}
               />
@@ -440,10 +493,10 @@ const Remmittance = () => {
               </div>
             </div>
             <Button
-              className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
+              className="w-full mb-[100px]  text-white font-light drop-shadow-md !bg-[#2d4da3] h-15 "
               onClick={() => handleNextStep("step3")}
             >
-              Next
+              <IoChevronForward className="self-center w-full text-3xl" />
             </Button>
           </div>
         </>
