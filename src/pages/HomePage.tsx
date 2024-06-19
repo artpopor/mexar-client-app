@@ -35,7 +35,6 @@ const HomePage = () => {
   const TransactionList = (data: any) => {
     const { user, items, entity } = data.data;
     const from_currency = items[0].from_currency.code;
-    console.log("from_currency :>> ", items);
     // const from_amount = items[0].from_amount
     const from_amount = parseFloat(items[0].from_amount).toFixed(2);
     const date = new Date(items[0].created_at);
@@ -118,7 +117,6 @@ const HomePage = () => {
     checkIsAuthen()
   }, [])
   useEffect(() => {
-    console.log('error :>> ', error);
     if (error) { navigate('/login') }
   }, [error])
   return (

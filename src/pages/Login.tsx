@@ -48,7 +48,6 @@ const Login = () => {
       case true:
         if (isValid) {
           const res = await login(formData);
-          console.log("res :>> ", res.data);
           if (res?.data?.meta?.code == 200) {
             setUserLoginData(formData);
             setStep("getOtp");
@@ -63,9 +62,7 @@ const Login = () => {
 
   };
   const handleLogin = async (formData: any) => {
-    console.log("formData :>> ", formData);
     const res = await verifyOtp(formData);
-    console.log("response", res);
     if (res?.data?.meta?.code == 200) {
       setUserLoginData(formData);
       const access_token = res?.data?.data?.access_token;

@@ -54,18 +54,13 @@ const Remmittance = () => {
   const [search, setSearch] = useState<string>('')
   const [costRate, setCostRate] = useState<number | undefined>()
   const getUsersList = useGetUserListQuery({ token: access_token, search });
-  const [showSelectUsers, setShowSelectUsers] = useState<boolean>(true)
+  const [showSelectUsers, setShowSelectUsers] = useState<boolean>(false)
   const [showAddEntity, setShowAddEntity] = useState<boolean>(false)
   const Users = getUsersList?.data?.data;
   const savedEntity = localStorage.getItem('savedEntity') ? JSON.parse(localStorage.getItem('savedEntity') || '') : []
 
-
   useEffect(() => {
-    console.log("searchChange", search);
-
     if (search && Users) {
-      console.log('Users :>> ', Users);
-
       const filteredOptions = Users?.filter((item: any) =>
         item?.name?.toUpperCase().includes(search.toUpperCase()) || item?.first_name?.toUpperCase().includes(search.toUpperCase()) || item?.last_name?.toUpperCase().includes(search.toUpperCase())
       );
@@ -161,7 +156,6 @@ const Remmittance = () => {
     const public_sell = searchSelectToCurrency.public_sell
     const public_buy = selectFromCurrency?.public_buy
     const calRate = public_sell / public_buy
-    console.log(public_sell.toString(), public_buy.toString());
     selectFromCurrency && setRate(calRate)
     fromAmount && setToAmount(fromAmount * calRate)
     setPublicSell(public_sell)
@@ -225,7 +219,6 @@ const Remmittance = () => {
   };
 
   const onUserSelect = (value: any) => {
-    console.log(value);
     const selectedOption = Users?.find(
       (item: any) => item.id == value
     );
@@ -240,7 +233,6 @@ const Remmittance = () => {
 
   const handleUploadSuccess = (data: any) => {
     setUploadDatas([...uploadedDatas, data?.data?.data])
-    console.log(data.data.data);
   };
 
   const handleCreateRemittance = async () => {
@@ -269,9 +261,7 @@ const Remmittance = () => {
       'files': uploadedDatas.map((item: any) => { return { 'file_id': item?.id, 'file_type': documentType } })
 
     }
-    console.log("prepareData", prepareData);
     const res = await createRemittance({ data: prepareData, token: access_token })
-    console.log("res", res);
     if (res.data) {
       openNotificationWithIcon('success', "create remittance done!")
       navigate('/home')

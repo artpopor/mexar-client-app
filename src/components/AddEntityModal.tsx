@@ -41,10 +41,8 @@ const AddEntityModal = ({ open, onCancel }: modalType) => {
       delete data.last_name
       delete data.middle_name
     }
-    console.log(data);
 
     const res = await createEntity({ data: data, token: access_token })
-    console.log('res :>> ', res);
     if (res.data) {
       notification.success({
         message: 'Form Submitted',
@@ -52,9 +50,7 @@ const AddEntityModal = ({ open, onCancel }: modalType) => {
       });
       let itemsArray = JSON.parse(localStorage.getItem('savedEntity') || '') || [];
       itemsArray.push(res.data);
-      console.log('itemsArray :>> ', itemsArray);
-      
-      // onCancel()
+      onCancel()
     } else {
       notification.error({
         message: 'Form is not Submitted',

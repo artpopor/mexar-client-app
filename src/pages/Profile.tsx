@@ -14,12 +14,9 @@ const Profile = () => {
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
   const { transactionId } = useParams();
-  console.log("transactionId :>> ", transactionId);
   const getUserInfo = useGetUserInfoQuery(access_token)
   const userInfo = getUserInfo?.data?.data
-  useEffect(() => {
-    console.log('User :>> ', userInfo);
-  }, [userInfo])
+
 
   const userInfoList = [{
     title:'Phone :',

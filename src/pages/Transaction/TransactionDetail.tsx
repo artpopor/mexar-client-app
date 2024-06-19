@@ -21,7 +21,6 @@ const TransactionDetail = () => {
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
   const { transactionId } = useParams();
-  console.log("transactionId :>> ", transactionId);
   const { data, error, isLoading } = useGetTransactionDetailQuery({
     token: access_token,
     transactionId: transactionId,
@@ -45,14 +44,6 @@ const TransactionDetail = () => {
     const formattedDate = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`
     return formattedDate
   }
-    ;
-
-
-
-  // const formattedDate = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-  useEffect(() => {
-    console.log("data :>> ", data?.data);
-  }, [data]);
   useEffect(() => {
     if (error) {
       navigate("/login");

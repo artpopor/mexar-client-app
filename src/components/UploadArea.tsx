@@ -34,16 +34,9 @@ const UploadArea: React.FC<UploadAreaProps> = ({ token, department_id, onUploadS
       },
     };
 
-    const url = `${import.meta.env.VITE_API_URL}ewallet/files`;
 
     try {
-      // const response = await axios.post(url, formData, config);
       const response = await uploadFile({ token: token, data: formData })
-      console.log('response new upload api :>> ', response);
-      // if (response.status !== 201) {
-      //   throw new Error(`Upload failed with status ${response.status}`);
-      // }
-
       const data = await response
 
       setProgress(0); // Reset progress after successful upload
@@ -57,7 +50,6 @@ const UploadArea: React.FC<UploadAreaProps> = ({ token, department_id, onUploadS
 
       return { onSuccess: data };
     } catch (error) {
-      console.error('Upload error:', error);
       message.error('Upload failed. Please try again.');
       onError(error); // Call Ant Design's error handler
     }
