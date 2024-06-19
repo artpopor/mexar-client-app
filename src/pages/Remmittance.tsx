@@ -64,15 +64,31 @@ const Remmittance = () => {
 
   useEffect(() => {
     if (search && Users) {
-      const filteredOptions =
-        (Users &&
-          Users?.filter(
-            (item: any) =>
-              item?.name?.toUpperCase().includes(search.toUpperCase()) ||
-              item?.first_name?.toUpperCase().includes(search.toUpperCase()) ||
-              item?.last_name?.toUpperCase().includes(search.toUpperCase())
-          )) ||
-        [];
+      const filteredOptions = Users.filter(
+        (item: any) =>
+          (item.name &&
+            item.name.toUpperCase().includes(search.toUpperCase())) ||
+          (item.first_name &&
+            item.first_name.toUpperCase().includes(search.toUpperCase())) ||
+          (item.last_name &&
+            item.last_name.toUpperCase().includes(search.toUpperCase()))
+      );
+      filteredOptions.sort((a:any, b:any) => {
+        const nameA = (
+          a.name ||
+          a.first_name ||
+          a.last_name ||
+          ""
+        ).toUpperCase();
+        const nameB = (
+          b.name ||
+          b.first_name ||
+          b.last_name ||
+          ""
+        ).toUpperCase();
+        return nameA.localeCompare(nameB);
+      });
+
       setUserOptions(filteredOptions);
     } else {
       setUserOptions([]);
@@ -679,7 +695,7 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw] ">
             03 - Review Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 rounded-b-none pb-[300px]">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col gap-5 rounded-b-none pb-[300px]">
             <div className="flex flex-col gap-2">
               <p className="font-thin text-gray-500">Selected custormer</p>
               {selectedUser && (
