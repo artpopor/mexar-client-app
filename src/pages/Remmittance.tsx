@@ -465,7 +465,7 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
             02 - Customer Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none min-h-screen pb-[100px]">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col gap-5 justify-between rounded-b-none min-h-screen pb-[100px]">
             <div className="flex flex-col gap-3">
               <p className="font-thin text-gray-500 flex gap-2">Select custormer <MdPeopleAlt className="self-center text-lg" />
               </p>
