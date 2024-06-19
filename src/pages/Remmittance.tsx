@@ -676,10 +676,10 @@ const Remmittance = () => {
             </div>
             <ProfileSection />
           </div>
-          <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
+          <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw] ">
             03 - Review Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 rounded-b-none">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 rounded-b-none pb-[300px]">
             <div className="flex flex-col gap-2">
               <p className="font-thin text-gray-500">Selected custormer</p>
               {selectedUser && (
