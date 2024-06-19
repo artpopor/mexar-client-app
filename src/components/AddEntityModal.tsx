@@ -82,7 +82,7 @@ const AddEntityModal = ({ open, onCancel }: modalType) => {
     <>
       <Modal width={'95vw'} footer={null} open={open} closable onCancel={onCancel}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="h-[70vh] flex flex-col justify-between">
+          <div className="h-auto flex flex-col justify-between">
             <div>
               <p className="font-thin text-gray-500 mb-2">Add new CRM entities</p>
               <div className="flex flex-col gap-4">

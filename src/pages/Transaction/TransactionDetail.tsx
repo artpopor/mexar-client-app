@@ -81,7 +81,7 @@ const TransactionDetail = () => {
   ];
 
   return (
-    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md h-full">
+    <div className="flex flex-col  justify-start  content-around  items-center drop-shadow-md min-h-screen">
       {/* Main Content here */}
       {showModal && (
         <Modal
@@ -110,7 +110,7 @@ const TransactionDetail = () => {
           Transaction Detail
         </p>
 
-        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none">
+        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none min-h-screen">
           {(!isLoading && (
             <div className="flex flex-col justify-start gap-4 h-full">
               <div className="shadow-lg w-full flex rounded-2xl bg-white p-5">

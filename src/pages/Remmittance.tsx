@@ -452,7 +452,7 @@ const Remmittance = () => {
       )}
       {step == "step2" && (
         <>
-          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
+          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7 ">
             <div
               onClick={() => setStep("step1")}
               className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -465,7 +465,7 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
             02 - Customer Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none min-h-screen">
             <div className="flex flex-col gap-3">
               <p className="font-thin text-gray-500 flex gap-2">Select custormer <MdPeopleAlt className="self-center text-lg" />
               </p>
@@ -530,7 +530,7 @@ const Remmittance = () => {
       )}
       {step == "step3" && (
         <>
-          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
+          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7 min-h-screen">
             <div
               onClick={() => setStep("step2")}
               className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -543,7 +543,7 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
             03 - Review Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col gap-5 justify-between rounded-b-none min-h-screen">
             <div className="flex flex-col gap-2">
               <p className="font-thin text-gray-500">Selected custormer</p>
               {selectedUser &&

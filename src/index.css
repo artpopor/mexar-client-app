@@ -29,12 +29,17 @@ body {
   background-image: linear-gradient(to bottom right, #597CE0, transparent);
   
   background-repeat:no-repeat;
-  background-size:100% 300px;  background-image: -webkit-linear-gradient(top, #5BBAFF 0%, #597CE0 300px);
+  background-size:100% 300px;  
+  background-image: -webkit-linear-gradient(top, #5BBAFF 0%, #597CE0 300px);
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  
+  
 }
 
 .ant-switch-checked {
