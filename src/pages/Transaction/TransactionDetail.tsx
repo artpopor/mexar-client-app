@@ -163,12 +163,10 @@ const TransactionDetail = () => {
               <div className="w-full flex justify-end">
                 <p className="text-sm text-gray-400">Sell rate {items?.[0]?.to_currency_sell_rate}</p>
               </div>
-
             </div>
 
-            <p className=" text-gray-500 font-medium">Transaction file</p>
+            {uploadedDatas?.length > 0 && <p className="text-gray-500 font-medium">Transaction file</p>}
             <div className="grid grid-cols-2 gap-2">
-
               {uploadedDatas?.map((data: any, index: number) => {
                 return (
                   <>
