@@ -12,8 +12,8 @@ import { useGetUserInfoQuery } from "../services/apiStore";
 const Profile = () => {
   const navigate = useNavigate();
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
-  const access_token = localStorage.getItem("access_token");
   const { transactionId } = useParams();
+  const access_token = localStorage.getItem("access_token");
   const getUserInfo = useGetUserInfoQuery(access_token)
   const userInfo = getUserInfo?.data?.data
 
