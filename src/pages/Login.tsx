@@ -82,7 +82,7 @@ const Login = () => {
         </div>
       )}
       <div className="flex flex-col  justify-center gap-9 content-around h-full items-center drop-shadow-md">
-        <div className="text-4xl flex flex-rows text-center gap-4 ">
+        <div className="text-4xl flex flex-rows text-center items-center gap-4 ">
           <div className="bg-white p-3 rounded-3xl drop-shadow-lg	">
             <img
               className="drop-shadow-md	"
@@ -91,7 +91,7 @@ const Login = () => {
               src={Logo}
             />
           </div>
-          <div className="text-white font-semibold content-center">MEXAR</div>
+          <div className="text-white font-semibold self-center">MEXAR</div>
         </div>
         <div className="bg-[#9FC3F5] text-blue p-5  w-[90vw] md:w-[40vw] xl:w-[30vw] rounded-2xl flex flex-col gap-5 ">
           {step == "getBasicInfomation" && (
