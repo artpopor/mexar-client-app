@@ -186,8 +186,7 @@ const TransactionDetail = () => {
                       <p className="text-gray-500 text-sm m-2 font-light">
                         {data?.original_client_name}
                       </p>
-                      {(data?.file?.mime_type == "image/png" ||
-                        data?.file?.mime_type == "image/jpg") && (
+                      {data?.file?.mime_type?.includes('image') && (
                         <img
                           src={data?.file?.url}
                           onClick={() => {

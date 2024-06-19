@@ -709,6 +709,10 @@ video {
   display: block;
 }
 
+.inline-block {
+  display: inline-block;
+}
+
 .\!flex {
   display: flex !important;
 }
@@ -809,12 +813,12 @@ video {
   height: 90%;
 }
 
-.h-full {
-  height: 100%;
-}
-
 .h-auto {
   height: auto;
+}
+
+.h-full {
+  height: 100%;
 }
 
 .\!min-h-screen {
@@ -1484,12 +1488,12 @@ video {
   --line-height: 1.5;
   --font-weight: 400;
   --text-color: rgba(80, 80, 80, 0.87);
-  --background-gradient: linear-gradient(to bottom right, #5BBAFF, #597CE0);
 }
 
 html, body, #root, .wrapper {
   height: 100%;
   margin: 0;
+  background-attachment: fixed;
 }
 
 body {
@@ -1499,7 +1503,6 @@ body {
   color: var(--text-color);
   background-color: #597CE0;
   background-image: linear-gradient(to bottom right, #597CE0, transparent);
-  background-size:100% 300px;
   background-image: -webkit-linear-gradient(top, #5BBAFF 0%, #597CE0 300px);
   background-repeat: no-repeat;
   background-size: cover;
@@ -1507,11 +1510,8 @@ body {
   flex-direction: column;
   min-height: 100vh;
   width: 100vw;
+  background-attachment: fixed;
   overflow-x: hidden;
-}
-
-.ant-switch-checked {
-  background-color: red;
 }
 
 .hover\:bg-blue-200:hover {
@@ -1572,6 +1572,10 @@ body {
     width: 30vw;
   }
 
+  .md\:w-\[40vw\] {
+    width: 40vw;
+  }
+
   .md\:w-\[80vw\] {
     width: 80vw;
   }
@@ -1595,5 +1599,9 @@ body {
 @media (min-width: 1280px) {
   .xl\:w-\[20vw\] {
     width: 20vw;
+  }
+
+  .xl\:w-\[30vw\] {
+    width: 30vw;
   }
 }

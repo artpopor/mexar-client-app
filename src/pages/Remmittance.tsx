@@ -513,7 +513,7 @@ const Remmittance = () => {
                       }} />
 
                       <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
-                      {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} onClick={() => { setModalImgUrl(data.url); setShowModal(true) }} />}
+                      {data?.file?.mime_type.includes('image') && <img src={data.url} onClick={() => { setModalImgUrl(data.url); setShowModal(true) }} />}
                     </div>
                   )
                 })}

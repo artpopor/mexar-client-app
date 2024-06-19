@@ -72,7 +72,7 @@ const HomePage = () => {
           <p className="self-center text-sm text-gray-500">{formattedDate}</p>
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-2 w-[60%] content-center items-center">
+      <div className="grid grid-cols-3 gap-2 w-[60%]  content-center items-center relative">
         <div className="flex flex-row">
           <img
             width={30}
@@ -98,7 +98,7 @@ const HomePage = () => {
             <span>{formatNumber(parseFloat(to_amount))}</span>
           </div>
         </div>
-        <p style={{position:'absolute',top:'-10px',right:'-10px'}} className={`${bgColorClass} text-white text-xs text-right absolute -top-2 -right-2 border rounded-md p-1`}>{status}</p>
+        <p style={{position:'absolute',top:'-10px',right:'-10px'}} className={`${bgColorClass} text-white inline-block text-xs text-right absolute -top-2 -right-2 border rounded-md p-1`}>{status}</p>
       </div>
     </animated.div>
     );

@@ -23,7 +23,7 @@ const SearchSelect = ({ onSelect, onSearch, children, value, cardClassName, sele
       {value &&
         <div className={baseCardClassName}>
           <div className="flex relative h-full ">
-            <IoMdClose className="hover:text-red-500 text-gray-500 absolute right-2  top-2 cursor-pointer" onClick={onClose} />
+            <IoMdClose className="hover:text-red-500 text-gray-500 inline-block absolute right-2  top-2 cursor-pointer" onClick={onClose} />
             <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
 
               <img src={selectCard?.imageUrl || draftProfile} className="h-[70%] aspect-square rounded-full" />

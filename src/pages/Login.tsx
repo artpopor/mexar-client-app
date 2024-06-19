@@ -93,7 +93,7 @@ const Login = () => {
           </div>
           <div className="text-white font-semibold content-center">MEXAR</div>
         </div>
-        <div className="bg-[#9FC3F5] text-blue p-5  w-[90vw] md:w-[30vw] xl:w-[20vw] rounded-2xl flex flex-col gap-5 ">
+        <div className="bg-[#9FC3F5] text-blue p-5  w-[90vw] md:w-[40vw] xl:w-[30vw] rounded-2xl flex flex-col gap-5 ">
           {step == "getBasicInfomation" && (
             <>
               <div className="text-white text-right flex flex-row gap-3 justify-end">

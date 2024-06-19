@@ -75,7 +75,7 @@ const Transaction = () => {
             <p className="self-center text-sm text-gray-500">{formattedDate}</p>
           </div>
         </div>
-        <div className="grid grid-cols-2  w-[60%] content-center items-center ">
+        <div className="grid grid-cols-2  w-[60%] content-center items-center relative">
           <div className="flex flex-row">
             <img
               width={30}
