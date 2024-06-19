@@ -118,10 +118,15 @@ const TransactionDetail = () => {
                   src={user?.avatar_url || draftProfile}
                   className="rounded-full h-10 w-10"
                 />
+                <div className="flex flex-col text-gray-500">
+                  <p className="text text-[#2d4da3] !w-full">
+                    {user?.first_name || user?.middle_name || user?.last_name
+                      ? `${user?.first_name || ''} ${user?.middle_name || ''} ${user?.last_name || ''}`.trim()
+                      : user?.name}
+                  </p>
+                  <p className="text-sm">{user?.entity_type}</p>
+                </div>
 
-                <p className="text-blue-900">
-                  {user?.name || `${user?.first_name} ${user?.middle_name} ${user?.last_name}`}
-                </p>
               </div>
             </div>
 

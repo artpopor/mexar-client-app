@@ -15,11 +15,13 @@ import {
   useCreateRemittanceMutation,
 } from "../services/apiStore";
 import Input from "../components/Input";
-import { AutoComplete, Select, Modal, notification, Checkbox } from "antd";
+import { AutoComplete, Select, Modal, notification, DatePicker } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
 import InputSelect from "../components/InputSelect";
 import SearchSelect from "../components/SearchSelect";
+import CountryCodeWithFlag from '../assets/CountryCodeWithFlag.json'
+import AddEntityModal from "../components/AddEntityModal";
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 const Remmittance = () => {
   const navigate = useNavigate();
@@ -51,13 +53,12 @@ const Remmittance = () => {
   const [documentType, setDocumentType] = useState<string>('')
   const [search, setSearch] = useState<string>('')
   const [costRate, setCostRate] = useState<number | undefined>()
-  const [disableCostRate, setDisableCostRate] = useState<boolean>(true)
   const getUsersList = useGetUserListQuery({ token: access_token, search });
   const [showSelectUsers, setShowSelectUsers] = useState<boolean>(true)
-  const [showAddEntity,setShowAddEmtity] = useState<boolean>(true)
+  const [showAddEntity, setShowAddEntity] = useState<boolean>(false)
   const Users = getUsersList?.data?.data;
+  const savedEntity = localStorage.getItem('savedEntity') ? JSON.parse(localStorage.getItem('savedEntity') || '') : []
 
-  useEffect(() => { console.log('uploadedDatas :>> ', typeof (fromAmount)) }, [fromAmount])
 
   useEffect(() => {
     console.log("searchChange", search);
@@ -73,6 +74,7 @@ const Remmittance = () => {
       setUserOptions([]);
     }
   }, [search, getUsersList]);
+
 
 
   const documentTypeArray: { value: string; label: string }[] = [
@@ -228,6 +230,12 @@ const Remmittance = () => {
       (item: any) => item.id == value
     );
     selectedOption && setSelectedUser(selectedOption);
+    let savedEntity = localStorage.getItem('savedEntity');
+    let itemsArray = savedEntity ? JSON.parse(savedEntity) : [];
+    if (!itemsArray.includes(selectedOption)) {
+      itemsArray.push(selectedOption);
+    }
+    localStorage.setItem('savedEntity', JSON.stringify(itemsArray));
   };
 
   const handleUploadSuccess = (data: any) => {
@@ -309,10 +317,34 @@ const Remmittance = () => {
                 </Option>
               ))}
             </SearchSelect>
+            <p className="my-2 text-gray-400">Recent Users</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+          {savedEntity.slice(0,4).map((entity:any)=>{return(
+        
+                <div className="bg-white w-full shadow-lg p-2 h-20 hover:bg-slate-100 cursor-pointer" onClick={()=>setSelectedUser(entity)}>
+                  <div className="flex flex-col relative h-full">
+                    <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
+
+                      <img src={entity?.avatar_url || draftProfile} className="h-5 w-5 rounded-full" />
+                      <div className="flex flex-col text-gray-500">
+                        <p className="text text-gray-600 !w-full">
+                          {entity?.first_name || entity?.middle_name || entity?.last_name
+                            ? `${entity?.first_name || ''} ${entity?.middle_name || ''} ${entity?.last_name || ''}`.trim()
+                            : entity?.name}
+                        </p>
+                        <p className="text-xs">{entity?.entity_type}</p>
+                      </div>
+                      {/* <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div> */}
+                    </div>
+                  </div>
+                </div>
+          )})}
           </div>
+          </div>
+       
 
           <div className="flex justify-between mt-4">
-            <Button className="!bg-white border" >add entities</Button>
+            <Button onClick={() => setShowAddEntity(true)} className="!bg-white border" >add entities</Button>
 
             <Button onClick={() => setShowSelectUsers(false)} className="!bg-[#2d4da3] text-white">Save</Button>
           </div>
@@ -320,6 +352,8 @@ const Remmittance = () => {
 
 
       </Modal>}
+
+      <AddEntityModal open={showAddEntity} onCancel={() => setShowAddEntity(!showAddEntity)} />
 
       {step == "step1" && (
         <>
@@ -455,8 +489,12 @@ const Remmittance = () => {
 
                     <img src={selectedUser?.imageUrl || draftProfile} className="h-[70%] aspect-square rounded-full" />
                     <div className="flex flex-col text-gray-500 !w-full">
-                      <p className="text text-[#2d4da3] !w-full">{selectedUser?.first_name} {selectedUser?.middle_name} {selectedUser?.last_name}</p>
-                      <p className="text-sm">{selectedUser?.gender}</p>
+                      <p className="text text-[#2d4da3] !w-full">
+                        {selectedUser?.first_name || selectedUser?.middle_name || selectedUser?.last_name
+                          ? `${selectedUser?.first_name || ''} ${selectedUser?.middle_name || ''} ${selectedUser?.last_name || ''}`.trim()
+                          : selectedUser?.name}
+                      </p>
+                      <p className="text-sm">{selectedUser?.entity_type}</p>
                     </div>
                     <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400"></p>{selectedUser?.rightText}</div>
                   </div>
@@ -524,12 +562,16 @@ const Remmittance = () => {
                   <div className="flex flex-col relative h-full">
                     <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
 
-                      <img src={selectedUser?.avatar_url} className="h-14 w-14 rounded-full" />
+                      <img src={selectedUser?.avatar_url || draftProfile} className="h-14 w-14 rounded-full" />
                       <div className="flex flex-col text-gray-500">
-                        <p className="text text-[#2d4da3]">{selectedUser?.name || `${selectedUser.first_name} ${selectedUser.last_name}`}</p>
-                        <p className="text-sm">{selectedUser?.email}</p>
+                        <p className="text text-[#2d4da3] !w-full">
+                          {selectedUser?.first_name || selectedUser?.middle_name || selectedUser?.last_name
+                            ? `${selectedUser?.first_name || ''} ${selectedUser?.middle_name || ''} ${selectedUser?.last_name || ''}`.trim()
+                            : selectedUser?.name}
+                        </p>
+                        <p className="text-sm">{selectedUser?.entity_type}</p>
                       </div>
-                      <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div>
+                      {/* <div className="w-full text-right text-gray-500 mr-10"><p className="text-xs text-gray-400">language:</p>{selectedUser?.language}</div> */}
                     </div>
                   </div>
                 </div>}              <div className="flex flex-cols gap-2 w-full">

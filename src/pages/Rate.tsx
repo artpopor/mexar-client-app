@@ -80,11 +80,12 @@ const Rate = () => {
     const buyRate = parseFloat(fromCurrency?.public_buy)
     const calRate = sellRate / buyRate
     const saveItem = { from: fromCurrency, to: selectedOption, rate: calRate }
-    let itemsArray = JSON.parse(localStorage.getItem('itemsArray') || '') || [];
-
-    itemsArray.push(saveItem);
-    console.log('itemsArray :>> ', itemsArray);
-    fromCurrency && localStorage.setItem('itemsArray', JSON.stringify(itemsArray))
+    let savedEntity = localStorage.getItem('itemsArray');
+    let itemsArray = savedEntity ? JSON.parse(savedEntity) : [];
+    if (!itemsArray.includes(saveItem)) {
+      itemsArray.push(saveItem);
+    }
+    localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
   };
 
   return (
@@ -164,7 +165,7 @@ const Rate = () => {
                 ))}
               </SearchSelect>
             </div>
-            <div className="w-full flex content-center justify-around sm:justify-start gap-2">
+            <div className="w-full flex content-center justify-start gap-2">
 
               {savedExchange?.slice(0, 3)?.map((item: any) => {
                 return (

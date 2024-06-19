@@ -63,7 +63,7 @@ const Transaction = () => {
     } else if (status === 'pending') {
       bgColorClass = 'bg-yellow-400';
     } else {
-      bgColorClass = 'bg-gray-300'; 
+      bgColorClass = 'bg-blue-300'; 
     }
     return (
       <div onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-3 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">

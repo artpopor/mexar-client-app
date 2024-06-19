@@ -6,6 +6,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   label?: string;
   allowClear?: boolean;
   onClear?: () => void;
+  type?: 'submit' | 'button'
 }
 
 const ButtonComponent = ({ className, ...props }: Props, ref: React.Ref<HTMLButtonElement>) => {
@@ -14,6 +15,7 @@ const ButtonComponent = ({ className, ...props }: Props, ref: React.Ref<HTMLButt
 
   return (
     <button
+      type={props.type}
       {...props}
       ref={ref}
       className={`${baseClassName} ${className}`}

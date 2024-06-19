@@ -95,6 +95,17 @@ export const jsonBackOfficeServerApi = createApi({
       }),
     }),
 
+    createEntity: builder.mutation({
+      query: ({data,token}) => ({
+        url: `crm/entities`,
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
+
     getTransactionDetail: builder.query({
       query: ({token,transactionId}) => ({
         url: `transactions/${transactionId}?include=items,department,user,entity,fees,files,flows`,
@@ -118,5 +129,6 @@ export const jsonBackOfficeServerApi = createApi({
   useFileUploadMutation,
   useLoginMutation,
   useVerifyOtpMutation,
-  useGetTransactionDetailQuery
+  useGetTransactionDetailQuery,
+  useCreateEntityMutation,
  } = jsonBackOfficeServerApi
