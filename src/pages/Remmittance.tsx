@@ -26,7 +26,7 @@ type NotificationType = 'success' | 'info' | 'warning' | 'error';
 const Remmittance = () => {
   const navigate = useNavigate();
   const access_token = localStorage.getItem("access_token");
-  const [step, setStep] = useState<string>("step2");
+  const [step, setStep] = useState<string>("step1");
   const { Option } = AutoComplete;
   const [options, setOptions] = useState<[]>([]);
   const CountryListData = useGetCountryListQuery(access_token);
@@ -292,8 +292,8 @@ const Remmittance = () => {
               selectCard={
                 {
                   imageUrl: selectedUser?.avatar_url,
-                  title: selectedUser?.name || `${selectedUser?.first_name} ${selectedUser?.last_name}`,
-                  subtitle: selectedUser?.email,
+                  title: selectedUser?.name || `${selectedUser?.first_name} ${selectedUser?.middle_name} ${selectedUser?.last_name}`,
+                  subtitle: selectedUser?.entity_type,
                   rightText: selectedUser?.language
                 }
               }

@@ -49,6 +49,17 @@ const TransactionDetail = () => {
       navigate("/login");
     }
   }, [error]);
+  let statusColor;
+
+  if (status === 'completed') {
+    statusColor = 'text-green-400';
+  } else if (status === 'lead') {
+    statusColor = 'text-orange-400';
+  } else if (status === 'pending') {
+    statusColor = 'text-yellow-400';
+  } else {
+    statusColor = 'text-blue-300'; 
+  }
   const summaryList = [
     {
       title: "Transaction :",
@@ -56,7 +67,7 @@ const TransactionDetail = () => {
     },
     {
       title: "status :",
-      value: <p>{status}</p>,
+      value: <p className={statusColor}>{status}</p>,
     },
     {
       title: "Date Issued :",
