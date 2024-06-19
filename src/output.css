@@ -586,6 +586,26 @@ video {
   top: 0.5rem;
 }
 
+.-top-3 {
+  top: -0.75rem;
+}
+
+.-top-4 {
+  top: -1rem;
+}
+
+.-top-5 {
+  top: -1.25rem;
+}
+
+.-right-5 {
+  right: -1.25rem;
+}
+
+.-right-6 {
+  right: -1.5rem;
+}
+
 .\!col-span-2 {
   grid-column: span 2 / span 2 !important;
 }

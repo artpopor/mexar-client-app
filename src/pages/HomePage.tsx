@@ -98,7 +98,7 @@ const HomePage = () => {
             <span>{formatNumber(parseFloat(to_amount))}</span>
           </div>
         </div>
-        <p style={{position:'absolute',top:'-10px',right:'-10px'}} className={`${bgColorClass} text-white inline-block text-xs text-right absolute -top-2 -right-2 border rounded-md p-1`}>{status}</p>
+        <p className={`${bgColorClass} text-white inline-block text-xs text-right absolute -top-4 -right-6 border rounded-md p-1`}>{status}</p>
       </div>
     </animated.div>
     );

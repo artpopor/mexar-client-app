@@ -101,7 +101,7 @@ const Transaction = () => {
               <p>{formatNumber(parseFloat(to_amount))}</p>
             </div>
           </div>
-          <p style={{position:'absolute',top:'-10px',right:'-10px'}} className={`${bgColorClass} text-white text-xs text-right absolute -top-2 -right-2 border b rounded-md p-1`}>{data?.data.status}</p>
+          <p className={`${bgColorClass} text-white text-xs text-right absolute -top-4 -right-6 border b rounded-md p-1`}>{data?.data.status}</p>
 
         </div>
       </div>
