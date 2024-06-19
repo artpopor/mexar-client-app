@@ -159,7 +159,7 @@ const Remmittance = () => {
     fromAmount && setToAmount(fromAmount * calRate)
     setPublicSell(public_sell)
   }
-
+  useEffect(()=>{console.log(uploadedDatas)},[uploadedDatas])
   const handleChangeFromAmount = (amount: any) => {
     amount = amount.target.value
     setFromAmount(amount)
@@ -513,7 +513,7 @@ const Remmittance = () => {
                       }} />
 
                       <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
-                      {data?.file?.mime_type.includes('image') && <img src={data.url} onClick={() => { setModalImgUrl(data.url); setShowModal(true) }} />}
+                      {data?.mime_type.includes('image') && <img src={data.url} onClick={() => { setModalImgUrl(data.url); setShowModal(true) }} />}
                     </div>
                   )
                 })}
@@ -530,7 +530,7 @@ const Remmittance = () => {
       )}
       {step == "step3" && (
         <>
-          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7 min-h-screen">
+          <div className=" flex flex-cols content-center text-center justify-between w-full px-4 mt-7">
             <div
               onClick={() => setStep("step2")}
               className="text-white text-xl flex flex-cols gap-3 cursor-pointer "
@@ -594,7 +594,7 @@ const Remmittance = () => {
                         }} />
 
                         <p className="text-gray-500 text-sm m-2 font-light">{data.original_client_name}</p>
-                        {(data.mime_type == "image/png" || data.mime_type == "image/jpg") && <img src={data.url} />}
+                        {data?.mime_type.includes('image') && <img src={data.url} />}
                       </div>
                     </>
 

@@ -178,6 +178,7 @@ const TransactionDetail = () => {
               )}
               <div className="grid grid-cols-2 gap-2">
                 {uploadedDatas?.map((data: any) => {
+                  console.log(data);
                   return (
                     <div
                       key={data?.id}
