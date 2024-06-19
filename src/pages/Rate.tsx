@@ -5,44 +5,51 @@ import MenuBar from "../components/MenuBar";
 import { useGetCurrencyListQuery } from "../services/apiStore";
 import ProfileSection from "./ProfileSection";
 import SearchSelect from "../components/SearchSelect";
-import { AutoComplete, Spin, Carousel } from "antd";
+import { AutoComplete, Spin } from "antd";
 import Input from "../components/Input";
 import { TbCoinFilled } from "react-icons/tb";
 
 const Rate = () => {
   const navigate = useNavigate();
   const { Option } = AutoComplete;
-  // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
   const CurrencyListData = useGetCurrencyListQuery(access_token);
   const CurrencyListArray = CurrencyListData?.data?.data;
-  const [toCurrency, setToCurrency] = useState<any>()
-  const [fromCurrency, setFromCurrency] = useState<any>()
-  const [fromOptions, setFromOptions] = useState<[]>([]);
-  const [toOptions, setToOptions] = useState<[]>([]);
-  const [rate, setRate] = useState<number | null>(null)
-  const [fromAmount, setFromAmount] = useState<number>()
-  const [toAmount, setToAmount] = useState<number>()
-  const savedExchange = localStorage.getItem('itemsArray') ? JSON.parse(localStorage.getItem('itemsArray') || '') : []
+  const [toCurrency, setToCurrency] = useState<any>(null);
+  const [fromCurrency, setFromCurrency] = useState<any>(null);
+  const [fromOptions, setFromOptions] = useState<any[]>([]);
+  const [toOptions, setToOptions] = useState<any[]>([]);
+  const [fromAmount, setFromAmount] = useState<number | undefined>(undefined);
+  const [toAmount, setToAmount] = useState<number | undefined>(undefined);
+  const savedExchange = localStorage.getItem('itemsArray') ? JSON.parse(localStorage.getItem('itemsArray') || '') : [];
+
   useEffect(() => {
-    const sellRate = parseFloat(toCurrency?.public_sell)
-    const buyRate = parseFloat(fromCurrency?.public_buy)
-    const calRate = sellRate / buyRate
-    setRate(calRate)
-    fromAmount && setToAmount(fromAmount * calRate)
-  }, [fromCurrency, toCurrency, toAmount, fromAmount])
+    if (fromCurrency && toCurrency) {
+      const sellRate = parseFloat(toCurrency.public_sell);
+      const buyRate = parseFloat(fromCurrency.public_buy);
+      const calRate = sellRate / buyRate;
+      if (fromAmount) {
+        setToAmount(fromAmount * calRate);
+      }
+    }
+  }, [fromCurrency, toCurrency, fromAmount]);
+
   const List = ({ title, data }: { title: string, data: any }) => {
-    const sellRate = data?.public_sell
-    const buyRate = fromCurrency?.public_buy
+    const sellRate = data.public_sell;
+    const buyRate = fromCurrency?.public_buy;
     const sellAmount = isNaN(parseFloat(sellRate) / parseFloat(buyRate)) ? '-' : (parseFloat(sellRate) / parseFloat(buyRate)).toFixed(3);
 
     return (
       <>
         <div className="p-4 w-full flex justify-between text-gray-500 font-light">
           <div className="w-full flex gap-4">
-            <img className="h-7 w-7 object-cover rounded-lg" src={data?.currency?.flag} />
-            {title}</div>
-          <div className="flex flex-cols justify-around w-full"><p className="text-blue-800">1 {fromCurrency?.currency?.code}</p><p className="text-orange-400">{sellAmount} {fromCurrency && data?.currency?.symbol}</p></div>
+            <img className="h-7 w-7 object-cover rounded-lg" src={data.currency.flag} alt={`${data.currency.code} flag`} />
+            {title}
+          </div>
+          <div className="flex flex-cols justify-around w-full">
+            <p className="text-blue-800">1 {fromCurrency?.currency?.code}</p>
+            <p className="text-orange-400">{sellAmount} {fromCurrency && data.currency.symbol}</p>
+          </div>
         </div>
         <hr className="w-full" />
       </>
@@ -68,7 +75,6 @@ const Rate = () => {
       item.currency.code.toUpperCase().startsWith(value.toUpperCase())
     );
     setToOptions(filteredOptions);
-
   };
 
   const onToCurrencySelect = (value: any) => {
@@ -76,16 +82,19 @@ const Rate = () => {
       (item: any) => item.currency.code === value
     );
     selectedOption && setToCurrency(selectedOption);
-    const sellRate = parseFloat(selectedOption?.public_sell)
-    const buyRate = parseFloat(fromCurrency?.public_buy)
-    const calRate = sellRate / buyRate
-    const saveItem = { from: fromCurrency, to: selectedOption, rate: calRate }
-    let savedEntity = localStorage.getItem('itemsArray');
-    let itemsArray = savedEntity ? JSON.parse(savedEntity) : [];
-    if (!itemsArray.includes(saveItem)) {
-      itemsArray.push(saveItem);
+
+    if (selectedOption && fromCurrency) {
+      const sellRate = parseFloat(selectedOption.public_sell);
+      const buyRate = parseFloat(fromCurrency.public_buy);
+      const calRate = sellRate / buyRate;
+      const saveItem = { from: fromCurrency, to: selectedOption, rate: calRate };
+      let savedEntity = localStorage.getItem('itemsArray');
+      let itemsArray = savedEntity ? JSON.parse(savedEntity) : [];
+      if (!itemsArray.some((item: any) => item.from.currency.code === saveItem.from.currency.code && item.to.currency.code === saveItem.to.currency.code)) {
+        itemsArray.push(saveItem);
+      }
+      localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
     }
-    localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
   };
 
   return (
@@ -127,10 +136,10 @@ const Rate = () => {
                   }
                 }
               >
-                {fromOptions?.map((item: any) => (
-                  <Option key={item?.id} value={item?.currency.code}>
+                {fromOptions.map((item: any) => (
+                  <Option key={item.id} value={item.currency.code}>
                     <div className="flex gap-2">
-                      <p>{item?.currency.code}</p>
+                      <p>{item.currency.code}</p>
                     </div>
                   </Option>
                 ))}
@@ -140,7 +149,6 @@ const Rate = () => {
               <p className="self-center text-end text-gray-500 w-12">To:</p>
 
               <SearchSelect
-
                 onSelect={onToCurrencySelect}
                 onSearch={handleToCurrencySearch}
                 value={toCurrency}
@@ -156,10 +164,10 @@ const Rate = () => {
                   }
                 }
               >
-                {toOptions?.map((item: any) => (
-                  <Option key={item?.id} value={item?.currency.code}>
+                {toOptions.map((item: any) => (
+                  <Option key={item.id} value={item.currency.code}>
                     <div className="flex gap-2">
-                      <p>{item?.currency.code}</p>
+                      <p>{item.currency.code}</p>
                     </div>
                   </Option>
                 ))}
@@ -167,54 +175,50 @@ const Rate = () => {
             </div>
             <div className="w-full flex content-center justify-start gap-2">
 
-              {savedExchange?.slice(0, 3)?.map((item: any) => {
+              {savedExchange.slice(0, 3).map((item: any, index: number) => {
                 return (
-                  <div onClick={() => { setFromCurrency(item.from); setToCurrency(item.to) }} className="bg-white hover:bg-slate-100 cursor-pointer min-w-[100px] min-h-[100px] p-3 shadow-lg rounded-xl grid grid-cols-3 justify-between">
-                    <img className="col-span-1 h-6 w-6 object-cover rounded-full " src={item?.from.currency?.flag} />
-                    <div className=" col-span-2 text-center">
-                      <p>{item?.from?.currency?.code}</p>
+                  <div key={index} onClick={() => { setFromCurrency(item.from); setToCurrency(item.to); }} className="bg-white hover:bg-slate-100 cursor-pointer min-w-[100px] min-h-[100px] p-3 shadow-lg rounded-xl grid grid-cols-3 justify-between">
+                    <img className="col-span-1 h-6 w-6 object-cover rounded-full " src={item.from.currency.flag} alt={`${item.from.currency.code} flag`} />
+                    <div className="col-span-2 text-center">
+                      <p>{item.from.currency.code}</p>
                     </div>
-                    <p className="text-xs mt-1 text-gray-400 col-span-3 ">1 {item?.from?.currency?.code}</p>
-
-
-
-
-                    <p className=" col-span-3 flex text-end text-lg text-orange-300  gap-1 justify-end">{item?.rate.toFixed(2)} <p className="self-center">{item?.to?.currency?.code}</p> </p>
-
+                    <p className="text-xs mt-1 text-gray-400 col-span-3 ">1 {item.from.currency.code}</p>
+                    <div className="col-span-3 flex text-end text-lg text-orange-300 gap-1 justify-end">{item.rate.toFixed(2)} <p className="self-center">{item.to.currency.code}</p></div>
                   </div>
-                )
+                );
               })}
 
             </div>
           </div>
 
-
-        {fromCurrency && <div className="bg-white w-full h-full rounded-3xl shadow-lg px-3">
-            <div className="p-4 w-full flex justify-between text-gray-500 font-light">
-              <p className="w-full ml-4">To Currency</p>
-              <div className="flex flex-cols justify-around w-full"><p>From</p><p>To</p></div>
+          {fromCurrency && (
+            <div className="bg-white w-full h-full rounded-3xl shadow-lg px-3">
+              <div className="p-4 w-full flex justify-between text-gray-500 font-light">
+                <p className="w-full ml-4">To Currency</p>
+                <div className="flex flex-cols justify-around w-full"><p>From</p><p>To</p></div>
+              </div>
+              {CurrencyListArray.map((item: any) => (
+                <List key={item.id} title={item.currency.code} data={item} />
+              ))}
+              {CurrencyListData.isLoading && <Spin className="self-center w-full !h-full m-5" size="large" />}
             </div>
-
-            { CurrencyListArray?.map((item: any) => {
-              return (
-                <List title={item?.currency?.code} data={item} />
-              )
-            })}
-            {
-              CurrencyListData.isLoading && <Spin className="self-center w-full !h-full m-5" size="large" />
-            }
-          </div> || <div className="w-full text-center h-[30vh] rounded-3xl text-gray-400 items-center align-middle content-center flex gap-1 justify-center border"><p>Select From currency to see rate</p> <TbCoinFilled/></div>}
+          ) || (
+            <div className="w-full text-center h-[30vh] rounded-3xl text-gray-400 items-center align-middle content-center flex gap-1 justify-center border">
+              <p>Select From currency to see rate</p>
+              <TbCoinFilled />
+            </div>
+          )}
         </div>
-        {toCurrency && <div className="sticky w-[90%] h-20 bg-white bottom-32 shadow-xl p-2 rounded-xl flex content-center justify-around text-center items-center">
-          <Input value={fromAmount} onChange={(e) => setFromAmount(parseFloat(e.target.value))} theme="border" className="!w-[30%] text-center text-2xl !text-[#56AEF5]" />
-          <p>{fromCurrency?.currency?.symbol}</p>
-          <div className="border-l-2 border-gray-200 h-full ml-5" />
-          <Input value={toAmount || '-'} onChange={(e) => setToAmount(parseFloat(e.target.value))} theme="border" className="!w-[30%] text-center text-2xl !text-[#F5AC56]" />
-          <p>{toCurrency?.currency?.symbol}</p>
-
-        </div>}
+        {toCurrency && (
+          <div className="sticky w-[90%] h-20 bg-white bottom-32 shadow-xl p-2 rounded-xl flex content-center justify-around text-center items-center">
+            <Input value={fromAmount} onChange={(e) => setFromAmount(parseFloat(e.target.value))} theme="border" className="!w-[30%] text-center text-2xl !text-[#56AEF5]" />
+            <p>{fromCurrency?.currency?.symbol}</p>
+            <div className="border-l-2 border-gray-200 h-full ml-5" />
+            <Input value={toAmount || '-'} onChange={(e) => setToAmount(parseFloat(e.target.value))} theme="border" className="!w-[30%] text-center text-2xl !text-[#F5AC56]" />
+            <p>{toCurrency?.currency?.symbol}</p>
+          </div>
+        )}
       </>
-
       <MenuBar />
     </div>
   );

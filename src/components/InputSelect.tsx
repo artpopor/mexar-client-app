@@ -12,40 +12,37 @@ type InputSelectType = {
   selectValue?: string;
   className?: string;
   inputClassName?: string;
-  defaultInputValue?:string | number;
-  defaultSelectValue?:string | number;
   selectClassName?: string;
   children?: React.ReactNode;
   options?: any[];
+  defaultSelectValue?:any;
 };
+
 const InputSelect = ({
   label,
   inputClassName,
   selectClassName,
-  onChangeInput,
-  defaultInputValue,
-  defaultSelectValue,
   onSelect,
+  onChangeInput,
+  defaultSelectValue,
   inputValue,
   selectValue,
   className,
   children,
   options,
-  onCombineChange,
   ...props
 }: InputSelectType) => {
-
+  
   const combinedInputClassName = "text-[#56AEF5] text-xl rounded-l-none " + inputClassName;
   const combinedSelectClassName = "select-currency w-[40%] !text-xl h-14 self-center " + selectClassName;
 
-  
-  return ( 
+  return (
     <div className={className}>
       <p className="font-thin text-gray-500 mb-2">{label}</p>
       <div className="flex">
         <Select
           className={combinedSelectClassName}
-          placeholder={props?.selectPlaceHolder}
+          placeholder={props.selectPlaceHolder}
           value={selectValue}
           onSelect={onSelect}
           options={options}
@@ -57,11 +54,10 @@ const InputSelect = ({
         <Input
           theme="border"
           className={combinedInputClassName}
-          placeholder={props?.inputPlaceHolder}
+          placeholder={props.inputPlaceHolder}
           type="number"
           onChange={onChangeInput}
-          value={inputValue}
-          defaultValue={defaultInputValue}
+          value={inputValue !== undefined ? inputValue : ''} // Ensure value is defined or use ''
         />
       </div>
     </div>

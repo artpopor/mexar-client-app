@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState, useEffect, HTMLProps } from "react";
+import React, { useState, useEffect } from "react";
 import MenuBar from "../components/MenuBar";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import ProfileSection from "./ProfileSection";
@@ -15,12 +15,11 @@ import {
   useCreateRemittanceMutation,
 } from "../services/apiStore";
 import Input from "../components/Input";
-import { AutoComplete, Select, Modal, notification, DatePicker } from "antd";
+import { AutoComplete, Select, Modal, notification } from "antd";
 import UploadArea from "../components/UploadArea";
 import { IoMdClose } from "react-icons/io";
 import InputSelect from "../components/InputSelect";
 import SearchSelect from "../components/SearchSelect";
-import CountryCodeWithFlag from '../assets/CountryCodeWithFlag.json'
 import AddEntityModal from "../components/AddEntityModal";
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 const Remmittance = () => {
@@ -41,7 +40,7 @@ const Remmittance = () => {
   const [toAmount, setToAmount] = useState<number>()
   const [selectToCurrency, setSelectToCurrency] = useState<any>()
   const [rate, setRate] = useState<number>()
-  const [selectedUser, setSelectedUser] = useState<any>()
+  const [selectedUser, setSelectedUser] = useState<any | undefined>()
   const [userOptions, setUserOptions] = useState<[]>([])
   const [uploadedDatas, setUploadDatas] = useState<any>([])
   const [publicBuy, setPublicBuy] = useState<number | null>()
@@ -61,9 +60,9 @@ const Remmittance = () => {
 
   useEffect(() => {
     if (search && Users) {
-      const filteredOptions = Users?.filter((item: any) =>
+      const filteredOptions = Users && Users?.filter((item: any) =>
         item?.name?.toUpperCase().includes(search.toUpperCase()) || item?.first_name?.toUpperCase().includes(search.toUpperCase()) || item?.last_name?.toUpperCase().includes(search.toUpperCase())
-      );
+      ) || []
       setUserOptions(filteredOptions);
     } else {
       setUserOptions([]);
@@ -126,7 +125,7 @@ const Remmittance = () => {
   ];
 
   const handleCountrySearch = (value: string) => {
-    const filteredOptions = CountryListSorted.filter((item: any) =>
+    const filteredOptions = CountryListSorted && CountryListSorted.filter((item: any) =>
       item.common_name.toUpperCase().startsWith(value.toUpperCase())
     );
     setOptions(filteredOptions);
@@ -299,7 +298,7 @@ const Remmittance = () => {
               }
             >
               {userOptions.map((item: any) => (
-                <Option key={item?.name || item.first_name} value={item?.id}>
+                <Option key={item?.name || item.first_name} value={(item?.id).toString()}>
                   <div className="flex gap-2">
                     <img src={item.avatar_url || draftProfile} className="w-6 h-6 rounded-full" />
                     <p>{item?.name || item?.first_name}</p>
@@ -311,7 +310,7 @@ const Remmittance = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
           {savedEntity.slice(0,4).map((entity:any)=>{return(
         
-                <div className="bg-white w-full shadow-lg p-2 h-20 hover:bg-slate-100 cursor-pointer" onClick={()=>setSelectedUser(entity)}>
+                <div key={entity?.id} className="bg-white w-full shadow-lg p-2 h-20 hover:bg-slate-100 cursor-pointer" onClick={()=>setSelectedUser(entity)}>
                   <div className="flex flex-col relative h-full">
                     <div className="flex flex-row justify-start items-center  gap-4 h-full w-full ml-3 ">
 
@@ -384,7 +383,7 @@ const Remmittance = () => {
                     }
                   }
                 >
-                  {options.map((item: any) => (
+                  {options?.map((item: any) => (
                     <Option key={item.id} value={item?.common_name}>
                       <div className="flex gap-2">
                         <img src={item.flag} className="w-6 h-6 rounded-full" />

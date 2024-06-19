@@ -1,19 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import MenuBar from "../../components/MenuBar";
 import { IoChevronBack } from "react-icons/io5";
 import ProfileSection from "../ProfileSection";
 import "../../components/components.css";
 import { FaList } from "react-icons/fa6";
-import { FaChevronRight } from "react-icons/fa";
 import { useGetUserTransactionQuery } from "../../services/apiStore";
 import { Spin } from "antd";
-import { MdExpandMore } from "react-icons/md";
 
 const Transaction = () => {
   const navigate = useNavigate();
-  const [fromCurrency, setFromCurrency] = useState("");
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
   const { data, error, isLoading, refetch } = useGetUserTransactionQuery(access_token);
@@ -40,7 +37,7 @@ const Transaction = () => {
     }
   }
   const TransactionList = (data: any) => {
-    const { user, items, entity } = data.data;
+    const { items, entity } = data.data;
     const from_currency = items[0].from_currency.code;
     // const from_amount = items[0].from_amount
     const from_amount = parseFloat(items[0].from_amount).toFixed(2);
@@ -86,10 +83,10 @@ const Transaction = () => {
               className="rounded-lg w-5 h-5 object-cover self-center mr-1"
               src={items[0].from_currency.flag}
             />
-            <p className="text-sm text-[#56aef5] m-1">
+            <div className="text-sm text-[#56aef5] m-1">
               <p className="text-sm md:text-xl">{from_currency}</p>{" "}
-              {formatNumber(parseFloat(from_amount))}
-            </p>
+              <p>{formatNumber(parseFloat(from_amount))}</p>
+            </div>
           </div>
 
           <div className="flex flex-row">
@@ -99,10 +96,10 @@ const Transaction = () => {
               className="rounded-lg w-5 h-5 object-cover self-center mr-1"
               src={items[0].to_currency.flag}
             />
-            <p className="text-sm text-[#f5ac56] m-1">
+            <div className="text-sm text-[#f5ac56] m-1">
               <p className="text-sm md:text-xl mr-1">{to_currency}</p>{" "}
-              {formatNumber(parseFloat(to_amount))}
-            </p>
+              <p>{formatNumber(parseFloat(to_amount))}</p>
+            </div>
           </div>
           <p className={`${bgColorClass} text-white text-xs text-right absolute -top-2 -right-2 border b rounded-md p-1`}>{data?.data.status}</p>
 
@@ -146,7 +143,7 @@ const Transaction = () => {
             <hr className="w-full" />
             <div>
               {data?.data?.map((list: any) => {
-                return <TransactionList data={list} />;
+                return <TransactionList key={list?.id} data={list} />;
               })}
             </div>
             {

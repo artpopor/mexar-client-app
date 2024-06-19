@@ -2,20 +2,18 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import Logo from "../assets/Logo_MEXAR.png";
 import { useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import CustomSwitch from "../components/Switch";
-import { useEffect, useState } from "react";
-import * as yub from "yup";
+import { useState } from "react";
 import OTPInput from "../components/OtpInput";
 import { loginSchema } from "../Validations/loginValidation";
 import { Alert } from "antd";
-import { notification, Space } from "antd";
+import { notification } from "antd";
 import CountryCodeWithFlag from "../assets/CountryCodeWithFlag.json";
 
 import {
   useLoginMutation,
   useVerifyOtpMutation,
-  useGetUserTransactionQuery,
 } from "../services/apiStore";
 import { MdMoodBad } from "react-icons/md";
 import InputSelect from "../components/InputSelect";
@@ -25,13 +23,12 @@ const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [phoneNumber,setPhoneNumber] = useState<string>()
+  const [alertMessage] = useState<string>("");
   const [login] = useLoginMutation();
   const [verifyOtp] = useVerifyOtpMutation();
-  const [userLoginData, setUserLoginData] = useState({});
   const [loginByPhone, setLoginByPhone] = useState<boolean>(false);
-  const [phoneNumber, setPhoneNumber] = useState<string>('')
-  const [dialCode, setDialCode] = useState<string>('+66')
+
 
   const openNotification = async (message: string) => {
     await notification.open({
@@ -49,7 +46,6 @@ const Login = () => {
         if (isValid) {
           const res = await login(formData);
           if (res?.data?.meta?.code == 200) {
-            setUserLoginData(formData);
             setStep("getOtp");
           } else {
             openNotification("Wrong username or password!");
@@ -64,7 +60,6 @@ const Login = () => {
   const handleLogin = async (formData: any) => {
     const res = await verifyOtp(formData);
     if (res?.data?.meta?.code == 200) {
-      setUserLoginData(formData);
       const access_token = res?.data?.data?.access_token;
       localStorage.setItem("access_token", access_token);
       navigate("/home");
@@ -116,7 +111,7 @@ const Login = () => {
                   maxLength={20}
                 />
               )) || (
-                  <InputSelect onChangeInput={(e) => setPhoneNumber(e.target.value)} onSelect={(e) => setDialCode(e)} defaultSelectValue='+66' inputClassName="!text-gray-500" inputPlaceHolder="xx-xxx-xxx"  >
+                  <InputSelect inputValue={phoneNumber} onChangeInput={(e)=>setPhoneNumber(e.target.value)}  defaultSelectValue='+66' inputClassName="!text-gray-500" inputPlaceHolder="xx-xxx-xxx"  >
                     {CountryCodeWithFlag?.map((item: { name: string, code: string, emoji: string, image: string, dial_code: string }) => (
                       <Select.Option key={item?.code} value={item?.dial_code} >
                         <div className="flex flex-cols gap-2 justify-center content-center self-center">

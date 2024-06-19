@@ -40,7 +40,7 @@ const SearchSelect = ({ onSelect, onSearch, children, value, cardClassName, sele
           onSearch={onSearch}
           placeholder={placeholder}
           className="!w-full h-14"
-          defaultOpen
+          autoFocus
         >
           {children}
         </AutoComplete>}

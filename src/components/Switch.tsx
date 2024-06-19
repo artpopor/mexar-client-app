@@ -1,24 +1,27 @@
-import React from "react"
-import { Switch } from "antd"
-import "./components.css"
+import React from "react";
+import { Switch, SwitchProps } from "antd";
+import "./components.css";
 
-interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
-    containerClassName?: string
-    placeholder?: any
-    label?: string
-    allowClear?: boolean
-    onClear?: () => void
-    onChange?: () => void
+interface Props extends SwitchProps {
+    containerClassName?: string;
+    placeholder?: any;
+    label?: string;
+    allowClear?: boolean;
+    onClear?: () => void;
 }
-const myswitch = ({ ...props }) => {
-    
+
+const myswitch = (
+    props: Props, 
+    ref: React.Ref<HTMLInputElement>
+) => {
     return (
-            <Switch
+        <Switch
             {...props}
-        /> 
-       
-    )
-}
-const CustomSwitch = React.forwardRef<HTMLInputElement, Props>(myswitch)
+            ref={ref as React.Ref<any>} // Cast the ref to any to avoid type mismatch
+        />
+    );
+};
 
-export default CustomSwitch
+const CustomSwitch = React.forwardRef<HTMLInputElement, Props>(myswitch);
+
+export default CustomSwitch;

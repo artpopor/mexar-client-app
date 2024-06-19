@@ -5,7 +5,6 @@ import { FaLock } from "react-icons/fa";
 import { FaBookOpen } from "react-icons/fa";
 import { IoIosLogOut } from "react-icons/io";
 import { useGetUserInfoQuery } from "../services/apiStore";
-import { useEffect } from "react";
 
 const Setting = () => {
   const navigate = useNavigate();

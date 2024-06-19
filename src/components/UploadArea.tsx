@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Upload, message, Progress } from 'antd';
-import { GetProp, UploadFile, UploadProps } from 'antd';
-import axios from 'axios';
+import { UploadFile } from 'antd';
 import { FaUpload } from "react-icons/fa";
 import { useFileUploadMutation } from '../services/apiStore';
 
@@ -19,21 +18,11 @@ const UploadArea: React.FC<UploadAreaProps> = ({ token, department_id, onUploadS
   const [uploadFile] = useFileUploadMutation();
 
   const handleFileUpload = async (options: any) => {
-    const { onSuccess, onError, file, onProgress } = options;
+    const { onError, file } = options;
 
     const formData = new FormData();
     formData.append('file', file);
     formData.append('department_id', department_id)
-
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-      onUploadProgress: (event: any) => {
-        const percent = Math.floor((event.loaded / event.total) * 100);
-        setProgress(percent);
-        onProgress({ percent }); // Update Ant Design's progress bar
-      },
-    };
-
 
     try {
       const response = await uploadFile({ token: token, data: formData })
@@ -55,7 +44,7 @@ const UploadArea: React.FC<UploadAreaProps> = ({ token, department_id, onUploadS
     }
   };
 
-  const handleOnChange = ({ file, fileList, event }: any) => {
+  const handleOnChange = ({ fileList }: any) => {
     setFileList(fileList);
   };
 

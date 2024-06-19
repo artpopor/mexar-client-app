@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { GoGear } from "react-icons/go";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Button from "../components/Button";
 import { FaChevronRight } from "react-icons/fa";
 import MenuBar from "../components/MenuBar";
@@ -10,7 +10,6 @@ import { Spin } from "antd";
 import { MdExpandMore } from "react-icons/md";
 import { animated,useSpring } from '@react-spring/web'
 
-import draftProfile from "../assets/draftProfile.png"
 const HomePage = () => {
   const navigate = useNavigate();
   const springs = useSpring({
@@ -33,7 +32,7 @@ const HomePage = () => {
   }
 
   const TransactionList = (data: any) => {
-    const { user, items, entity } = data.data;
+    const { items, entity } = data.data;
     const from_currency = items[0].from_currency.code;
     // const from_amount = items[0].from_amount
     const from_amount = parseFloat(items[0].from_amount).toFixed(2);
@@ -58,53 +57,50 @@ const HomePage = () => {
       bgColorClass = 'bg-blue-300'; 
     }
     return (
-      <animated.div style={{...springs}} onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center " >
-        <div className="flex w-[40%] flex-cols content-center self-center gap-3">
-        
-          <div>
-            <div className="flex">
-              {/* <img
-                className="rounded-full w-5 h-5 self-center object-cover	"
-                src={user?.imgUrl || draftProfile}
-              /> */}
-              <p className="text-[#56aef5]">{entity?.name || `${entity?.first_name} ${entity?.last_name}`} </p>
-
-            </div>
-            <p className="self-center text-sm text-gray-500">{formattedDate}</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-3 gap-2 w-[60%] content-center items-center ">
-          <div className="flex flex-row">
-            <img
-              width={30}
-              height={30}
-              className="rounded-lg w-5 h-5 object-cover self-center mr-1"
-              src={items[0].from_currency.flag}
-            />
-            <p className="text-sm text-[#56aef5] m-1">
-              <p className="text-sm md:text-xl">{from_currency}</p>{" "}
-              {formatNumber(parseFloat(from_amount))}
+      <animated.div
+      style={{ ...springs }}
+      onClick={() => navigate(`/transaction/${items?.[0]?.id}`)}
+      className="bg-white cursor-pointer hover:bg-slate-100 mb-2 w-full p-3 px-4 rounded-lg drop-shadow-md flex flex-cols justify-between content-center"
+    >
+      <div className="flex w-[40%] flex-cols content-center self-center gap-3">
+        <div>
+          <div className="flex">
+            <p className="text-[#56aef5]">
+              {entity?.name || `${entity?.first_name} ${entity?.last_name}`}
             </p>
           </div>
-          <FaChevronRight className="self-center w-full text-gray-400" />
-
-          <div className="flex flex-row">
-
-            <img
-              width={30}
-              height={30}
-              className="rounded-lg w-5 h-5 object-cover self-center mr-1"
-              src={items[0].to_currency.flag}
-            />
-            <p className="text-sm text-[#f5ac56] m-1">
-              <p className="text-sm md:text-xl mr-1">{to_currency}</p>{" "}
-              {formatNumber(parseFloat(to_amount))}
-            </p>
-          </div>
-          <p className={`${bgColorClass} text-white text-xs text-right absolute -top-2 -right-2 border b rounded-md p-1`}>{data?.data.status}</p>
+          <p className="self-center text-sm text-gray-500">{formattedDate}</p>
         </div>
-        {/* <FaChevronRight className="self-center text-gray-400 text-xl" /> */}
-      </animated.div>
+      </div>
+      <div className="grid grid-cols-3 gap-2 w-[60%] content-center items-center">
+        <div className="flex flex-row">
+          <img
+            width={30}
+            height={30}
+            className="rounded-lg w-5 h-5 object-cover self-center mr-1"
+            src={items[0].from_currency.flag}
+          />
+          <div className="text-sm text-[#56aef5] m-1">
+            <span className="text-sm md:text-xl">{from_currency}</span>{" "}
+            {formatNumber(parseFloat(from_amount))}
+          </div>
+        </div>
+        <FaChevronRight className="self-center w-full text-gray-400" />
+        <div className="flex flex-row">
+          <img
+            width={30}
+            height={30}
+            className="rounded-lg w-5 h-5 object-cover self-center mr-1"
+            src={items[0].to_currency.flag}
+          />
+          <div className="text-sm text-[#f5ac56] m-1">
+            <span className="text-sm md:text-xl mr-1">{to_currency}</span>{" "}
+            <span>{formatNumber(parseFloat(to_amount))}</span>
+          </div>
+        </div>
+        <p className={`${bgColorClass} text-white text-xs text-right absolute -top-2 -right-2 border rounded-md p-1`}>{status}</p>
+      </div>
+    </animated.div>
     );
   };
   useEffect(() => {
@@ -149,7 +145,6 @@ const HomePage = () => {
           <p className="font-medium">Lastest Transaction</p>
           <p className="font-medium cursor-pointer hover:text-[#56AEF5]" onClick={() => navigate('/transaction')}>see all</p>
         </div>
-        {/* Transaction List */}
         <div>
 
           <hr className="w-full mb-2" />
@@ -157,13 +152,12 @@ const HomePage = () => {
             isLoading && <Spin className="self-center w-full !h-full" size="large" />
           }
           {data?.data?.slice(0, 6).map((list: any) => {
-            return <TransactionList data={list} />;
+            return <TransactionList data={list} key={list.id}/>;
           })}
           <MdExpandMore className="self-center w-full text-gray-400 text-3xl hover:text-[#56AEF5] cursor-pointer" onClick={() => navigate('/transaction')} />
 
         </div>
       </div>
-      {/* Menu !it's absolute */}
       <MenuBar />
     </div>
   );

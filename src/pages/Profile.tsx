@@ -1,10 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import MenuBar from "../components/MenuBar";
-
-import { useParams } from "react-router-dom";
-import { Checkbox } from "antd";
 import { RiPencilFill } from "react-icons/ri";
 import { FaChevronDown } from "react-icons/fa";
 import { useGetUserInfoQuery } from "../services/apiStore";
@@ -12,7 +8,6 @@ import { useGetUserInfoQuery } from "../services/apiStore";
 const Profile = () => {
   const navigate = useNavigate();
   // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
-  const { transactionId } = useParams();
   const access_token = localStorage.getItem("access_token");
   const getUserInfo = useGetUserInfoQuery(access_token)
   const userInfo = getUserInfo?.data?.data
@@ -20,24 +15,25 @@ const Profile = () => {
 
   const userInfoList = [{
     title:'Phone :',
-    data: userInfo.phone_number
+    data: userInfo?.phone_number || ''
   },
   {
   title:'Email :',
-  data: userInfo.email
+  data: userInfo?.email || ''
 },
 {
   title:'Firstname :',
-  data: userInfo.entity.first_name
-},
-{
-  title:'Lastname :',
-  data: userInfo.entity.last_name
+  data: userInfo?.entity.first_name || ''
 },
 {
   title:'Middlename :',
-  data: userInfo.entity.middle_name
+  data: userInfo?.entity.middle_name || ''
 },
+{
+  title:'Lastname :',
+  data: userInfo?.entity.last_name || ''
+},
+
 ]
 
   const List = ({ title, data }: any) => {
@@ -45,7 +41,7 @@ const Profile = () => {
       <>
         <div className="flex content-center gap-2 mb-5 ">
           <p className="text-gray-400 font-thin self-center content-end text-right w-[30%]">{title}</p>
-          <input className="rounded-xl shadow-md p-3 px-5 w-[70%]" placeholder="birthday" value={data} />
+          <input className="rounded-xl shadow-md p-3 px-5 w-[70%]" placeholder={title.toLowerCase().replace(':','')} defaultValue={data} />
         </div>
       </>
     );
@@ -67,12 +63,12 @@ const Profile = () => {
         <div className="text-white mb-7 text-start w-full mt-2 px-4 text-2xl md:w-[80vw] flex flex-col self-center content-center justify-center">
           <div className="self-center flex-col content-center justify-center">
             <div className="self-center text-center content-center flex justify-center bg-white h-[120px] w-[120px] rounded-full m-3  ">
-              <img src={userInfo.avatar_url} className="self-center  w-[100px] h-[100px] rounded-full object-cover" />
+              <img src={userInfo?.avatar_url} className="self-center  w-[100px] h-[100px] rounded-full object-cover" />
             </div>
             <div className="flex flex-cols gap-2 text-center content-center justify-center">
               <div className="text-center">
-                <p className="self-center ">{userInfo.name}</p>
-                <p className="self-center font-thin text-base">{`@${userInfo.username}`}</p>
+                <p className="self-center ">{userInfo?.name}</p>
+                <p className="self-center font-thin text-base">{`@${userInfo?.username}`}</p>
               </div>
               <RiPencilFill className="self-center" />
             </div>
@@ -92,7 +88,7 @@ const Profile = () => {
         <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none">
          
           {userInfoList?.map((list)=>{
-            return <List title={list.title} data={list.data}/>
+            return <List key={list?.title} title={list.title} data={list.data}/>
           })}
         </div>
       </>

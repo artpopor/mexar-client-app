@@ -1,6 +1,5 @@
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { AutoComplete, Select, Modal, notification, DatePicker } from "antd";
+import { AutoComplete, Select, Modal, notification } from "antd";
 import Input from "./Input";
 import InputSelect from "./InputSelect";
 import Button from "./Button";
@@ -15,7 +14,6 @@ type modalType = {
 
 const AddEntityModal = ({ open, onCancel }: modalType) => {
   let [phone, setPhone] = useState<string>('')
-  let [countryCode, setCountryCode] = useState<string>()
   let [entityType, setEntityType] = useState<string>()
   const { Option } = AutoComplete;
   const [createEntity] = useCreateEntityMutation();
@@ -87,7 +85,7 @@ const AddEntityModal = ({ open, onCancel }: modalType) => {
           <div className="h-[70vh] flex flex-col justify-between">
             <div>
               <p className="font-thin text-gray-500 mb-2">Add new CRM entities</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col gap-4">
 
                 <Select onChange={e => setEntityType(e)} placeholder='Entity type' className="h-14"
                   options={[
