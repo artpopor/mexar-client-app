@@ -41,12 +41,13 @@ const OTPInput = ({ length = 6, value = '', onChange, onComplete }: InputProps) 
       {Array.from({ length }, (_, index) => (
         <input
           key={index}
-          type="text"
+          type="number"
           maxLength={1}
           value={OTP[index]}
           onChange={(e) => handleTextChange(e.target.value, index)}
           ref={(ref) => (inputRef.current[index] = ref as HTMLInputElement)}
           className={`focus:border focus:border-cyan-400 rounded-xl text-center p-2 py-5 outline-none`}
+          
         />
       ))}
     </div>
