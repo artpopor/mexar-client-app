@@ -131,15 +131,15 @@ const Transaction = () => {
           Transaction
         </p>
 
-        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col rounded-b-none ">
-          <div className="flex flex-col justify-start gap-4 h-full">
-            <div className="flex flex-cols justify-end gap-3 content-center">
+        <div className="bg-[#F6FAFF] mt-2 pt-5 w-full md:w-[80vw] rounded-3xl flex flex-col rounded-b-none ">
+          <div className="flex flex-col justify-start gap-4 h-full ">
+            <div className="flex flex-cols justify-end gap-3 content-center px-5">
               List view
               <FaList className="self-center" />
             </div>
           
 
-            <hr className="w-full" />
+            <hr className="w-[95%] self-center" />
             {
               isLoading && <Spin className="self-center w-full !h-full" size="large" />
             }

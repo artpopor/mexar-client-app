@@ -108,7 +108,7 @@ const TransactionDetail = () => {
           Transaction Detail
         </p>
 
-        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none min-h-screen">
+        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col rounded-b-none overflow-y-auto h-[calc(100vh_-_220px)] pb-[100px] overflow-x-visible">
           {(!isLoading && (
             <div className="flex flex-col justify-start gap-4 h-full">
               <div className="shadow-lg w-full flex rounded-2xl bg-white p-5">
