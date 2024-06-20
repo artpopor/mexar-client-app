@@ -456,7 +456,7 @@ const Remmittance = () => {
           >
             01 - Enter order Detail
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl  h-full flex flex-col gap-5 justify-between rounded-b-none">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-5 justify-between rounded-b-none overflow-y-auto h-[calc(100vh_-_220px)] pb-[100px]">
             <div className="flex flex-col justify-between content-between h-full">
               {/*CONTENT START HERE */}
               <div className="flex flex-col gap-2">
@@ -574,7 +574,7 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw]  ">
             02 - Customer Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col gap-5 rounded-b-none overflow-y-auto h-[calc(100vh_-_220px)] overflow-x-visible ">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col gap-5 rounded-b-none overflow-y-auto h-[calc(100vh_-_220px)] pb-[100px] ">
             <div className="flex flex-col gap-3">
               <p className="font-thin text-gray-500 flex gap-2">
                 Select custormer <MdPeopleAlt className="self-center text-lg" />
@@ -695,7 +695,7 @@ const Remmittance = () => {
           <p className="text-white text-start w-full mt-2 px-4 text-2xl md:w-[80vw] ">
             03 - Review Infomation
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col gap-5 rounded-b-none overflow-y-auto h-[calc(100vh_-_220px)] overflow-x-visible ">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col gap-5 rounded-b-none overflow-y-auto h-[calc(100vh_-_220px)] pb-[100px] ">
             <div className="flex flex-col gap-2">
               <p className="font-thin text-gray-500">Selected custormer</p>
               {selectedUser && (
