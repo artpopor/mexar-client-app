@@ -1552,6 +1552,7 @@ body {
   width: 100vw;
   background-attachment: fixed;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .hover\:bg-blue-200:hover {
