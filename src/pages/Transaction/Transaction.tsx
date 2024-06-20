@@ -8,13 +8,16 @@ import "../../components/components.css";
 import { FaList } from "react-icons/fa6";
 import { useGetUserTransactionQuery } from "../../services/apiStore";
 import { Spin } from "antd";
-
+import { animated,useSpring } from '@react-spring/web'
+import { FaChevronRight } from "react-icons/fa";
 const Transaction = () => {
   const navigate = useNavigate();
-  // const { register, handleSubmit, control } = useForm({ mode: "onChange" });
   const access_token = localStorage.getItem("access_token");
   const { data, error, isLoading, refetch } = useGetUserTransactionQuery(access_token);
-
+  const springs = useSpring({
+    from: { x: 100 },
+    to: { x: 0 },
+  })
   useEffect(() => {
     if (error) {
       navigate("/login");
@@ -62,7 +65,7 @@ const Transaction = () => {
       bgColorClass = 'bg-blue-300'; 
     }
     return (
-      <div onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-3 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
+      <animated.div style={{ ...springs }} onClick={() => navigate(`/transaction/${items?.[0]?.id}`)} className="bg-white cursor-pointer  hover:bg-slate-100 mb-3 w-full p-3 px-4 rounded-lg  drop-shadow-md flex flex-cols justify-between content-center ">
         <div className="flex w-[40%] flex-cols content-center self-center gap-3">
           {/* <img
             width={30}
@@ -75,7 +78,7 @@ const Transaction = () => {
             <p className="self-center text-sm text-gray-500">{formattedDate}</p>
           </div>
         </div>
-        <div className="grid grid-cols-2  w-[60%] content-center items-center relative">
+        <div className="grid grid-cols-3 justify-center w-[60%] content-center items-center relative">
           <div className="flex flex-row">
             <img
               width={30}
@@ -88,6 +91,8 @@ const Transaction = () => {
               <p>{formatNumber(parseFloat(from_amount))}</p>
             </div>
           </div>
+        
+          <FaChevronRight className="text-base self-center text-center items-center content-center w-full text-gray-400" />
 
           <div className="flex flex-row">
             <img
@@ -101,10 +106,10 @@ const Transaction = () => {
               <p>{formatNumber(parseFloat(to_amount))}</p>
             </div>
           </div>
-          <p className={`${bgColorClass} text-white text-xs text-right absolute -top-4 -right-6 border b rounded-md p-1`}>{data?.data.status}</p>
+          <p className={`${bgColorClass} text-white text-xs text-right absolute -top-5 -right-6  rounded-md p-1`}>{data?.data.status}</p>
 
         </div>
-      </div>
+      </animated.div>
     );
   };
 
@@ -126,29 +131,24 @@ const Transaction = () => {
           Transaction
         </p>
 
-        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl h-full flex flex-col rounded-b-none min-h-screen">
+        <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl flex flex-col rounded-b-none ">
           <div className="flex flex-col justify-start gap-4 h-full">
             <div className="flex flex-cols justify-end gap-3 content-center">
               List view
               <FaList className="self-center" />
             </div>
-            <div className="w-full  flex flex-cols justify-between">
-              <div className="w-[40%]"></div>
-              <div className="flex flex-cols justify-around w-full">
-                <p>From</p>
-                <p>To</p>
-              </div>
-            </div>
+          
 
             <hr className="w-full" />
-            <div>
+            {
+              isLoading && <Spin className="self-center w-full !h-full" size="large" />
+            }
+            <div className="overflow-y-auto h-[calc(100vh_-_300px)] overflow-x-visible p-3">
               {data?.data?.map((list: any) => {
                 return <TransactionList key={list?.id} data={list} />;
               })}
             </div>
-            {
-              isLoading && <Spin className="self-center w-full !h-full" size="large" />
-            }
+          
           </div>
         </div>
       </>

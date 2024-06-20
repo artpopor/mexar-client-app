@@ -20,7 +20,7 @@ const MenuBar = () => {
 
   return (
     <div
-      className="bg-white w-full h-24 flex flex-cols justify-around shadow-lg"
+      className="bg-white w-full h-[100px] flex flex-cols justify-around shadow-lg"
       style={{ position: "sticky", zIndex: 2, bottom: 0, WebkitBoxSizing:'border-box', MozBoxSizing:'border-box', boxSizing:'border-box', display:'block', float:'left' }}
     >
       <div className="w-full flex flex-cols justify-around max-w-[500px] mt-2 mx-auto mb-8">

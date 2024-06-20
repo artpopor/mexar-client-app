@@ -98,7 +98,7 @@ const HomePage = () => {
             <span>{formatNumber(parseFloat(to_amount))}</span>
           </div>
         </div>
-        <p className={`${bgColorClass} text-white inline-block text-xs text-right absolute -top-5 -right-8 border rounded-md p-1`}>{status}</p>
+        <p className={`${bgColorClass} text-white inline-block text-xs text-right absolute -top-5 -right-8  rounded-md p-1`}>{status}</p>
       </div>
     </animated.div>
     );
@@ -126,7 +126,7 @@ const HomePage = () => {
       {/* Main Content here */}
       <div  className="bg-[#F6FAFF] !min-h-screen mt-7 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-3  rounded-b-none">
         <p className="font-medium text-gray-500">Services</p>
-        <animated.div style={{...springs}} className="flex self-center lg:self-start flex-cols justify-between w-full max-w-[450px] lg:w-[400px] bg-gradient-to-br from-[#5BBBFF] to-[#5983E4]  rounded-3xl p-5">
+        <animated.div style={{...springs}} className="flex mb-2 self-center lg:self-start flex-cols justify-between w-full max-w-[450px] lg:w-[400px] bg-gradient-to-br from-[#5BBBFF] to-[#5983E4]  rounded-3xl p-5">
           <div className="text-white">
             <p className="">Remittance</p>
             <hr className="m-1 w-64" />
@@ -143,7 +143,7 @@ const HomePage = () => {
         </animated.div>
         <div className="flex flex-cols justify-between text-gray-500">
           <p className="font-medium">Lastest Transaction</p>
-          <p className="font-medium cursor-pointer hover:text-[#56AEF5]" onClick={() => navigate('/transaction')}>see all</p>
+          <p className="font-medium cursor-pointer hover:text-[#56AEF5]" onClick={() => navigate('/transaction')}>See all</p>
         </div>
         <div>
 
@@ -151,10 +151,13 @@ const HomePage = () => {
           {
             isLoading && <Spin className="self-center w-full !h-full" size="large" />
           }
-          {data?.data?.slice(0, 6).map((list: any) => {
+          <div className="overflow-y-auto h-[calc(100vh_-_480px)] overflow-x-visible p-5">
+             {data?.data?.slice(0, 6).map((list: any) => {
             return <TransactionList data={list} key={list.id}/>;
           })}
-          <MdExpandMore className="self-center w-full text-gray-400 text-3xl hover:text-[#56AEF5] cursor-pointer" onClick={() => navigate('/transaction')} />
+            <MdExpandMore className="self-center w-full text-gray-400 text-3xl hover:text-[#56AEF5] cursor-pointer" onClick={() => navigate('/transaction')} />
+          </div>
+         
 
         </div>
       </div>
