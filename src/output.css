@@ -637,16 +637,6 @@ video {
   margin-bottom: 1rem;
 }
 
-.mx-5 {
-  margin-left: 1.25rem;
-  margin-right: 1.25rem;
-}
-
-.mx-3 {
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
-}
-
 .mb-10 {
   margin-bottom: 2.5rem;
 }
@@ -823,10 +813,6 @@ video {
   height: 90%;
 }
 
-.h-\[calc\(100vh_-_200px\)\] {
-  height: calc(100vh - 200px);
-}
-
 .h-\[calc\(100vh_-_220px\)\] {
   height: calc(100vh - 220px);
 }
@@ -849,38 +835,6 @@ video {
 
 .h-full {
   height: 100%;
-}
-
-.h-\[calc\(100vh_-_250px\)\] {
-  height: calc(100vh - 250px);
-}
-
-.h-\[calc\(100vh_-_240px\)\] {
-  height: calc(100vh - 240px);
-}
-
-.h-\[calc\(100vh_-_230px\)\] {
-  height: calc(100vh - 230px);
-}
-
-.h-\[calc\(screen_-_300px\)\] {
-  height: calc(screen - 300px);
-}
-
-.h-\[calc\(_-_300px\)\] {
-  height: calc( - 300px);
-}
-
-.h-\[calc\(100_-_300px\)\] {
-  height: calc(100 - 300px);
-}
-
-.h-\[calc\(100\%_-_300px\)\] {
-  height: calc(100% - 300px);
-}
-
-.h-\[80vh\] {
-  height: 80vh;
 }
 
 .\!min-h-screen {
@@ -973,14 +927,6 @@ video {
 
 .w-full {
   width: 100%;
-}
-
-.w-\[\] {
-  width: ;
-}
-
-.w-\[90\%\] {
-  width: 90%;
 }
 
 .min-w-\[100px\] {
@@ -1107,40 +1053,12 @@ video {
   overflow: auto;
 }
 
-.overflow-visible {
-  overflow: visible;
-}
-
-.overflow-x-auto {
-  overflow-x: auto;
-}
-
 .overflow-y-auto {
   overflow-y: auto;
 }
 
-.overflow-x-clip {
-  overflow-x: clip;
-}
-
 .overflow-x-visible {
   overflow-x: visible;
-}
-
-.\!overflow-x-visible {
-  overflow-x: visible !important;
-}
-
-.overflow-y-visible {
-  overflow-y: visible;
-}
-
-.overflow-x-scroll {
-  overflow-x: scroll;
-}
-
-.overflow-y-scroll {
-  overflow-y: scroll;
 }
 
 .\!rounded-full {
@@ -1331,44 +1249,28 @@ video {
   padding-bottom: 2rem;
 }
 
-.pl-4 {
-  padding-left: 1rem;
-}
-
-.pt-4 {
-  padding-top: 1rem;
-}
-
-.pt-8 {
-  padding-top: 2rem;
-}
-
-.pt-2 {
-  padding-top: 0.5rem;
-}
-
-.pt-5 {
-  padding-top: 1.25rem;
-}
-
-.pb-3 {
-  padding-bottom: 0.75rem;
-}
-
 .pb-\[100px\] {
   padding-bottom: 100px;
+}
+
+.pl-4 {
+  padding-left: 1rem;
 }
 
 .pt-3 {
   padding-top: 0.75rem;
 }
 
-.pb-\[\] {
-  padding-bottom: ;
+.pt-4 {
+  padding-top: 1rem;
 }
 
-.pb-\[100\] {
-  padding-bottom: 100;
+.pt-5 {
+  padding-top: 1.25rem;
+}
+
+.pt-8 {
+  padding-top: 2rem;
 }
 
 .text-center {
@@ -1650,7 +1552,6 @@ body {
   width: 100vw;
   background-attachment: fixed;
   overflow-x: hidden;
-  overflow-y: hidden;
 }
 
 .hover\:bg-blue-200:hover {
