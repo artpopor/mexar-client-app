@@ -172,7 +172,7 @@ const HomePage = () => {
           {isLoading && (
             <Spin className="self-center w-full !h-full" size="large" />
           )}
-          <div className="overflow-y-auto h-[calc(100vh_-_480px)] px-5 pt-3 overflow-x-visible ">
+          <div className="overflow-y-auto h-[calc(100vh_-_480px)] px-5 pt-3 overflow-x-visible pb-[100px]">
             {data?.data?.slice(0, 6).map((list: any) => {
               return <TransactionList data={list} key={list.id} />;
             })}

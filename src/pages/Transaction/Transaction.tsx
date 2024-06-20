@@ -143,7 +143,7 @@ const Transaction = () => {
             {
               isLoading && <Spin className="self-center w-full !h-full" size="large" />
             }
-            <div className="overflow-y-auto h-[calc(100vh_-_300px)] overflow-x-visible p-3">
+            <div className="overflow-y-auto h-[calc(100vh_-_300px)] overflow-x-visible p-3 pb-[100px]">
               {data?.data?.map((list: any) => {
                 return <TransactionList key={list?.id} data={list} />;
               })}

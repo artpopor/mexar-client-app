@@ -863,6 +863,26 @@ video {
   height: calc(100vh - 230px);
 }
 
+.h-\[calc\(screen_-_300px\)\] {
+  height: calc(screen - 300px);
+}
+
+.h-\[calc\(_-_300px\)\] {
+  height: calc( - 300px);
+}
+
+.h-\[calc\(100_-_300px\)\] {
+  height: calc(100 - 300px);
+}
+
+.h-\[calc\(100\%_-_300px\)\] {
+  height: calc(100% - 300px);
+}
+
+.h-\[80vh\] {
+  height: 80vh;
+}
+
 .\!min-h-screen {
   min-height: 100vh !important;
 }
@@ -1341,6 +1361,14 @@ video {
 
 .pt-3 {
   padding-top: 0.75rem;
+}
+
+.pb-\[\] {
+  padding-bottom: ;
+}
+
+.pb-\[100\] {
+  padding-bottom: 100;
 }
 
 .text-center {
