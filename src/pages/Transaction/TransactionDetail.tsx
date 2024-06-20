@@ -24,12 +24,6 @@ const TransactionDetail = () => {
   const items = data?.data?.items;
   const uploadedDatas = data?.data?.files;
   const user = data?.data.entity;
-  const containerStyle: React.CSSProperties = {
-    width: '100%',
-    height: 100,
-    overflow: 'auto',
-    boxShadow: '0 0 0 1px #40a9ff',
-  };
   const timeStampToLocaltime = (timestamp: string) => {
     const date = new Date(timestamp);
     const bangkokOffset = 7 * 60;
