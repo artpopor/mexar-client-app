@@ -456,7 +456,7 @@ const Remmittance = () => {
           >
             01 - Enter order Detail
           </p>
-          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-5 rounded-b-none overflow-y-auto h-[calc(100vh_-_220px)] pb-[100px]">
+          <div className="bg-[#F6FAFF] mt-2 p-5 w-full md:w-[80vw] rounded-3xl  flex flex-col gap-5 rounded-b-none overflow-y-auto h-[calc(100vh_-_200px)] pb-[200px]">
             <div className="flex flex-col justify-between content-between h-full">
               {/*CONTENT START HERE */}
               <div className="flex flex-col gap-2">
@@ -548,14 +548,16 @@ const Remmittance = () => {
                   onChange={(e) => setCostRate(parseFloat(e.target.value))}
                   value={costRate}
                 />
-              </div>
-            </div>
-            <Button
-              className="w-full mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
+                   <Button
+              className="w-full mt-10 mb-[100px] text-white font-light drop-shadow-md !bg-[#2d4da3]"
               onClick={() => handleNextStep("step2")}
             >
               <IoChevronForward className="self-center w-full text-3xl" />
             </Button>
+              </div>
+           
+            </div>
+       
           </div>
         </>
       )}

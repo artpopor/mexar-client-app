@@ -709,6 +709,10 @@ video {
   margin-top: 1.75rem;
 }
 
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
 .block {
   display: block;
 }
@@ -835,6 +839,18 @@ video {
 
 .h-full {
   height: 100%;
+}
+
+.h-\[calc\(100vh_-_200px\)\] {
+  height: calc(100vh - 200px);
+}
+
+.h-\[calc\(100vh_-_20px\)\] {
+  height: calc(100vh - 20px);
+}
+
+.h-\[calc\(100vh_-_180px\)\] {
+  height: calc(100vh - 180px);
 }
 
 .\!min-h-screen {
@@ -1271,6 +1287,10 @@ video {
 
 .pt-8 {
   padding-top: 2rem;
+}
+
+.pb-\[200px\] {
+  padding-bottom: 200px;
 }
 
 .text-center {
